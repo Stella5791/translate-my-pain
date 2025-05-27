@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Translate My Pain</title>
+</head>
+<body>
+    <h1>Translate My Pain</h1>
+    <form method="POST">
+        <label for="description">Describe your pain:</label><br>
+        <textarea name="description" rows="4" cols="50" required></textarea><br><br>
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if results %}
+    <h2>Detected Metaphors:</h2>
+    <ul>
+        {% for item in results %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+</body>
+</html>

@@ -1,10 +1,17 @@
-import sys
-sys.path.append(
-    '/Users/stellabullo/my_projects/health-projects/metaphor-tagger')
+from pain_descriptor_auto_tagger import classify_descriptor_rulebased
+from entailments import get_entailments
 
 
 def tag_pain_description(description):
-    from pain_descriptor_auto_tagger import process_text_batch  # delayed import
-    input_data = [{"id": 1, "description": description}]
-    results = process_text_batch(input_data)
-    return results[0]
+    # Classify metaphor and dimension
+    dimensions, metaphor_types = classify_descriptor_rulebased(description)
+
+    # Get entailments for each metaphor type
+    entailments = {met: get_entailments(met) for met in metaphor_types}
+
+    return {
+        "text": description,
+        "dimensions": dimensions,
+        "metaphor_types": metaphor_types,
+        "entailments": entailments
+    }

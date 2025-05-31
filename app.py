@@ -1,13 +1,13 @@
-
-
-
+from tagger_logic import tag_pain_description  # ✅ Now this will work
+from flask import Flask, render_template, request
 import sys
 import os
-from flask import Flask, render_template, request
 
-# Add path to metaphor tagger
+# ✅ Tell Python where to find tagger_logic.py
 sys.path.append(
     '/Users/stellabullo/my_projects/health-projects/metaphor-tagger')
+
+
 app = Flask(__name__)
 
 

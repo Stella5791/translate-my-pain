@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Translate My Pain</title>
   <style>
     body {
@@ -12,6 +13,13 @@
 
     h1 {
       color: #333366;
+    }
+
+    h2, h3 {
+      color: #333;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 0.3em;
+      margin-top: 2em;
     }
 
     form {
@@ -33,6 +41,7 @@
       color: white;
       border: none;
       cursor: pointer;
+      margin-right: 10px;
     }
 
     .results {
@@ -45,10 +54,26 @@
     .result-block {
       margin-bottom: 1rem;
     }
+
+    .clinical-card {
+      border: 1px solid #ccc;
+      padding: 1em;
+      margin-bottom: 1em;
+      border-radius: 8px;
+    }
+
+    .clinical-card h4 {
+      margin-bottom: 0.5em;
+    }
+
+    .action-buttons {
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
   <h1>Translate My Pain</h1>
+
   <form method="post">
     <label for="description">Describe your pain:</label><br>
     <textarea id="description" name="description" required></textarea><br>
@@ -56,25 +81,59 @@
   </form>
 
   {% if results %}
-  <h2>Translation</h2>
-  <p><strong>Input:</strong> {{ results.input }}</p>
-  <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
-  <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
+  <div class="results" id="output">
+    <h2>Translation</h2>
+    <p><strong>Input:</strong> {{ results.input }}</p>
+    <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
+    <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
 
-  <h3>Matches by Metaphor Type</h3>
-  <ul>
-  {% for mtype, matches in results.matches.items() %}
-      <li><strong>{{ mtype }}:</strong> matched: {{ matches | join(', ') }}</li>
-  {% endfor %}
-  </ul>
+    <h3>Matches by Metaphor Type</h3>
+    <ul>
+    {% for mtype, matches in results.matches.items() %}
+        <li><strong>{{ mtype }}:</strong> matched: {{ matches | join(', ') }}</li>
+    {% endfor %}
+    </ul>
 
-  <h3>Entailments</h3>
-  <ul>
-  {% for mtype, entailment_list in results.entailments.items() %}
-      <li><strong>{{ mtype }}:</strong> {{ entailment_list | join(', ') }}</li>
-  {% endfor %}
-  </ul>
-{% endif %}
+    <h3>Entailments</h3>
+    <ul>
+    {% for mtype, entailment_list in results.entailments.items() %}
+        <li><strong>{{ mtype }}:</strong> {{ entailment_list | join(', ') }}</li>
+    {% endfor %}
+    </ul>
 
+    {% if results.clinical_rephrasings %}
+    <h3>Clinical Insights</h3>
+    <div>
+      {% for mtype, info in results.clinical_rephrasings.items() %}
+        <div class="clinical-card">
+          <h4>Metaphor Type: <em>{{ mtype }}</em></h4>
+          <p><strong>Rephrased:</strong> {{ info.rephrased }}</p>
+          <p><strong>Likely Mechanism:</strong> {{ info.mechanism }}</p>
+          <p><strong>Clinical Term:</strong> {{ info.clinical_term }}</p>
+          <p><strong>Lit-Aligned Framing:</strong> {{ info.research_framing }}</p>
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="action-buttons">
+      <button onclick="window.print()">🖨️ Print</button>
+      <button onclick="downloadText()">⬇️ Export as .txt</button>
+    </div>
+  </div>
+  {% endif %}
+
+  <script>
+    function downloadText() {
+      const output = document.getElementById("output").innerText;
+      const blob = new Blob([output], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "translated_pain_report.txt";
+      link.click();
+    }
+  </script>
 </body>
 </html>
+<!-- This is the main HTML template for the Translate My Pain application.
+     It includes a form for user input, displays results, and provides options to print or download the report. -->

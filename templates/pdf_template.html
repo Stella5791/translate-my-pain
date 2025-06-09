@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Translated Pain Report</title>
+  <style>
+    body { font-family: sans-serif; font-size: 14px; padding: 2rem; }
+    h1 { color: #333366; }
+    h2, h3 { margin-top: 1.5rem; color: #444; }
+    .block { margin-bottom: 1rem; }
+    .meta-block { border: 1px solid #aaa; padding: 1rem; margin-bottom: 1rem; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Translate My Pain – Clinical Report</h1>
+  <p><strong>Input:</strong> {{ results.input }}</p>
+  <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
+  <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
+
+  <h2>Matched Descriptors</h2>
+  <ul>
+  {% for mtype, matches in results.matches.items() %}
+      <li><strong>{{ mtype }}:</strong> {{ matches | join(', ') }}</li>
+  {% endfor %}
+  </ul>
+
+  <h2>Entailments</h2>
+  <ul>
+  {% for mtype, entailment_list in results.entailments.items() %}
+      <li><strong>{{ mtype }}:</strong> {{ entailment_list | join(', ') }}</li>
+  {% endfor %}
+  </ul>
+
+  <h2>Clinical Interpretations</h2>
+  {% for mtype, info in results.clinical_rephrasings.items() %}
+    <div class="meta-block">
+      <h3>{{ mtype }}</h3>
+      <p><strong>Rephrased:</strong> {{ info.rephrased }}</p>
+      <p><strong>Likely Mechanism:</strong> {{ info.mechanism }}</p>
+      <p><strong>Clinical Term:</strong> {{ info.clinical_term }}</p>
+      <p><strong>Lit-Aligned Framing:</strong> {{ info.research_framing }}</p>
+    </div>
+  {% endfor %}
+</body>
+</html>

@@ -5,6 +5,10 @@ from nltk.stem import PorterStemmer
 with open("taxonomy.json", "r", encoding="utf-8") as f:
     taxonomy = json.load(f)
 
+# Load clinical rephrasings
+with open("clinical_map.json", "r", encoding="utf-8") as f:
+    CLINICAL_MAP = json.load(f)
+
 DIMENSIONS = taxonomy.get("dimensions", {})
 METAPHOR_TYPES = taxonomy.get("metaphor_types", {})
 GRADUATION = taxonomy.get("graduation", {})  # Optional safeguard
@@ -49,9 +53,10 @@ def tag_pain_description(text):
             keywords, stemmed_keywords) if skw in stemmed_input]
         graduation_tags[grad_type] = matched
 
-    # Fallback message if no descriptors detected
-    no_matches = not (
-        dimensions or metaphor_matches or graduation_tags["maximising"] or graduation_tags["minimising"])
+    # Add clinical rephrasings for matched metaphor types
+    clinical_descriptions = {
+        mtype: CLINICAL_MAP.get(mtype, {}) for mtype in metaphor_matches
+    }
 
     return {
         "input": text,
@@ -60,5 +65,5 @@ def tag_pain_description(text):
         "matches": metaphor_matches,
         "entailments": entailments,
         "graduation": graduation_tags,
-        "note": "No metaphorical or descriptive pain language detected." if no_matches else ""
+        "clinical_rephrasings": clinical_descriptions
     }

@@ -56,12 +56,25 @@
   </form>
 
   {% if results %}
-  <div class="results">
-    <h2>Translation</h2>
-    <div class="result-block"><strong>Input:</strong> {{ results['descriptor'] }}</div>
-    <div class="result-block"><strong>Dimensions:</strong> {{ results['dimensions'] }}</div>
-    <div class="result-block"><strong>Metaphor Types:</strong> {{ results['metaphor_types'] }}</div>
-  </div>
-  {% endif %}
+  <h2>Translation</h2>
+  <p><strong>Input:</strong> {{ results.input }}</p>
+  <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
+  <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
+
+  <h3>Matches by Metaphor Type</h3>
+  <ul>
+  {% for mtype, matches in results.matches.items() %}
+      <li><strong>{{ mtype }}:</strong> matched: {{ matches | join(', ') }}</li>
+  {% endfor %}
+  </ul>
+
+  <h3>Entailments</h3>
+  <ul>
+  {% for mtype, entailment_list in results.entailments.items() %}
+      <li><strong>{{ mtype }}:</strong> {{ entailment_list | join(', ') }}</li>
+  {% endfor %}
+  </ul>
+{% endif %}
+
 </body>
 </html>

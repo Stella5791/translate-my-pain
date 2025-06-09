@@ -7,6 +7,7 @@ with open("taxonomy.json", "r", encoding="utf-8") as f:
 
 DIMENSIONS = taxonomy["dimensions"]
 METAPHOR_TYPES = taxonomy["metaphor_types"]
+GRADUATION = taxonomy.get("graduation", {})  # Optional safeguard
 
 stemmer = PorterStemmer()
 
@@ -17,12 +18,13 @@ def stem_list(word_list):
 
 def tag_pain_description(text):
     text_lower = text.lower()
-    words = text_lower.split()  # simpler tokenizer that avoids nltk.download
+    words = text_lower.split()  # Simpler tokenizer
     stemmed_input = [stemmer.stem(w) for w in words]
 
     dimensions = []
     metaphor_matches = {}
     entailments = {}
+    graduation_tags = {"maximising": [], "minimising": []}
 
     # Tag dimensions
     for dim, keywords in DIMENSIONS.items():
@@ -39,10 +41,19 @@ def tag_pain_description(text):
             metaphor_matches[mtype] = matched
             entailments[mtype] = keywords
 
+    # Tag graduation (intensifiers)
+    for grad_type in ["maximising", "minimising"]:
+        keywords = GRADUATION.get(grad_type, [])
+        stemmed_keywords = stem_list(keywords)
+        matched = [kw for kw, skw in zip(
+            keywords, stemmed_keywords) if skw in stemmed_input]
+        graduation_tags[grad_type] = matched
+
     return {
         "input": text,
         "dimensions": list(set(dimensions)),
         "metaphor_types": list(metaphor_matches.keys()),
         "matches": metaphor_matches,
-        "entailments": entailments
+        "entailments": entailments,
+        "graduation": graduation_tags
     }

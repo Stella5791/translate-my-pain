@@ -1,32 +1,47 @@
 {
-  "dimensions": {
-    "sensory": ["stabbing", "burning", "tingling", "sharp", "pressure"],
-    "affective": ["terrifying", "unbearable", "hopeless", "draining", "overwhelming", "sadness", "anger", "frustration"],
-    "temporal": ["constant", "intermittent", "sudden", "recurring", "prolonged"]
-  },
-  "metaphor_types": {
-    "violent_action": ["stabbed", "attacked", "punched", "beaten", "stab", "stabbing", "punch", "cut", "blow"],
-    "pressure_weight": ["crushed", "weighed down", "heavy", "compressed"],
-    "heat_fire": ["burning", "on fire", "blazing", "burn", "flame", "hot", "simmer"],
-    "mechanical": ["grinding", "screeching", "metal", "gears"],
-    "natural_force": ["storm", "earthquake", "wave", "flood"],
-    "foreign_object": ["knife", "dagger", "spike", "glass", "needle"],
-    "monster": ["monster", "creature", "beast"],
-    "journey": ["trapped", "lost", "endless path", "nowhere"],
-    "other": ["weird", "indescribable", "wrong", "off"],
-    "electric_force": [
-      "shock", "electric", "electrical", "jolt", "zap", "zapping",
-      "buzz", "tingle", "tingling", "current", "spasm", "spark",
-      "electrify", "pulsing", "surge", "voltage", "charge", "static"
-    ]
-  },
-  "graduation": {
-    "maximising": [
-      "crippling", "overwhelming", "unbearable", "agonising",
-      "excruciating", "intense", "severe", "devastating", "debilitating"
-    ],
-    "minimising": [
-      "dull", "manageable", "faint", "slight", "mild", "subtle", "nagging"
-    ]
-  }
+  "violent_action": [
+    "stab", "stabbing", "punched", "beaten", "cut", "punch", "slashed", "knife", "sword", "razor", "gutted", "shoved", "jammed", "hammered", "scraped", "smashed"
+  ],
+  "heat_fire": [
+    "burn", "burning", "blazing", "on fire", "scorch", "hot poker", "boiling", "furnace", "molten", "heat", "fiery", "hot coal"
+  ],
+  "constriction_pressure": [
+    "squeezed", "tight", "crushed", "pressure", "vice", "panini press", "coiled", "wrapped", "strangled", "bound", "binding", "weighed down", "compressed"
+  ],
+  "tearing_ripping": [
+    "rip", "ripping", "torn", "tear", "burst", "split", "shredded", "flayed", "rupture", "breaking", "exploding", "unravelling"
+  ],
+  "mechanical_metal": [
+    "gear", "machine", "metal", "grinding", "cogs", "screws", "vice grips", "mechanical", "rod", "skewer", "sharp metal", "iron bar"
+  ],
+  "weight_blockage": [
+    "heavy", "balloon", "weight", "block", "stone", "elephant", "burden", "dragging", "pulling down", "carrying something", "bloated", "bearing down", "anchor"
+  ],
+  "explosive": [
+    "explode", "burst", "detonate", "about to blow", "ticking", "bomb", "blast", "going to pop", "burst open", "eruption"
+  ],
+  "animal_invader": [
+    "claws", "biting", "scratching", "gnawing", "chewing", "spiders", "rat", "hedgehog", "wasps", "insects", "creature", "beast", "demon"
+  ],
+  "electric_force": [
+    "electric", "shock", "tingling", "buzzing", "zapping", "pulsing", "lightning", "jolt", "spasm", "twitch", "shooting"
+  ],
+  "pulling_tugging": [
+    "pulling", "tugging", "yanking", "dragging", "gripping", "drawn", "snatched", "jerking", "ripped from"
+  ],
+  "foreign_object": [
+    "foreign", "stuck", "implanted", "inserted", "object inside", "alien", "intruder", "coathanger", "knitting needle", "barbed wire", "glass", "shards"
+  ],
+  "natural_disaster": [
+    "storm", "waves", "tsunami", "earthquake", "tornado", "explosion", "eruption", "lightning", "weather", "flood"
+  ],
+  "birth_labour": [
+    "labour", "giving birth", "contractions", "crowning", "childbirth", "pushing", "delivering", "baby", "pregnant", "9 months", "dilating"
+  ],
+  "disintegration": [
+    "falling apart", "unravelling", "breaking down", "pieces", "fragmenting", "shattered", "dissolving"
+  ],
+  "graduation_modifiers": [
+    "crippling", "overwhelming", "unbearable", "severe", "agonising", "intense", "constant", "repeated", "permanent", "sporadic", "persistent", "sharp", "extreme"
+  ]
 }

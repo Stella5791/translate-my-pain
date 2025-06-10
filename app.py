@@ -5,10 +5,10 @@ import logging
 
 app = Flask(__name__)
 
-# Setup logging (optional)
+# Setup logging
 logging.basicConfig(level=logging.INFO)
 
-# Load updated taxonomy
+# Load taxonomy
 with open('taxonomy.json') as f:
     taxonomy = json.load(f)
 
@@ -29,7 +29,6 @@ def tokenize(text):
 
 
 def detect_metaphors(text):
-    tokens = tokenize(text)
     matches = {}
     entailments = {}
     metaphor_types = set()
@@ -49,7 +48,6 @@ def detect_metaphors(text):
             metaphor_types.add(mtype)
             dimensions.update(data.get("dimensions", []))
 
-    # Graduation-only mode
     if not metaphor_types:
         grad_matched = [mod for mod in GRADUATION if re.search(
             rf'\b{re.escape(mod)}\b', text.lower())]
@@ -76,7 +74,8 @@ def generate_clinical_info(metaphor_types):
         info[mtype] = {
             "patient_friendly": data.get("patient_friendly", ""),
             "likely_mechanism": data.get("likely_mechanism", ""),
-            "clinical_terms": data.get("clinical_terms", [])
+            "clinical_terms": data.get("clinical_terms", []),
+            "literature_framing": data.get("literature_framing", "")
         }
     return info
 
@@ -90,7 +89,6 @@ def index():
         metaphor_data = detect_metaphors(description)
         context_data = detect_context(description)
 
-        # Provide fallback clinical info if only intensifiers are present
         if metaphor_data["metaphor_types"]:
             clinical = generate_clinical_info(metaphor_data["metaphor_types"])
         elif metaphor_data["graduation_only"]:
@@ -98,13 +96,14 @@ def index():
                 "graduation_modifiers": {
                     "patient_friendly": "Strong, overwhelming descriptors used to convey extreme distress.",
                     "likely_mechanism": "Indicative of central sensitization or high pain interference.",
-                    "clinical_terms": ["pain severity", "pain interference", "functional impact"]
+                    "clinical_terms": ["pain severity", "pain interference", "functional impact"],
+                    "literature_framing": ""
                 }
             }
         else:
             clinical = {}
 
-        return render_template("pdf_template.html", results={
+        return render_template("index.html", results={
             "input": description,
             "metaphor_types": metaphor_data["metaphor_types"],
             "matches": metaphor_data["matches"],
@@ -115,8 +114,8 @@ def index():
             "clinical_rephrasings": clinical
         })
 
-    # ← GET request: don't pass an empty dict — pass None
-    return render_template("pdf_template.html", results=None)
+    # For GET requests: show empty form with no results
+    return render_template("index.html", results=None)
 
 
 if __name__ == "__main__":

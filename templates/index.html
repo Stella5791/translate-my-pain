@@ -6,11 +6,11 @@
   <title>Translate My Pain</title>
   <style>
     :root {
-      --primary: #A18ABD;        /* Soft lavender */
-      --secondary: #D3D3D3;      /* Cool grey */
-      --accent: #F29CA3;         /* Coral pink */
-      --text: #2D2D2D;           /* Charcoal */
-      --background: #F7F5FA;     /* Very light lilac */
+      --primary: #A18ABD;
+      --secondary: #D3D3D3;
+      --accent: #F29CA3;
+      --text: #2D2D2D;
+      --background: #F7F5FA;
     }
 
     body {
@@ -70,10 +70,6 @@
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
 
-    .result-block {
-      margin-bottom: 1rem;
-    }
-
     .clinical-card {
       border: 1px solid var(--secondary);
       padding: 1em;
@@ -119,78 +115,76 @@
   </form>
 
   {% if results and results.input %}
-  <div class="results" id="output">
-    <h2>Translation</h2>
-    <p><strong>Input:</strong> {{ results.input }}</p>
+    <div class="results" id="output">
+      <h2>Translation</h2>
+      <p><strong>Input:</strong> {{ results.input }}</p>
 
-    {% if results.dimensions %}
-    <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
-    {% endif %}
+      {% if results.dimensions %}
+        <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
+      {% endif %}
 
-    {% if results.metaphor_types %}
-    <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
-    {% endif %}
+      {% if results.metaphor_types %}
+        <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
+      {% endif %}
 
-    {% if results.impact_context %}
-    <h3>Pain Triggers & Life Impact Context</h3>
-    <ul>
-      {% for item in results.impact_context %}
-      <li>{{ item }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
+      {% if results.impact_context %}
+        <h3>Pain Triggers & Life Impact Context</h3>
+        <ul>
+          {% for item in results.impact_context %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
 
-    {% if results.graduation_only %}
-    <h3>Intensity/Impact Clues</h3>
-    <p>The following terms may indicate how much your pain interferes with your life:</p>
-    <ul>
-      {% for word in results.graduation_only %}
-      <li>{{ word }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
+      {% if results.graduation_only %}
+        <h3>Intensity/Impact Clues</h3>
+        <p>The following terms may indicate how much your pain interferes with your life:</p>
+        <ul>
+          {% for word in results.graduation_only %}
+            <li>{{ word }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
 
-    {% if results.clinical_rephrasings %}
-    <h3>Clinical Insights</h3>
-    <div>
-      {% for mtype, info in results.clinical_rephrasings.items() %}
-      <div class="clinical-card">
-        <h4>Metaphor Type: <em>{{ mtype }}</em></h4>
-        <p><strong>Patient-Friendly:</strong> {{ info.patient_friendly }}</p>
-        <p><strong>Likely Mechanism:</strong> {{ info.likely_mechanism }}</p>
-        <p><strong>Clinical Terms:</strong> {{ info.clinical_terms | join(', ') }}</p>
-        {% if info.literature_framing %}
-        <p><strong>Literature Framing:</strong> {{ info.literature_framing }}</p>
-        {% endif %}
+      {% if results.clinical_rephrasings %}
+        <h3>Clinical Insights</h3>
+        {% for mtype, info in results.clinical_rephrasings.items() %}
+          <div class="clinical-card">
+            <h4>Metaphor Type: <em>{{ mtype }}</em></h4>
+            <p><strong>Patient-Friendly:</strong> {{ info.patient_friendly }}</p>
+            <p><strong>Likely Mechanism:</strong> {{ info.likely_mechanism }}</p>
+            <p><strong>Clinical Terms:</strong> {{ info.clinical_terms | join(', ') }}</p>
+            {% if info.literature_framing %}
+              <p><strong>Literature Framing:</strong> {{ info.literature_framing }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% if results.matches and results.entailments %}
+        <div class="technical-toggle" onclick="toggleTechnical()">Toggle Technical Details</div>
+        <div id="technical-details">
+          <h3>Matches by Metaphor Type</h3>
+          <ul>
+            {% for mtype, matches in results.matches.items() %}
+              <li><strong>{{ mtype }}:</strong> matched: {{ matches | join(', ') }}</li>
+            {% endfor %}
+          </ul>
+
+          <h3>Entailments</h3>
+          <ul>
+            {% for mtype, entailment_list in results.entailments.items() %}
+              <li><strong>{{ mtype }}:</strong> {{ entailment_list | join(', ') }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <div class="action-buttons">
+        <button onclick="window.print()">🖨️ Print</button>
+        <button type="button" onclick="downloadText()">⬇️ Export as .txt</button>
       </div>
-      {% endfor %}
     </div>
-    {% endif %}
-
-    {% if results.matches and results.entailments %}
-    <div class="technical-toggle" onclick="toggleTechnical()">Toggle Technical Details</div>
-    <div id="technical-details">
-      <h3>Matches by Metaphor Type</h3>
-      <ul>
-        {% for mtype, matches in results.matches.items() %}
-        <li><strong>{{ mtype }}:</strong> matched: {{ matches | join(', ') }}</li>
-        {% endfor %}
-      </ul>
-
-      <h3>Entailments</h3>
-      <ul>
-        {% for mtype, entailment_list in results.entailments.items() %}
-        <li><strong>{{ mtype }}:</strong> {{ entailment_list | join(', ') }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
-
-    <div class="action-buttons">
-      <button onclick="window.print()">🖨️ Print</button>
-      <button onclick="downloadText()">⬇️ Export as .txt</button>
-    </div>
-  </div>
   {% endif %}
 
   <script>
@@ -205,17 +199,14 @@
 
     function toggleTechnical() {
       const section = document.getElementById("technical-details");
-      if (section.style.display === "none") {
-        section.style.display = "block";
-      } else {
-        section.style.display = "none";
-      }
+      section.style.display = (section.style.display === "none") ? "block" : "none";
     }
 
-    // Scroll to results if available
     if (document.getElementById("output")) {
       document.getElementById("output").scrollIntoView({ behavior: "smooth" });
     }
   </script>
 </body>
 </html>
+<!-- This is the main HTML template for the Translate My Pain application. -->
+<!-- It includes a form for users to input their pain descriptions, -->

@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Translate My Pain</title>
   <style>
     :root {
-      --primary:rgb(119, 48, 206);
-      --secondary: #D3D3D3;
-      --accent: #F29CA3;
-      --text: #2D2D2D;
-      --background: #F7F5FA;
+      --primary: #A18ABD;        /* Soft lavender */
+      --secondary: #D3D3D3;      /* Cool grey */
+      --accent: #F29CA3;         /* Coral pink */
+      --text: #2D2D2D;           /* Charcoal */
+      --background: #F7F5FA;     /* Very light lilac */
     }
 
     body {
       font-family: Arial, sans-serif;
+      margin: 2rem;
       background-color: var(--background);
       color: var(--text);
-      margin: 6rem;
-      padding: 0;
     }
 
     h1 {
@@ -26,19 +25,10 @@
     }
 
     h2, h3 {
-      color: var(--accent);
+      color: var(--text);
       border-bottom: 2px solid var(--secondary);
       padding-bottom: 0.3em;
       margin-top: 2em;
-    }
-
-    p.intro {
-      background: white;
-      padding: 1rem;
-      border-radius: 6px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.05);
-      margin-bottom: 2rem;
-      line-height: 1.6;
     }
 
     form {
@@ -51,8 +41,6 @@
       padding: 10px;
       font-size: 16px;
       border: 1px solid var(--secondary);
-      border-radius: 4px;
-      box-sizing: border-box;
     }
 
     textarea:focus {
@@ -67,10 +55,8 @@
       background-color: var(--primary);
       color: white;
       border: none;
-      border-radius: 4px;
       cursor: pointer;
       margin-right: 10px;
-      transition: background-color 0.3s;
     }
 
     button:hover {
@@ -78,10 +64,14 @@
     }
 
     .results {
-      background-color: white;
+      background-color: #ffffff;
       padding: 1rem;
-      border-radius: 8px;
+      border-radius: 5px;
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .result-block {
+      margin-bottom: 1rem;
     }
 
     .clinical-card {
@@ -99,62 +89,28 @@
       margin-top: 1rem;
     }
 
-    .technical {
-      background-color: #e9e9e9;
-      padding: 1em;
-      margin-top: 1em;
-      border-radius: 6px;
+    .technical-toggle {
+      background-color: #eaeaea;
+      padding: 0.5em;
+      cursor: pointer;
+      margin-bottom: 1em;
+    }
+
+    #technical-details {
       display: none;
-    }
-
-    .toggle-button {
-      margin-top: 1rem;
-      background-color: var(--secondary);
-      color: var(--text);
-    }
-
-    @media (max-width: 600px) {
-      body {
-        margin: 1rem;
-      }
-
-      textarea {
-        height: 80px;
-      }
-
-      button {
-        width: 100%;
-        margin-bottom: 0.5rem;
-      }
-
-      .toggle-button {
-        width: 100%;
-      }
     }
   </style>
 </head>
 <body>
-
   <h1>Translate My Pain</h1>
 
-  <p class="intro">
-    Pain can be hard to put into words. Many people describe it using figurative language,
-    for example, by comparing it to something more familiar, like fire, a stab, or a weight.
-    These expressions, called <em>metaphors</em> or <em>similes</em>, help put into words how your pain feels.
-    This tool then helps translate your pain descriptions using that type of language into clinical terms that doctors can understand and give an indication of how your pain works.
-  
-    <br><br>
-    To get started, think about how you would describe your pain to a friend or family member.
-    What does it feel like? Will it help compare it to something else, like fire or needles?
-    You can start by saying things like <em>“It feels like...”</em> or <em>“It’s as if...”</em>
-
-    <br><br>
-    Be as detailed as you can, but keep it simple. You can write a few sentences or even just a few words. You can mention where it hurts, how strong the pain is, or what it prevents you from doing. You can also include any other feelings or sensations that come with the pain, like tiredness or nausea and if it feels different at different times of the month or in different situations (e.g. going to the loo).   But don’t worry about being perfect. Just describe your pain in the way that makes the most sense to you.
-    <br><br>
-    Once you submit your description, the tool will analyze it and provide a translation into clinical terms,
-    along with insights into how your pain might work and what it might mean for your health.
+  <p>
+    Pain is a deeply subjective experience. Many people describe it using figurative language to make sense of sensations that are otherwise hard to put into words. <br>
+    A <strong>metaphor</strong> is when we describe something abstract in terms of something else we know well. <br>
+    For example: <em>"It feels like a hot poker is pressing into my abdomen"</em> or <em>"It's as if tiny blades are slicing my insides"</em>.<br><br>
+    You may wish to begin your description with <strong>"It feels like..."</strong> or <strong>"It feels as if..."</strong>.
   </p>
-  
+
   <form method="post">
     <label for="description">Describe your pain:</label><br>
     <textarea id="description" name="description" required></textarea><br>
@@ -167,6 +123,25 @@
     <p><strong>Input:</strong> {{ results.input }}</p>
     <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
     <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
+
+    {% if results.impact_context %}
+      <h3>Pain Triggers & Life Impact Context</h3>
+      <ul>
+        {% for item in results.impact_context %}
+        <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if results.graduation_modifiers %}
+      <h3>Intensity/Impact Clues</h3>
+      <p>The following terms may indicate how much your pain interferes with your life:</p>
+      <ul>
+        {% for word in results.graduation_modifiers %}
+        <li>{{ word }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
 
     {% if results.clinical_rephrasings %}
     <h3>Clinical Insights</h3>
@@ -183,8 +158,8 @@
     </div>
     {% endif %}
 
-    <button class="toggle-button" onclick="toggleTechnical()">Toggle Technical Details</button>
-    <div id="technical" class="technical">
+    <div class="technical-toggle" onclick="toggleTechnical()">Toggle Technical Details</div>
+    <div id="technical-details">
       <h3>Matches by Metaphor Type</h3>
       <ul>
       {% for mtype, matches in results.matches.items() %}
@@ -218,10 +193,13 @@
     }
 
     function toggleTechnical() {
-      const tech = document.getElementById("technical");
-      tech.style.display = tech.style.display === "none" ? "block" : "none";
+      const section = document.getElementById("technical-details");
+      if (section.style.display === "none") {
+        section.style.display = "block";
+      } else {
+        section.style.display = "none";
+      }
     }
   </script>
-
 </body>
 </html>

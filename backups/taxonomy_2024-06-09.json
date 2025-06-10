@@ -1,0 +1,32 @@
+{
+  "dimensions": {
+    "sensory": ["stabbing", "burning", "tingling", "sharp", "pressure"],
+    "affective": ["terrifying", "unbearable", "hopeless", "draining", "overwhelming", "sadness", "anger", "frustration"],
+    "temporal": ["constant", "intermittent", "sudden", "recurring", "prolonged"]
+  },
+  "metaphor_types": {
+    "violent_action": ["stabbed", "attacked", "punched", "beaten", "stab", "stabbing", "punch", "cut", "blow"],
+    "pressure_weight": ["crushed", "weighed down", "heavy", "compressed"],
+    "heat_fire": ["burning", "on fire", "blazing", "burn", "flame", "hot", "simmer"],
+    "mechanical": ["grinding", "screeching", "metal", "gears"],
+    "natural_force": ["storm", "earthquake", "wave", "flood"],
+    "foreign_object": ["knife", "dagger", "spike", "glass", "needle"],
+    "monster": ["monster", "creature", "beast"],
+    "journey": ["trapped", "lost", "endless path", "nowhere"],
+    "other": ["weird", "indescribable", "wrong", "off"],
+    "electric_force": [
+      "shock", "electric", "electrical", "jolt", "zap", "zapping",
+      "buzz", "tingle", "tingling", "current", "spasm", "spark",
+      "electrify", "pulsing", "surge", "voltage", "charge", "static"
+    ]
+  },
+  "graduation": {
+    "maximising": [
+      "crippling", "overwhelming", "unbearable", "agonising",
+      "excruciating", "intense", "severe", "devastating", "debilitating"
+    ],
+    "minimising": [
+      "dull", "manageable", "faint", "slight", "mild", "subtle", "nagging"
+    ]
+  }
+}

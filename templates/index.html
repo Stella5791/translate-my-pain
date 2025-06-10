@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Translate My Pain</title>
   <style>
     :root {
@@ -113,67 +113,78 @@
 
   <form method="post">
     <label for="description">Describe your pain:</label><br>
-    <textarea id="description" name="description" required></textarea><br>
+    <textarea id="description" name="description" required
+              placeholder="e.g. It feels like something is tearing me apart when I walk or sit..."></textarea><br>
     <button type="submit">Translate</button>
   </form>
 
-  {% if results %}
+  {% if results and results.input %}
   <div class="results" id="output">
     <h2>Translation</h2>
     <p><strong>Input:</strong> {{ results.input }}</p>
-    <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
-    <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
 
-    {% if results.impact_context %}
-      <h3>Pain Triggers & Life Impact Context</h3>
-      <ul>
-        {% for item in results.impact_context %}
-        <li>{{ item }}</li>
-        {% endfor %}
-      </ul>
+    {% if results.dimensions %}
+    <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
     {% endif %}
 
-    {% if results.graduation_modifiers %}
-      <h3>Intensity/Impact Clues</h3>
-      <p>The following terms may indicate how much your pain interferes with your life:</p>
-      <ul>
-        {% for word in results.graduation_modifiers %}
-        <li>{{ word }}</li>
-        {% endfor %}
-      </ul>
+    {% if results.metaphor_types %}
+    <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
+    {% endif %}
+
+    {% if results.impact_context %}
+    <h3>Pain Triggers & Life Impact Context</h3>
+    <ul>
+      {% for item in results.impact_context %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if results.graduation_only %}
+    <h3>Intensity/Impact Clues</h3>
+    <p>The following terms may indicate how much your pain interferes with your life:</p>
+    <ul>
+      {% for word in results.graduation_only %}
+      <li>{{ word }}</li>
+      {% endfor %}
+    </ul>
     {% endif %}
 
     {% if results.clinical_rephrasings %}
     <h3>Clinical Insights</h3>
     <div>
       {% for mtype, info in results.clinical_rephrasings.items() %}
-        <div class="clinical-card">
-          <h4>Metaphor Type: <em>{{ mtype }}</em></h4>
-          <p><strong>Patient-Friendly:</strong> {{ info.patient_friendly }}</p>
-          <p><strong>Likely Mechanism:</strong> {{ info.likely_mechanism }}</p>
-          <p><strong>Clinical Terms:</strong> {{ info.clinical_terms | join(', ') }}</p>
-          <p><strong>Literature Framing:</strong> {{ info.literature_framing }}</p>
-        </div>
+      <div class="clinical-card">
+        <h4>Metaphor Type: <em>{{ mtype }}</em></h4>
+        <p><strong>Patient-Friendly:</strong> {{ info.patient_friendly }}</p>
+        <p><strong>Likely Mechanism:</strong> {{ info.likely_mechanism }}</p>
+        <p><strong>Clinical Terms:</strong> {{ info.clinical_terms | join(', ') }}</p>
+        {% if info.literature_framing %}
+        <p><strong>Literature Framing:</strong> {{ info.literature_framing }}</p>
+        {% endif %}
+      </div>
       {% endfor %}
     </div>
     {% endif %}
 
+    {% if results.matches and results.entailments %}
     <div class="technical-toggle" onclick="toggleTechnical()">Toggle Technical Details</div>
     <div id="technical-details">
       <h3>Matches by Metaphor Type</h3>
       <ul>
-      {% for mtype, matches in results.matches.items() %}
-          <li><strong>{{ mtype }}:</strong> matched: {{ matches | join(', ') }}</li>
-      {% endfor %}
+        {% for mtype, matches in results.matches.items() %}
+        <li><strong>{{ mtype }}:</strong> matched: {{ matches | join(', ') }}</li>
+        {% endfor %}
       </ul>
 
       <h3>Entailments</h3>
       <ul>
-      {% for mtype, entailment_list in results.entailments.items() %}
-          <li><strong>{{ mtype }}:</strong> {{ entailment_list | join(', ') }}</li>
-      {% endfor %}
+        {% for mtype, entailment_list in results.entailments.items() %}
+        <li><strong>{{ mtype }}:</strong> {{ entailment_list | join(', ') }}</li>
+        {% endfor %}
       </ul>
     </div>
+    {% endif %}
 
     <div class="action-buttons">
       <button onclick="window.print()">🖨️ Print</button>
@@ -199,6 +210,11 @@
       } else {
         section.style.display = "none";
       }
+    }
+
+    // Scroll to results if available
+    if (document.getElementById("output")) {
+      document.getElementById("output").scrollIntoView({ behavior: "smooth" });
     }
   </script>
 </body>

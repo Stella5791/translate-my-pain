@@ -110,12 +110,13 @@ def index():
             "matches": metaphor_data["matches"],
             "entailments": metaphor_data["entailments"],
             "dimensions": metaphor_data["dimensions"],
-            "gradation_only": metaphor_data["graduation_only"],
+            "graduation_only": metaphor_data["graduation_only"],
             "impact_context": context_data,
             "clinical_rephrasings": clinical
         })
 
-    return render_template("pdf_template.html")
+    # ← GET request: don't pass an empty dict — pass None
+    return render_template("pdf_template.html", results=None)
 
 
 if __name__ == "__main__":

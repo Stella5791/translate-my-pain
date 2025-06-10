@@ -10,7 +10,7 @@
     "heat_fire": ["burning", "on fire", "blazing", "burn", "flame", "hot", "simmer"],
     "mechanical": ["grinding", "screeching", "metal", "gears"],
     "natural_force": ["storm", "earthquake", "wave", "flood"],
-    "foreign_object": ["knife", "dagger", "spike", "glass"],
+    "foreign_object": ["knife", "dagger", "spike", "glass", "needle"],
     "monster": ["monster", "creature", "beast"],
     "journey": ["trapped", "lost", "endless path", "nowhere"],
     "other": ["weird", "indescribable", "wrong", "off"],

@@ -1,25 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Translate My Pain</title>
   <style>
+    :root {
+      --primary:rgb(119, 48, 206);
+      --secondary: #D3D3D3;
+      --accent: #F29CA3;
+      --text: #2D2D2D;
+      --background: #F7F5FA;
+    }
+
     body {
       font-family: Arial, sans-serif;
-      margin: 2rem;
-      background-color: #f5f5f5;
+      background-color: var(--background);
+      color: var(--text);
+      margin: 6rem;
+      padding: 0;
     }
 
     h1 {
-      color: #333366;
+      color: var(--primary);
     }
 
     h2, h3 {
-      color: #333;
-      border-bottom: 2px solid #ccc;
+      color: var(--accent);
+      border-bottom: 2px solid var(--secondary);
       padding-bottom: 0.3em;
       margin-top: 2em;
+    }
+
+    p.intro {
+      background: white;
+      padding: 1rem;
+      border-radius: 6px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+      line-height: 1.6;
     }
 
     form {
@@ -31,32 +50,42 @@
       height: 100px;
       padding: 10px;
       font-size: 16px;
+      border: 1px solid var(--secondary);
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    textarea:focus {
+      outline: none;
+      box-shadow: 0 0 5px var(--primary);
     }
 
     button {
       margin-top: 10px;
       padding: 10px 20px;
       font-size: 16px;
-      background-color: #333366;
+      background-color: var(--primary);
       color: white;
       border: none;
+      border-radius: 4px;
       cursor: pointer;
       margin-right: 10px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: var(--accent);
     }
 
     .results {
-      background-color: #ffffff;
+      background-color: white;
       padding: 1rem;
-      border-radius: 5px;
+      border-radius: 8px;
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
 
-    .result-block {
-      margin-bottom: 1rem;
-    }
-
     .clinical-card {
-      border: 1px solid #ccc;
+      border: 1px solid var(--secondary);
       padding: 1em;
       margin-bottom: 1em;
       border-radius: 8px;
@@ -69,11 +98,63 @@
     .action-buttons {
       margin-top: 1rem;
     }
+
+    .technical {
+      background-color: #e9e9e9;
+      padding: 1em;
+      margin-top: 1em;
+      border-radius: 6px;
+      display: none;
+    }
+
+    .toggle-button {
+      margin-top: 1rem;
+      background-color: var(--secondary);
+      color: var(--text);
+    }
+
+    @media (max-width: 600px) {
+      body {
+        margin: 1rem;
+      }
+
+      textarea {
+        height: 80px;
+      }
+
+      button {
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+
+      .toggle-button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
+
   <h1>Translate My Pain</h1>
 
+  <p class="intro">
+    Pain can be hard to put into words. Many people describe it using figurative language,
+    for example, by comparing it to something more familiar, like fire, a stab, or a weight.
+    These expressions, called <em>metaphors</em> or <em>similes</em>, help put into words how your pain feels.
+    This tool then helps translate your pain descriptions using that type of language into clinical terms that doctors can understand and give an indication of how your pain works.
+  
+    <br><br>
+    To get started, think about how you would describe your pain to a friend or family member.
+    What does it feel like? Will it help compare it to something else, like fire or needles?
+    You can start by saying things like <em>“It feels like...”</em> or <em>“It’s as if...”</em>
+
+    <br><br>
+    Be as detailed as you can, but keep it simple. You can write a few sentences or even just a few words. You can mention where it hurts, how strong the pain is, or what it prevents you from doing. You can also include any other feelings or sensations that come with the pain, like tiredness or nausea and if it feels different at different times of the month or in different situations (e.g. going to the loo).   But don’t worry about being perfect. Just describe your pain in the way that makes the most sense to you.
+    <br><br>
+    Once you submit your description, the tool will analyze it and provide a translation into clinical terms,
+    along with insights into how your pain might work and what it might mean for your health.
+  </p>
+  
   <form method="post">
     <label for="description">Describe your pain:</label><br>
     <textarea id="description" name="description" required></textarea><br>
@@ -87,34 +168,37 @@
     <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
     <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
 
-    <h3>Matches by Metaphor Type</h3>
-    <ul>
-    {% for mtype, matches in results.matches.items() %}
-        <li><strong>{{ mtype }}:</strong> matched: {{ matches | join(', ') }}</li>
-    {% endfor %}
-    </ul>
-
-    <h3>Entailments</h3>
-    <ul>
-    {% for mtype, entailment_list in results.entailments.items() %}
-        <li><strong>{{ mtype }}:</strong> {{ entailment_list | join(', ') }}</li>
-    {% endfor %}
-    </ul>
-
     {% if results.clinical_rephrasings %}
     <h3>Clinical Insights</h3>
     <div>
       {% for mtype, info in results.clinical_rephrasings.items() %}
         <div class="clinical-card">
           <h4>Metaphor Type: <em>{{ mtype }}</em></h4>
-          <p><strong>Rephrased:</strong> {{ info.rephrased }}</p>
-          <p><strong>Likely Mechanism:</strong> {{ info.mechanism }}</p>
-          <p><strong>Clinical Term:</strong> {{ info.clinical_term }}</p>
-          <p><strong>Lit-Aligned Framing:</strong> {{ info.research_framing }}</p>
+          <p><strong>Patient-Friendly:</strong> {{ info.patient_friendly }}</p>
+          <p><strong>Likely Mechanism:</strong> {{ info.likely_mechanism }}</p>
+          <p><strong>Clinical Terms:</strong> {{ info.clinical_terms | join(', ') }}</p>
+          <p><strong>Literature Framing:</strong> {{ info.literature_framing }}</p>
         </div>
       {% endfor %}
     </div>
     {% endif %}
+
+    <button class="toggle-button" onclick="toggleTechnical()">Toggle Technical Details</button>
+    <div id="technical" class="technical">
+      <h3>Matches by Metaphor Type</h3>
+      <ul>
+      {% for mtype, matches in results.matches.items() %}
+          <li><strong>{{ mtype }}:</strong> matched: {{ matches | join(', ') }}</li>
+      {% endfor %}
+      </ul>
+
+      <h3>Entailments</h3>
+      <ul>
+      {% for mtype, entailment_list in results.entailments.items() %}
+          <li><strong>{{ mtype }}:</strong> {{ entailment_list | join(', ') }}</li>
+      {% endfor %}
+      </ul>
+    </div>
 
     <div class="action-buttons">
       <button onclick="window.print()">🖨️ Print</button>
@@ -132,8 +216,12 @@
       link.download = "translated_pain_report.txt";
       link.click();
     }
+
+    function toggleTechnical() {
+      const tech = document.getElementById("technical");
+      tech.style.display = tech.style.display === "none" ? "block" : "none";
+    }
   </script>
+
 </body>
 </html>
-<!-- This is the main HTML template for the Translate My Pain application.
-     It includes a form for user input, displays results, and provides options to print or download the report. -->

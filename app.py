@@ -36,7 +36,8 @@ def detect_metaphors(text):
     graduation_only = []
 
     for mtype, data in taxonomy.items():
-        if mtype == "graduation_modifiers":
+        # Skip non-dict entries like "graduation_modifiers"
+        if not isinstance(data, dict):
             continue
 
         expressions = data.get("expressions", [])
@@ -61,6 +62,7 @@ def detect_metaphors(text):
         "dimensions": sorted(dimensions),
         "graduation_only": graduation_only
     }
+
 
 
 def detect_context(text):

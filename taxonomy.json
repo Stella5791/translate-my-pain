@@ -1,77 +1,232 @@
 {
   "violent_action": {
     "expressions": [
-      "stab", "stabbing", "punched", "beaten", "cut", "punch", "slashed", "knife", "sword",
-      "razor", "gutted", "shoved", "jammed", "hammered", "scraped", "smashed", "chainsaw"
+      "stab",
+      "stabbing",
+      "punched",
+      "beaten",
+      "cut",
+      "punch",
+      "slashed",
+      "knife",
+      "sword",
+      "razor",
+      "gutted",
+      "shoved",
+      "jammed",
+      "hammered",
+      "scraped",
+      "smashed",
+      "chainsaw"
     ],
     "entailments": [
-      "attack", "sharp", "violence", "brutality", "shock", "terror"
+      "attack",
+      "sharp",
+      "violence",
+      "brutality",
+      "shock",
+      "terror"
     ],
-    "dimensions": ["physical", "aggressive"]
+    "dimensions": [
+      "physical",
+      "aggressive"
+    ]
   },
   "mechanical_metal": {
     "expressions": [
-      "gear", "machine", "metal", "grinding", "cogs", "screws", "vice grips", "mechanical",
-      "rod", "skewer", "sharp metal", "iron bar", "chainsaw"
+      "gear",
+      "machine",
+      "metal",
+      "grinding",
+      "cogs",
+      "screws",
+      "vice grips",
+      "mechanical",
+      "rod",
+      "skewer",
+      "sharp metal",
+      "iron bar",
+      "chainsaw"
     ],
-    "entailments": ["metallic", "friction", "mechanical"],
-    "dimensions": ["invasive", "industrial"]
+    "entailments": [
+      "metallic",
+      "friction",
+      "mechanical"
+    ],
+    "dimensions": [
+      "invasive",
+      "industrial"
+    ]
   },
   "tearing_ripping": {
     "expressions": [
-      "rip", "ripping", "torn", "tear", "burst", "split", "shredded", "flayed", "rupture",
-      "breaking", "exploding", "unravelling", "twisting"
+      "rip",
+      "ripping",
+      "torn",
+      "tear",
+      "burst",
+      "split",
+      "shredded",
+      "flayed",
+      "rupture",
+      "breaking",
+      "exploding",
+      "unravelling",
+      "twisting"
     ],
-    "entailments": ["break", "separate", "destroy"],
-    "dimensions": ["disruption", "acute"]
+    "entailments": [
+      "break",
+      "separate",
+      "destroy"
+    ],
+    "dimensions": [
+      "disruption",
+      "acute"
+    ]
   },
   "constriction_pressure": {
     "expressions": [
-      "squeezed", "tight", "crushed", "pressure", "vice", "panini press", "coiled", "wrapped",
-      "strangled", "bound", "binding", "weighed down", "compressed", "twisting"
+      "squeezed",
+      "tight",
+      "crushed",
+      "pressure",
+      "vice",
+      "panini press",
+      "coiled",
+      "wrapped",
+      "strangled",
+      "bound",
+      "binding",
+      "weighed down",
+      "compressed",
+      "twisting"
     ],
-    "entailments": ["constriction", "tightness"],
-    "dimensions": ["mechanical", "internal"]
+    "entailments": [
+      "constriction",
+      "tightness"
+    ],
+    "dimensions": [
+      "mechanical",
+      "internal"
+    ]
   },
   "disintegration": {
     "expressions": [
-      "falling apart", "unravelling", "breaking down", "pieces", "fragmenting", "shattered",
-      "dissolving", "dumped back", "pile of rubbish"
+      "falling apart",
+      "unravelling",
+      "breaking down",
+      "pieces",
+      "fragmenting",
+      "shattered",
+      "dissolving",
+      "dumped back",
+      "pile of rubbish",
+      "rubbish"
     ],
     "entailments": [
-      "collapse", "loss", "decay", "shame", "dehumanization", "loss of identity"
+      "collapse",
+      "loss",
+      "decay",
+      "shame",
+      "dehumanization",
+      "loss of identity"
     ],
-    "dimensions": ["existential", "psychological"]
+    "dimensions": [
+      "existential",
+      "psychological"
+    ]
   },
   "birth_labour": {
     "expressions": [
-      "labour", "giving birth", "contractions", "crowning", "childbirth", "pushing",
-      "delivering", "baby", "pregnant", "9 months", "dilating", "giving birth to my poo"
+      "labour",
+      "giving birth",
+      "contractions",
+      "crowning",
+      "childbirth",
+      "pushing",
+      "delivering",
+      "baby",
+      "pregnant",
+      "9 months",
+      "dilating",
+      "giving birth to my poo"
     ],
-    "entailments": ["repetition", "strain", "cycle"],
-    "dimensions": ["reproductive", "physiological"]
+    "entailments": [
+      "repetition",
+      "strain",
+      "cycle"
+    ],
+    "dimensions": [
+      "reproductive",
+      "physiological"
+    ]
   },
   "monster": {
     "expressions": [
-      "monster", "snoring", "lurking", "sleeping monster", "could wake up"
+      "monster",
+      "snoring",
+      "lurking",
+      "sleeping monster",
+      "could wake up"
     ],
     "entailments": [
-      "invasion", "presence", "agency", "fear", "helplessness", "violation",
-      "hypervigilance", "anticipation", "relapse anxiety", "loss of autonomy", "threat of return"
+      "invasion",
+      "presence",
+      "agency",
+      "fear",
+      "helplessness",
+      "violation",
+      "hypervigilance",
+      "anticipation",
+      "relapse anxiety",
+      "loss of autonomy",
+      "threat of return"
     ],
-    "dimensions": ["imagery", "threat"]
+    "dimensions": [
+      "imagery",
+      "threat"
+    ]
   },
   "background_pain": {
     "expressions": [
-      "dull ache", "simmering ache", "constant ache", "background pain"
+      "dull ache",
+      "simmering ache",
+      "constant ache",
+      "background pain",
+      "simmering",
+      "ache"
     ],
     "entailments": [
-      "persistent discomfort", "chronic burden", "nerve irritation"
+      "persistent discomfort",
+      "chronic burden",
+      "nerve irritation"
     ],
-    "dimensions": ["chronic", "neuropathic"]
+    "dimensions": [
+      "chronic",
+      "neuropathic"
+    ]
   },
+  "life_impact_clues": [
+    "dominates my life",
+    "affects everything",
+    "can't function",
+    "miss work",
+    "miss school",
+    "can\u2019t do anything"
+  ],
   "graduation_modifiers": [
-    "crippling", "overwhelming", "unbearable", "severe", "agonising", "intense",
-    "constant", "repeated", "permanent", "sporadic", "persistent", "sharp", "extreme"
+    "crippling",
+    "overwhelming",
+    "unbearable",
+    "severe",
+    "agonising",
+    "intense",
+    "constant",
+    "repeated",
+    "permanent",
+    "sporadic",
+    "persistent",
+    "sharp",
+    "extreme"
   ]
 }

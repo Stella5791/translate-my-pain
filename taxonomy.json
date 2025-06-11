@@ -112,53 +112,45 @@
   },
   "disintegration": {
     "expressions": [
+      "dumped",
+      "like rubbish",
       "falling apart",
-      "unravelling",
-      "breaking down",
-      "pieces",
-      "fragmenting",
       "shattered",
-      "dissolving",
-      "dumped back",
-      "pile of rubbish",
-      "rubbish"
-    ],
-    "entailments": [
-      "collapse",
-      "loss",
-      "decay",
-      "shame",
-      "dehumanization",
-      "loss of identity"
+      "scattered pieces",
+      "broken",
+      "waste",
+      "ruined",
+      "emptied out"
     ],
     "dimensions": [
-      "existential",
-      "psychological"
+      "affective",
+      "identity",
+      "emotional"
+    ],
+    "entailments": [
+      "sense of emotional fragmentation",
+      "loss of personal integrity or control"
     ]
   },
   "birth_labour": {
     "expressions": [
-      "labour",
       "giving birth",
-      "contractions",
-      "crowning",
-      "childbirth",
-      "pushing",
-      "delivering",
-      "baby",
-      "pregnant",
-      "9 months",
-      "dilating",
-      "giving birth to my poo"
-    ],
-    "entailments": [
-      "repetition",
-      "strain",
-      "cycle"
+      "labour pain",
+      "like contractions",
+      "like childbirth",
+      "pushing something out",
+      "birthing pain",
+      "labor-like pain"
     ],
     "dimensions": [
-      "reproductive",
-      "physiological"
+      "acute",
+      "internal",
+      "mechanical"
+    ],
+    "entailments": [
+      "severe lower abdominal pain",
+      "bearing down or pressure sensations",
+      "intensifies during straining or toilet use"
     ]
   },
   "monster": {
@@ -190,20 +182,21 @@
   "background_pain": {
     "expressions": [
       "dull ache",
-      "simmering ache",
+      "simmering pain",
       "constant ache",
       "background pain",
-      "simmering",
-      "ache"
-    ],
-    "entailments": [
-      "persistent discomfort",
-      "chronic burden",
-      "nerve irritation"
+      "low-grade pain",
+      "a whisper of pain",
+      "persistent discomfort"
     ],
     "dimensions": [
       "chronic",
-      "neuropathic"
+      "nerve",
+      "internal"
+    ],
+    "entailments": [
+      "constant background pain not tied to specific events",
+      "may reflect central sensitization or nerve irritation"
     ]
   },
   "life_impact_clues": [
@@ -212,7 +205,7 @@
     "can't function",
     "miss work",
     "miss school",
-    "can\u2019t do anything"
+    "can’t do anything"
   ],
   "graduation_modifiers": [
     "crippling",
@@ -228,5 +221,38 @@
     "persistent",
     "sharp",
     "extreme"
-  ]
+  ],
+  "lurking_threat": {
+    "expressions": [
+      "snore of a monster",
+      "something lurking",
+      "waiting to strike",
+      "anxiety it will return",
+      "something under the surface"
+    ],
+    "dimensions": [
+      "affective",
+      "anticipation",
+      "threat"
+    ],
+    "entailments": [
+      "chronic alertness or fear of recurrence",
+      "affective burden from anticipated flare-ups"
+    ]
+  },
+  "mechanical_damage": {
+    "expressions": [
+      "chainsaw",
+      "cutting machine",
+      "buzzing blade"
+    ],
+    "dimensions": [
+      "mechanical",
+      "acute"
+    ],
+    "entailments": [
+      "sharp invasive pain resembling tools or machinery",
+      "disruption or tearing of internal structures"
+    ]
+  }
 }

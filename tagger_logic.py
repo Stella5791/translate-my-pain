@@ -1,93 +1,100 @@
 import json
 import re
+from itertools import tee
 from nltk.stem import PorterStemmer
 
-# Load taxonomy
+# === Load Taxonomy and Clinical Rephrasings ===
+
 with open("taxonomy.json", "r", encoding="utf-8") as f:
     taxonomy = json.load(f)
 
-# Load clinical rephrasings
 with open("clinical_map.json", "r", encoding="utf-8") as f:
     clinical_map = json.load(f)
 
-# Separate metaphor types from graduation modifiers
-metaphor_types = {k: v for k, v in taxonomy.items()
-                  if k not in ["graduation_modifiers", "life_impact_clues"]}
+metaphor_types = {k: v for k, v in taxonomy.items() if k !=
+                  "graduation_modifiers"}
 graduation_modifiers = taxonomy.get("graduation_modifiers", [])
-life_impact_clues = taxonomy.get("life_impact_clues", [])
 
 stemmer = PorterStemmer()
 
-
-def normalize_token(token):
-    return re.sub(r"[^\w\s]", "", token.lower().strip())
+# === Token Normalization and N-gram Generation ===
 
 
-def generate_ngrams(tokens, min_len=2, max_len=5):
+def normalize_text(text):
+    text = text.lower()
+    text = re.sub(r"[^\w\s]", "", text)
+    text = re.sub(r"\s+", " ", text)
+    return text.strip().split()
+
+
+def generate_ngrams(tokens, n=3):
+    def window(seq, n):
+        iters = tee(seq, n)
+        for i, it in enumerate(iters):
+            for _ in range(i):
+                next(it, None)
+        return zip(*iters)
+
     ngrams = []
-    for n in range(min_len, max_len + 1):
-        ngrams.extend([" ".join(tokens[i:i+n])
-                      for i in range(len(tokens)-n+1)])
+    for i in range(1, n + 1):
+        for gram in window(tokens, i):
+            ngrams.append(" ".join(gram))
     return ngrams
 
 
-def detect_metaphors(text):
-    matches = {}
-    entailments = {}
-    metaphor_types_found = set()
-    dimensions = set()
-    graduation = []
-    life_impact = []
+def stem_list(phrases):
+    return [" ".join(stemmer.stem(w) for w in phrase.split()) for phrase in phrases]
 
-    raw_text = text.lower()
-    tokens = [normalize_token(t) for t in re.split(r"[^\w']+", raw_text)]
-    tokens = [t for t in tokens if t]
-    ngrams = generate_ngrams(tokens)
+# === Contextual Triggers (Life Impact) ===
 
-    for mtype, meta in metaphor_types.items():
-        expressions = meta.get("expressions", [])
-        matched = []
 
-        for expr in expressions:
-            expr_norm = normalize_token(expr)
-            if expr_norm in tokens or expr_norm in ngrams or expr_norm in raw_text:
-                matched.append(expr)
+triggers = [
+    "intercourse", "sex", "penetration", "menstruation", "period", "ovulate", "ovulation",
+    "going to the toilet", "urinate", "bowel movement", "defecate", "poop", "wee", "pee",
+    "daily life", "getting up", "moving", "walking", "stand", "sit", "sleep", "breathe", "eat"
+]
 
-        if matched:
-            matches[mtype] = matched
-            metaphor_types_found.add(mtype)
-            entailments[mtype] = meta.get("entailments", [])
-            dimensions.update(meta.get("dimensions", []))
 
-    for grad in graduation_modifiers:
-        if normalize_token(grad) in tokens:
-            graduation.append(grad)
+def detect_context(text):
+    return sorted([t for t in triggers if t in text])
 
-    for clue in life_impact_clues:
-        if normalize_token(clue) in raw_text:
-            life_impact.append(clue)
-
-    return {
-        "matches": matches,
-        "entailments": entailments,
-        "metaphor_types": list(metaphor_types_found),
-        "dimensions": list(dimensions),
-        "graduation": graduation,
-        "life_impact": life_impact
-    }
+# === Main Function ===
 
 
 def tag_pain_description(text):
     text_lower = text.lower()
-    result = detect_metaphors(text_lower)
+    tokens = normalize_text(text_lower)
+    all_phrases = generate_ngrams(tokens)
+    stemmed_phrases = stem_list(all_phrases)
 
-    # Add clinical rephrasings
-    if result["metaphor_types"]:
-        clinical_rephrasings = {
-            mtype: clinical_map.get(mtype, {})
-            for mtype in result["metaphor_types"]
-        }
-    elif result["graduation"]:
+    matches = {}
+    entailments = {}
+    dimensions = set()
+    graduation_only = []
+
+    # === Match metaphor expressions ===
+    for mtype, data in metaphor_types.items():
+        expressions = data.get("expressions", [])
+        stemmed_expr = stem_list(expressions)
+
+        matched = [expr for expr, stemmed in zip(
+            expressions, stemmed_expr) if stemmed in stemmed_phrases]
+        if matched:
+            matches[mtype] = matched
+            entailments[mtype] = data.get("entailments", [])
+            dimensions.update(data.get("dimensions", []))
+
+    # === Match standalone graduation modifiers (if no metaphors matched) ===
+    if not matches:
+        stemmed_grads = stem_list(graduation_modifiers)
+        graduation_only = [word for word, s in zip(
+            graduation_modifiers, stemmed_grads) if s in stemmed_phrases]
+
+    # === Clinical Rephrasings ===
+    if matches:
+        clinical_rephrasings = {mtype: clinical_map.get(
+            mtype, {}) for mtype in matches}
+    elif graduation_only:
         clinical_rephrasings = {
             "graduation_modifiers": {
                 "patient_friendly": "Strong, overwhelming descriptors used to convey extreme distress.",
@@ -101,24 +108,11 @@ def tag_pain_description(text):
 
     return {
         "input": text,
-        "dimensions": sorted(result["dimensions"]),
-        "metaphor_types": result["metaphor_types"],
-        "matches": result["matches"],
-        "entailments": result["entailments"],
-        "graduation_only": result["graduation"] if not result["metaphor_types"] else [],
+        "dimensions": sorted(dimensions),
+        "metaphor_types": list(matches.keys()),
+        "matches": matches,
+        "entailments": entailments,
+        "graduation_only": graduation_only if not matches else [],
         "impact_context": detect_context(text_lower),
-        "life_impact": result["life_impact"],
         "clinical_rephrasings": clinical_rephrasings
     }
-
-
-# Pain context clues (e.g., activity-related triggers)
-triggers = [
-    "intercourse", "sex", "penetration", "menstruation", "period", "ovulate", "ovulation",
-    "going to the toilet", "urinate", "bowel movement", "defecate", "poop", "wee", "pee",
-    "daily life", "getting up", "moving", "walking", "stand", "sit", "sleep", "breathe", "eat"
-]
-
-
-def detect_context(text_lower):
-    return sorted([t for t in triggers if t in text_lower])

@@ -4,42 +4,95 @@
   <meta charset="UTF-8">
   <title>Translated Pain Report</title>
   <style>
-    body { font-family: sans-serif; font-size: 14px; padding: 2rem; }
-    h1 { color: #333366; }
-    h2, h3 { margin-top: 1.5rem; color: #444; }
-    .block { margin-bottom: 1rem; }
-    .meta-block { border: 1px solid #aaa; padding: 1rem; margin-bottom: 1rem; border-radius: 6px; }
+    body {
+      font-family: sans-serif;
+      font-size: 14px;
+      padding: 2rem;
+      color: #222;
+    }
+
+    h1 {
+      color: #333366;
+    }
+
+    h2, h3 {
+      margin-top: 1.5rem;
+      color: #444;
+    }
+
+    .meta-block {
+      border: 1px solid #aaa;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      background-color: #f9f9f9;
+    }
   </style>
 </head>
 <body>
+
   <h1>Translate My Pain – Clinical Report</h1>
+
   <p><strong>Input:</strong> {{ results.input }}</p>
-  <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
-  <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
 
-  <h2>Matched Descriptors</h2>
-  <ul>
-  {% for mtype, matches in results.matches.items() %}
-      <li><strong>{{ mtype }}:</strong> {{ matches | join(', ') }}</li>
-  {% endfor %}
-  </ul>
+  {% if results.dimensions %}
+    <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
+  {% endif %}
 
-  <h2>Entailments</h2>
-  <ul>
-  {% for mtype, entailment_list in results.entailments.items() %}
-      <li><strong>{{ mtype }}:</strong> {{ entailment_list | join(', ') }}</li>
-  {% endfor %}
-  </ul>
+  {% if results.metaphor_types %}
+    <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
+  {% endif %}
 
-  <h2>Clinical Interpretations</h2>
-  {% for mtype, info in results.clinical_rephrasings.items() %}
-    <div class="meta-block">
-      <h3>{{ mtype }}</h3>
-      <p><strong>Rephrased:</strong> {{ info.rephrased }}</p>
-      <p><strong>Likely Mechanism:</strong> {{ info.mechanism }}</p>
-      <p><strong>Clinical Term:</strong> {{ info.clinical_term }}</p>
-      <p><strong>Lit-Aligned Framing:</strong> {{ info.research_framing }}</p>
-    </div>
-  {% endfor %}
+  {% if results.impact_context %}
+    <h2>Pain Triggers & Life Impact Context</h2>
+    <ul>
+      {% for item in results.impact_context %}
+        <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if results.graduation_only %}
+    <h2>Intensity / Impact Clues</h2>
+    <ul>
+      {% for word in results.graduation_only %}
+        <li>{{ word }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if results.matches %}
+    <h2>Matched Metaphors</h2>
+    <ul>
+      {% for mtype, match_list in results.matches.items() %}
+        <li><strong>{{ mtype }}:</strong> {{ match_list | join(', ') }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if results.entailments %}
+    <h2>Entailments</h2>
+    <ul>
+      {% for mtype, entailment_list in results.entailments.items() %}
+        <li><strong>{{ mtype }}:</strong> {{ entailment_list | join(', ') }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if results.clinical_rephrasings %}
+    <h2>Clinical Interpretations</h2>
+    {% for mtype, info in results.clinical_rephrasings.items() %}
+      <div class="meta-block">
+        <h3>{{ mtype }}</h3>
+        <p><strong>Patient-Friendly:</strong> {{ info.patient_friendly }}</p>
+        <p><strong>Likely Mechanism:</strong> {{ info.likely_mechanism }}</p>
+        <p><strong>Clinical Terms:</strong> {{ info.clinical_terms | join(', ') }}</p>
+        {% if info.literature_framing %}
+          <p><strong>Literature Framing:</strong> {{ info.literature_framing }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% endif %}
+
 </body>
 </html>

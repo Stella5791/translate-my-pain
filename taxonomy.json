@@ -1,47 +1,77 @@
 {
-  "violent_action": [
-    "stab", "stabbing", "punched", "beaten", "cut", "punch", "slashed", "knife", "sword", "razor", "gutted", "shoved", "jammed", "hammered", "scraped", "smashed"
-  ],
-  "heat_fire": [
-    "burn", "burning", "blazing", "on fire", "scorch", "hot poker", "boiling", "furnace", "molten", "heat", "fiery", "hot coal"
-  ],
-  "constriction_pressure": [
-    "squeezed", "tight", "crushed", "pressure", "vice", "panini press", "coiled", "wrapped", "strangled", "bound", "binding", "weighed down", "compressed"
-  ],
-  "tearing_ripping": [
-    "rip", "ripping", "torn", "tear", "burst", "split", "shredded", "flayed", "rupture", "breaking", "exploding", "unravelling"
-  ],
-  "mechanical_metal": [
-    "gear", "machine", "metal", "grinding", "cogs", "screws", "vice grips", "mechanical", "rod", "skewer", "sharp metal", "iron bar"
-  ],
-  "weight_blockage": [
-    "heavy", "balloon", "weight", "block", "stone", "elephant", "burden", "dragging", "pulling down", "carrying something", "bloated", "bearing down", "anchor"
-  ],
-  "explosive": [
-    "explode", "burst", "detonate", "about to blow", "ticking", "bomb", "blast", "going to pop", "burst open", "eruption"
-  ],
-  "animal_invader": [
-    "claws", "biting", "scratching", "gnawing", "chewing", "spiders", "rat", "hedgehog", "wasps", "insects", "creature", "beast", "demon"
-  ],
-  "electric_force": [
-    "electric", "shock", "tingling", "buzzing", "zapping", "pulsing", "lightning", "jolt", "spasm", "twitch", "shooting"
-  ],
-  "pulling_tugging": [
-    "pulling", "tugging", "yanking", "dragging", "gripping", "drawn", "snatched", "jerking", "ripped from"
-  ],
-  "foreign_object": [
-    "foreign", "stuck", "implanted", "inserted", "object inside", "alien", "intruder", "coathanger", "knitting needle", "barbed wire", "glass", "shards"
-  ],
-  "natural_disaster": [
-    "storm", "waves", "tsunami", "earthquake", "tornado", "explosion", "eruption", "lightning", "weather", "flood"
-  ],
-  "birth_labour": [
-    "labour", "giving birth", "contractions", "crowning", "childbirth", "pushing", "delivering", "baby", "pregnant", "9 months", "dilating"
-  ],
-  "disintegration": [
-    "falling apart", "unravelling", "breaking down", "pieces", "fragmenting", "shattered", "dissolving"
-  ],
+  "violent_action": {
+    "expressions": [
+      "stab", "stabbing", "punched", "beaten", "cut", "punch", "slashed", "knife", "sword",
+      "razor", "gutted", "shoved", "jammed", "hammered", "scraped", "smashed", "chainsaw"
+    ],
+    "entailments": [
+      "attack", "sharp", "violence", "brutality", "shock", "terror"
+    ],
+    "dimensions": ["physical", "aggressive"]
+  },
+  "mechanical_metal": {
+    "expressions": [
+      "gear", "machine", "metal", "grinding", "cogs", "screws", "vice grips", "mechanical",
+      "rod", "skewer", "sharp metal", "iron bar", "chainsaw"
+    ],
+    "entailments": ["metallic", "friction", "mechanical"],
+    "dimensions": ["invasive", "industrial"]
+  },
+  "tearing_ripping": {
+    "expressions": [
+      "rip", "ripping", "torn", "tear", "burst", "split", "shredded", "flayed", "rupture",
+      "breaking", "exploding", "unravelling", "twisting"
+    ],
+    "entailments": ["break", "separate", "destroy"],
+    "dimensions": ["disruption", "acute"]
+  },
+  "constriction_pressure": {
+    "expressions": [
+      "squeezed", "tight", "crushed", "pressure", "vice", "panini press", "coiled", "wrapped",
+      "strangled", "bound", "binding", "weighed down", "compressed", "twisting"
+    ],
+    "entailments": ["constriction", "tightness"],
+    "dimensions": ["mechanical", "internal"]
+  },
+  "disintegration": {
+    "expressions": [
+      "falling apart", "unravelling", "breaking down", "pieces", "fragmenting", "shattered",
+      "dissolving", "dumped back", "pile of rubbish"
+    ],
+    "entailments": [
+      "collapse", "loss", "decay", "shame", "dehumanization", "loss of identity"
+    ],
+    "dimensions": ["existential", "psychological"]
+  },
+  "birth_labour": {
+    "expressions": [
+      "labour", "giving birth", "contractions", "crowning", "childbirth", "pushing",
+      "delivering", "baby", "pregnant", "9 months", "dilating", "giving birth to my poo"
+    ],
+    "entailments": ["repetition", "strain", "cycle"],
+    "dimensions": ["reproductive", "physiological"]
+  },
+  "monster": {
+    "expressions": [
+      "monster", "snoring", "lurking", "sleeping monster", "could wake up"
+    ],
+    "entailments": [
+      "invasion", "presence", "agency", "fear", "helplessness", "violation",
+      "hypervigilance", "anticipation", "relapse anxiety", "loss of autonomy", "threat of return"
+    ],
+    "dimensions": ["imagery", "threat"]
+  },
+  "background_pain": {
+    "expressions": [
+      "dull ache", "simmering ache", "constant ache", "background pain"
+    ],
+    "entailments": [
+      "persistent discomfort", "chronic burden", "nerve irritation"
+    ],
+    "dimensions": ["chronic", "neuropathic"]
+  },
   "graduation_modifiers": [
-    "crippling", "overwhelming", "unbearable", "severe", "agonising", "intense", "constant", "repeated", "permanent", "sporadic", "persistent", "sharp", "extreme"
+    "crippling", "overwhelming", "unbearable", "severe", "agonising", "intense",
+    "constant", "repeated", "permanent", "sporadic", "persistent", "sharp", "extreme"
   ]
 }

@@ -1,62 +1,91 @@
 {
-  "heat_fire": {
-    "patient_friendly": "Pain that feels like intense burning, radiating heat, or a sensation of fire inside the body.",
-    "likely_mechanism": "Neurogenic inflammation or sensitization of peripheral nerves causing thermal hyperalgesia.",
-    "clinical_terms": ["thermal pain", "burning sensation", "neuropathic pain"],
-    "literature_framing": "Patients with endometriosis often describe a burning or fire-like pain, associated with nociplastic pain and inflammatory cytokines (Fraser et al., 2018; Taylor et al., 2020)."
-  },
-  "electric_force": {
-    "patient_friendly": "Pain that feels like electric shocks, jolts, or zapping currents shooting through the body.",
-    "likely_mechanism": "Abnormal nerve firing or central sensitization leading to paroxysmal neuropathic discharges.",
-    "clinical_terms": ["neuropathic pain", "electrical sensation", "paresthesia"],
-    "literature_framing": "Electric-like sensations may be indicative of nerve involvement in endometriosis, including referred neuropathic pain (Stratton & Berkley, 2011; As-Sanie et al., 2019)."
-  },
-  "pressure_weight": {
-    "patient_friendly": "Pain that feels like heaviness, compression, or being weighed down in the pelvic area.",
-    "likely_mechanism": "Pelvic congestion, inflammation, or mass effect from lesions or adhesions.",
-    "clinical_terms": ["pelvic pressure", "congestive pain", "visceral hypersensitivity"],
-    "literature_framing": "Feelings of pressure or heaviness may align with reports of pelvic congestion and visceral sensitivity (Giudice & Kao, 2004; Vercellini et al., 2014)."
-  },
   "violent_action": {
-    "patient_friendly": "Pain described as stabbing, cutting, punching, or being physically attacked from inside.",
-    "likely_mechanism": "Peripheral nerve activation due to inflammation or mechanical damage to pelvic structures.",
-    "clinical_terms": ["sharp pain", "nociceptive pain", "acute pelvic pain"],
-    "literature_framing": "Descriptions of violent, sharp internal pain often reflect acute nociceptive pain associated with active endometrial lesions (Bullo et al., 2021; Zondervan et al., 2018)."
+    "patient_friendly": "Pain that feels like being attacked or assaulted, often sharp, violent, and abrupt.",
+    "likely_mechanism": "Sudden flare-up, lesion rupture, nerve activation due to strain or inflammation.",
+    "clinical_terms": [
+      "acute trauma", "neuropathic flare", "adhesion rupture"
+    ],
+    "literature_framing": "Violent metaphors reflect the sensory intensity and emotional shock of pain flare-ups.",
+    "entailments": [
+      "attack", "sharp", "violence", "brutality", "shock", "terror"
+    ]
   },
-  "mechanical": {
-    "patient_friendly": "Pain that feels like grinding, screeching, or mechanical friction in the pelvis.",
-    "likely_mechanism": "Adhesions or fibrosis restricting organ movement or causing tissue traction.",
-    "clinical_terms": ["adhesive pain", "mechanical allodynia", "dyspareunia"],
-    "literature_framing": "Grinding or gear-like sensations may reflect mechanical strain caused by adhesions or fibrotic changes (Nezhat et al., 2012)."
+  "mechanical_metal": {
+    "patient_friendly": "Pain that feels mechanical, metallic, or like being gripped by cold, hard instruments.",
+    "likely_mechanism": "Pelvic structural pressure, adhesions, or deep tissue strain.",
+    "clinical_terms": [
+      "deep pelvic pain", "visceral hypersensitivity", "adhesion-related tension"
+    ],
+    "literature_framing": "Patients often describe pain with cold, industrial metaphors when it feels impersonal or invasive.",
+    "entailments": [
+      "metallic", "friction", "mechanical"
+    ]
   },
-  "natural_force": {
-    "patient_friendly": "Pain that feels like storms, waves, earthquakes, or tsunamis moving inside the body.",
-    "likely_mechanism": "Systemic dysregulation of pain pathways, hormonal surges, and muscle contractions.",
-    "clinical_terms": ["visceral pain", "hormonal dysregulation", "cyclical pain"],
-    "literature_framing": "Natural disaster metaphors are linked to patients' perceptions of unpredictability and uncontrollability of symptoms (Bullo, 2020)."
+  "tearing_ripping": {
+    "patient_friendly": "Pain that feels like something is ripping, tearing, or breaking internally.",
+    "likely_mechanism": "Stretching of lesions, tissue rupture, or myofascial strain.",
+    "clinical_terms": [
+      "acute lesion tension", "muscle tearing", "adhesion disruption"
+    ],
+    "literature_framing": "Ripping metaphors are often used to describe endometriotic flare-ups and lesion-related trauma.",
+    "entailments": [
+      "break", "separate", "destroy"
+    ]
   },
-  "foreign_object": {
-    "patient_friendly": "Pain that feels like something sharp or foreign is inside, like knives or glass.",
-    "likely_mechanism": "Lesions or adhesions causing tissue penetration, inflammation, or nerve irritation.",
-    "clinical_terms": ["penetrating pain", "foreign body sensation", "localized tenderness"],
-    "literature_framing": "Foreign object imagery correlates with descriptions of invasive pain from nodules or deep endometriosis (Chapron et al., 2019)."
+  "constriction_pressure": {
+    "patient_friendly": "Pain that feels like being squeezed, compressed, or bound tightly from within.",
+    "likely_mechanism": "Pelvic floor dysfunction, visceral pressure, or compressive adhesions.",
+    "clinical_terms": [
+      "pelvic floor tension", "visceral compression", "myofascial pain"
+    ],
+    "literature_framing": "Constrictive metaphors reflect somatic tightening and pressure sensations commonly reported in pelvic conditions.",
+    "entailments": [
+      "constriction", "tightness"
+    ]
+  },
+  "disintegration": {
+    "patient_friendly": "Pain that makes you feel like you're falling apart, breaking, or dissolving.",
+    "likely_mechanism": "Cognitive and emotional overload, combined with chronic pain-related fatigue.",
+    "clinical_terms": [
+      "emotional exhaustion", "pain catastrophizing", "chronic stress response"
+    ],
+    "literature_framing": "Disintegration metaphors are strongly linked to patient narratives of identity loss and invisibility in chronic illness.",
+    "entailments": [
+      "collapse", "loss", "decay", "shame", "dehumanization", "loss of identity"
+    ]
+  },
+  "birth_labour": {
+    "patient_friendly": "Pain that feels like intense reproductive strain, labour-like contractions, or pushing sensations.",
+    "likely_mechanism": "Uterine contractions, visceral referred pain, endometrial inflammation.",
+    "clinical_terms": [
+      "dysmenorrhea", "pelvic organ strain", "visceral referred pain"
+    ],
+    "literature_framing": "Labour metaphors are often used to convey the intensity and cyclical nature of reproductive pain.",
+    "entailments": [
+      "repetition", "strain", "cycle"
+    ]
   },
   "monster": {
-    "patient_friendly": "Pain that feels like a lurking or attacking creature inside, waiting to strike.",
-    "likely_mechanism": "Chronic illness perception and emotional distress shaping pain experience.",
-    "clinical_terms": ["chronic pelvic pain", "catastrophizing", "central sensitization"],
-    "literature_framing": "Monster metaphors often embody fear and unpredictability, reinforcing the emotional impact of living with endometriosis (Bullo, 2020; Frank, 2013)."
+    "patient_friendly": "Pain that feels like a monstrous force, unpredictable and threatening, sometimes dormant but always looming.",
+    "likely_mechanism": "Chronic pain sensitization, central nervous system hypervigilance.",
+    "clinical_terms": [
+      "central sensitization", "anticipatory anxiety", "neuropathic pain"
+    ],
+    "literature_framing": "Personifying metaphors like 'monster' often reflect emotional coping, fear of relapse, and trauma history.",
+    "entailments": [
+      "invasion", "presence", "agency", "fear", "helplessness", "violation",
+      "hypervigilance", "anticipation", "relapse anxiety", "loss of autonomy", "threat of return"
+    ]
   },
-  "journey": {
-    "patient_friendly": "Pain described as being trapped, lost, or stuck on an endless path with no resolution.",
-    "likely_mechanism": "Psychological impact of diagnostic delay and chronicity on pain processing.",
-    "clinical_terms": ["diagnostic delay", "psychosomatic distress", "refractory pain"],
-    "literature_framing": "Journey metaphors express the protracted, uncertain medical experience common among endometriosis patients (Ballweg, 2004; Denny, 2009)."
-  },
-  "other": {
-    "patient_friendly": "Pain that feels indescribable, strange, or like something is wrong but hard to explain.",
-    "likely_mechanism": "Mixed pain signals, emotional distress, or underarticulated sensory experience.",
-    "clinical_terms": ["idiopathic pain", "subjective discomfort", "unclassified symptom"],
-    "literature_framing": "Vague or ineffable pain descriptions often highlight language limits and the isolating experience of invisible illness (Scarry, 1985)."
+  "background_pain": {
+    "patient_friendly": "A dull, constant ache that persists in the background and wears you down over time.",
+    "likely_mechanism": "Ongoing low-level nerve activity or chronic inflammatory signaling.",
+    "clinical_terms": [
+      "persistent pain", "chronic discomfort", "neuropathic background activity"
+    ],
+    "literature_framing": "Chronic, background pain is often reported by patients with endometriosis or other conditions involving central sensitization.",
+    "entailments": [
+      "persistent discomfort", "chronic burden", "nerve irritation"
+    ]
   }
 }

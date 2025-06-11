@@ -1,103 +1,85 @@
-import re
 import json
-from nltk.stem import PorterStemmer
+import re
+import logging
+from nltk.tokenize import word_tokenize
+from nltk.util import ngrams
 
-# Load taxonomy
-with open("taxonomy.json", "r", encoding="utf-8") as f:
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Load taxonomy and rephrasings
+with open("taxonomy.json") as f:
     taxonomy = json.load(f)
 
-# Load clinical rephrasings
-with open("clinical_map.json", "r", encoding="utf-8") as f:
-    clinical_map = json.load(f)
+with open("rephrasings.json") as f:
+    rephrasings = json.load(f)
 
-# Separate metaphor types and graduation modifiers
-metaphor_types = {k: v for k, v in taxonomy.items(
-) if k not in ["graduation_modifiers", "life_impact_clues"]}
-graduation_modifiers = taxonomy.get("graduation_modifiers", [])
-life_impact_clues = taxonomy.get("life_impact_clues", [])
-
-stemmer = PorterStemmer()
+GRADUATION = taxonomy.get("graduation_modifiers", [])
+DELIMITERS = r"[^\w']+"
+TRIGGERS = taxonomy.get("triggers", [])
 
 
 def normalize_text(text):
     text = text.lower()
-    text = re.sub(r"[^\w\s]", "", text)  # Remove punctuation
-    return text.split()
+    text = re.sub(r"[^\w\s']", "", text)
+    return text
 
 
-def generate_ngrams(tokens, max_n=3):
-    ngrams = set()
+def generate_ngrams(tokens, max_n=4):
+    ngram_list = []
     for n in range(1, max_n + 1):
-        for i in range(len(tokens) - n + 1):
-            ngram = " ".join(tokens[i:i + n])
-            ngrams.add(ngram)
-    return ngrams
-
-
-def detect_context(text):
-    triggers = [
-        "intercourse", "sex", "penetration", "menstruation", "period", "ovulate", "ovulation",
-        "going to the toilet", "urinate", "bowel movement", "defecate", "poop", "wee", "pee",
-        "daily life", "getting up", "moving", "walking", "stand", "sit", "sleep", "breathe", "eat"
-    ]
-    return sorted([t for t in triggers if t in text])
-
-
-def detect_quality_of_life(text):
-    return [phrase for phrase in life_impact_clues if phrase in text]
+        ngram_list.extend([" ".join(gram) for gram in ngrams(tokens, n)])
+    return ngram_list
 
 
 def tag_pain_description(text):
-    text_clean = normalize_text(text)
-    ngrams = generate_ngrams(text_clean)
-    text_str = " ".join(text_clean)
+    logger.info("User input: %s", text)
 
-    matches = {}
-    entailments = {}
-    dimensions = set()
-    graduation_only = []
-    qol_impact = detect_quality_of_life(text_str)
+    normalized_text = normalize_text(text)
+    tokens = word_tokenize(normalized_text)
+    all_ngrams = generate_ngrams(tokens)
 
-    # Metaphor matching
-    for mtype, data in metaphor_types.items():
-        expressions = data.get("expressions", [])
-        matched = [expr for expr in expressions if expr.lower() in ngrams]
-        if matched:
-            matches[mtype] = matched
-            entailments[mtype] = data.get("entailments", [])
-            dimensions.update(data.get("dimensions", []))
+    detected = {
+        "metaphors": set(),
+        "dimensions": set(),
+        "triggers": set(),
+        "graduation": set()
+    }
 
-    # Graduation-only fallback
-    if not matches:
-        grad_matched = [
-            g for g in graduation_modifiers if g.lower() in text_str]
-        if grad_matched:
-            graduation_only = grad_matched
+    for category, items in taxonomy.get("metaphor_types", {}).items():
+        for expression in items:
+            if expression in all_ngrams:
+                detected["metaphors"].add(category)
 
-    # Clinical insights
-    if matches:
-        clinical_rephrasings = {mtype: clinical_map.get(
-            mtype, {}) for mtype in matches}
-    elif graduation_only:
-        clinical_rephrasings = {
-            "graduation_modifiers": {
-                "patient_friendly": "Strong, overwhelming descriptors used to convey extreme distress.",
-                "likely_mechanism": "Indicative of central sensitization or high pain interference.",
-                "clinical_terms": ["pain severity", "pain interference", "functional impact"],
-                "literature_framing": ""
-            }
-        }
-    else:
-        clinical_rephrasings = {}
+    for dimension, items in taxonomy.get("dimensions", {}).items():
+        for word in items:
+            if word in all_ngrams:
+                detected["dimensions"].add(dimension)
+
+    for trigger in TRIGGERS:
+        if trigger in normalized_text:
+            detected["triggers"].add(trigger)
+
+    for grad in GRADUATION:
+        if grad in normalized_text:
+            detected["graduation"].add(grad)
+
+    # Build clinical summaries
+    clinical = {}
+    for metaphor in detected["metaphors"]:
+        if metaphor in rephrasings:
+            clinical[metaphor] = rephrasings[metaphor]
 
     return {
-        "input": text,
-        "dimensions": sorted(dimensions),
-        "metaphor_types": list(matches.keys()),
-        "matches": matches,
-        "entailments": entailments,
-        "graduation_only": graduation_only if not matches else [],
-        "impact_context": detect_context(text_str),
-        "quality_of_life": qol_impact,
-        "clinical_rephrasings": clinical_rephrasings
+        "metaphors": list(detected["metaphors"]),
+        "dimensions": list(detected["dimensions"]),
+        "triggers": list(detected["triggers"]),
+        "graduation": list(detected["graduation"]),
+        "clinical": clinical
     }
+
+
+if __name__ == "__main__":
+    test_text = "It feels like a thousand knives are stabbing my uterus."
+    print(tag_pain_description(test_text))

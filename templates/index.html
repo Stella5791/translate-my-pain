@@ -35,15 +35,19 @@
       margin-bottom: 2rem;
     }
 
-    textarea {
+    input, textarea {
       width: 100%;
-      height: 100px;
       padding: 10px;
       font-size: 16px;
+      margin-bottom: 1rem;
       border: 1px solid var(--secondary);
     }
 
-    textarea:focus {
+    textarea {
+      height: 100px;
+    }
+
+    input:focus, textarea:focus {
       outline: none;
       box-shadow: 0 0 5px var(--primary);
     }
@@ -89,7 +93,9 @@
       background-color: #eaeaea;
       padding: 0.5em;
       cursor: pointer;
-      margin-bottom: 1em;
+      margin-top: 2em;
+      text-align: center;
+      border-radius: 5px;
     }
   </style>
 </head>
@@ -105,87 +111,63 @@
   </p>
 
   <form method="post">
-    <label for="description">Describe your pain:</label><br>
-    <textarea id="description" name="description" required placeholder="e.g. It feels like something is tearing me apart when I walk or sit..."></textarea><br>
+    <label for="name">Your name (optional):</label>
+    <input type="text" id="name" name="name" placeholder="e.g. Sam">
+
+    <label for="duration">How long have you had this pain? (optional):</label>
+    <input type="text" id="duration" name="duration" placeholder="e.g. 2 years, since my teens">
+
+    <label for="description">Describe your pain:</label>
+    <textarea id="description" name="description" required placeholder="e.g. It feels like something is tearing me apart when I walk or sit..."></textarea>
+
     <button type="submit">Translate</button>
   </form>
 
-  {% if results and results.input %}
+  {% if results %}
     <div class="results" id="output">
-      <div class="technical-toggle" onclick="toggleView()">Switch to Technical View</div>
-      <div data-view="empathetic">
-        <h2>Translation</h2>
-        <p><strong>Input:</strong> {{ results.input }}</p>
+      <h2>Translation</h2>
+      <p><strong>Input:</strong> {{ results.input }}</p>
 
-        {% if results.dimensions %}
-          <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
-        {% endif %}
+      <h3>🫂 How this might feel to you</h3>
+      <p>
+        This summary is based on the language you used. It tries to express your experience in clear, direct terms.
+        {% if results.user_info.name %}<br><strong>{{ results.user_info.name }}</strong>{% endif %}
+        {% if results.user_info.duration %}, you've been experiencing this for <strong>{{ results.user_info.duration }}</strong>{% endif %}.
+        <br><strong>Is this how your pain feels?</strong>
+      </p>
+      <ul>
+        {% for metaphor in results.clinical %}
+          <li>{{ results.clinical[metaphor].patient_friendly }}</li>
+        {% endfor %}
+      </ul>
 
-        {% if results.metaphor_types %}
-          <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
-        {% endif %}
+      <div class="technical-toggle" onclick="toggleDetails()">🔁 Show more details for doctors and researchers</div>
 
-        {% if results.impact_context %}
-          <h3>Pain Triggers & Life Impact Context</h3>
-          <ul>
-            {% for item in results.impact_context %}
-              <li>{{ item }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
+      <div id="technical-details" style="display: none;">
+        <h3>🩺 For your doctor</h3>
+        {% for metaphor, data in results.clinical.items() %}
+          <div class="clinical-card">
+            <h4>Metaphor Type: <em>{{ metaphor }}</em></h4>
+            <p><strong>Likely Mechanism:</strong> {{ data.likely_mechanism }}</p>
+            <p><strong>Clinical Terms:</strong> {{ data.clinical_terms | join(', ') }}</p>
+            <p><strong>Literature Framing:</strong> {{ data.literature_framing }}</p>
+          </div>
+        {% endfor %}
 
-        {% if results.graduation_only %}
-          <h3>Intensity/Impact Clues</h3>
-          <p>The following terms may indicate how much your pain interferes with your life:</p>
-          <ul>
-            {% for word in results.graduation_only %}
-              <li>{{ word }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
-
-        {% if results.clinical_rephrasings %}
-          <h3>Clinical Insights</h3>
-          {% for mtype, info in results.clinical_rephrasings.items() %}
-            <div class="clinical-card">
-              <h4>Metaphor Type: <em>{{ mtype }}</em></h4>
-              <p><strong>Patient-Friendly:</strong> {{ info.patient_friendly }}</p>
-              <p><strong>Likely Mechanism:</strong> {{ info.likely_mechanism }}</p>
-              <p><strong>Clinical Terms:</strong> {{ info.clinical_terms | join(', ') }}</p>
-              {% if info.literature_framing %}
-                <p><strong>Literature Framing:</strong> {{ info.literature_framing }}</p>
-              {% endif %}
-            </div>
-          {% endfor %}
-        {% endif %}
+        <h3>📚 For researchers</h3>
+        {% for metaphor, info in results.research.items() %}
+          <div class="clinical-card">
+            <h4>Metaphor Type: <em>{{ metaphor }}</em></h4>
+            <p>{{ info }}</p>
+          </div>
+        {% endfor %}
       </div>
-
-      {% if results.matches and results.entailments %}
-        <div data-view="technical" style="display: none;">
-          <h2>Technical Details</h2>
-          <h3>Matches by Metaphor Type</h3>
-          <ul>
-            {% for mtype, match_list in results.matches.items() %}
-              <li><strong>{{ mtype }}:</strong> matched: {{ match_list | join(', ') }}</li>
-            {% endfor %}
-          </ul>
-
-          <h3>Entailments</h3>
-          <ul>
-            {% for mtype, entailment_list in results.entailments.items() %}
-              <li><strong>{{ mtype }}:</strong> {{ entailment_list | join(', ') }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% endif %}
 
       <div class="action-buttons">
         <button onclick="window.print()">🖨️ Print</button>
         <button type="button" onclick="downloadText()">⬇️ Export as .txt</button>
       </div>
     </div>
-  {% elif results and results.error %}
-    <p style="color: red;"><strong>{{ results.error }}</strong></p>
   {% endif %}
 
   <script>
@@ -198,24 +180,12 @@
       link.click();
     }
 
-    let currentView = "empathetic";
-
-    function toggleView() {
-      const empathetic = document.querySelector('[data-view="empathetic"]');
-      const technical = document.querySelector('[data-view="technical"]');
-      const button = document.querySelector('.technical-toggle');
-
-      if (currentView === "empathetic") {
-        empathetic.style.display = "none";
-        if (technical) technical.style.display = "block";
-        button.textContent = "Switch to Empathetic View";
-        currentView = "technical";
-      } else {
-        empathetic.style.display = "block";
-        if (technical) technical.style.display = "none";
-        button.textContent = "Switch to Technical View";
-        currentView = "empathetic";
-      }
+    function toggleDetails() {
+      const section = document.getElementById("technical-details");
+      const toggle = document.querySelector(".technical-toggle");
+      const isHidden = section.style.display === "none";
+      section.style.display = isHidden ? "block" : "none";
+      toggle.textContent = isHidden ? "🔁 Hide doctor and researcher details" : "🔁 Show more details for doctors and researchers";
     }
 
     if (document.getElementById("output")) {

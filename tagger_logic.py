@@ -15,6 +15,9 @@ with open("taxonomy.json") as f:
 with open("rephrasings.json") as f:
     rephrasings = json.load(f)
 
+with open("researcher_notes.json") as f:
+    researcher_notes = json.load(f)
+
 GRADUATION = taxonomy.get("graduation_modifiers", [])
 DELIMITERS = r"[^\w']+"
 TRIGGERS = taxonomy.get("triggers", [])
@@ -33,7 +36,7 @@ def generate_ngrams(tokens, max_n=4):
     return ngram_list
 
 
-def tag_pain_description(text):
+def tag_pain_description(text, name=None, duration=None):
     logger.info("User input: %s", text)
 
     normalized_text = normalize_text(text)
@@ -71,15 +74,27 @@ def tag_pain_description(text):
         if metaphor in rephrasings:
             clinical[metaphor] = rephrasings[metaphor]
 
+    # Build researcher notes
+    research = {}
+    for metaphor in detected["metaphors"]:
+        if metaphor in researcher_notes:
+            research[metaphor] = researcher_notes[metaphor]
+
+    # Return all results with user personalization
     return {
         "metaphors": list(detected["metaphors"]),
         "dimensions": list(detected["dimensions"]),
         "triggers": list(detected["triggers"]),
         "graduation": list(detected["graduation"]),
-        "clinical": clinical
+        "clinical": clinical,
+        "research": research,
+        "user_info": {
+            "name": name,
+            "duration": duration
+        }
     }
 
 
 if __name__ == "__main__":
     test_text = "It feels like a thousand knives are stabbing my uterus."
-    print(tag_pain_description(test_text))
+    print(tag_pain_description(test_text, name="Jane", duration="3 years"))

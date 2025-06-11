@@ -91,10 +91,6 @@
       cursor: pointer;
       margin-bottom: 1em;
     }
-
-    #technical-details {
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -116,54 +112,57 @@
 
   {% if results and results.input %}
     <div class="results" id="output">
-      <h2>Translation</h2>
-      <p><strong>Input:</strong> {{ results.input }}</p>
+      <div class="technical-toggle" onclick="toggleView()">Switch to Technical View</div>
+      <div data-view="empathetic">
+        <h2>Translation</h2>
+        <p><strong>Input:</strong> {{ results.input }}</p>
 
-      {% if results.dimensions %}
-        <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
-      {% endif %}
+        {% if results.dimensions %}
+          <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
+        {% endif %}
 
-      {% if results.metaphor_types %}
-        <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
-      {% endif %}
+        {% if results.metaphor_types %}
+          <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
+        {% endif %}
 
-      {% if results.impact_context %}
-        <h3>Pain Triggers & Life Impact Context</h3>
-        <ul>
-          {% for item in results.impact_context %}
-            <li>{{ item }}</li>
+        {% if results.impact_context %}
+          <h3>Pain Triggers & Life Impact Context</h3>
+          <ul>
+            {% for item in results.impact_context %}
+              <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {% if results.graduation_only %}
+          <h3>Intensity/Impact Clues</h3>
+          <p>The following terms may indicate how much your pain interferes with your life:</p>
+          <ul>
+            {% for word in results.graduation_only %}
+              <li>{{ word }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {% if results.clinical_rephrasings %}
+          <h3>Clinical Insights</h3>
+          {% for mtype, info in results.clinical_rephrasings.items() %}
+            <div class="clinical-card">
+              <h4>Metaphor Type: <em>{{ mtype }}</em></h4>
+              <p><strong>Patient-Friendly:</strong> {{ info.patient_friendly }}</p>
+              <p><strong>Likely Mechanism:</strong> {{ info.likely_mechanism }}</p>
+              <p><strong>Clinical Terms:</strong> {{ info.clinical_terms | join(', ') }}</p>
+              {% if info.literature_framing %}
+                <p><strong>Literature Framing:</strong> {{ info.literature_framing }}</p>
+              {% endif %}
+            </div>
           {% endfor %}
-        </ul>
-      {% endif %}
-
-      {% if results.graduation_only %}
-        <h3>Intensity/Impact Clues</h3>
-        <p>The following terms may indicate how much your pain interferes with your life:</p>
-        <ul>
-          {% for word in results.graduation_only %}
-            <li>{{ word }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-
-      {% if results.clinical_rephrasings %}
-        <h3>Clinical Insights</h3>
-        {% for mtype, info in results.clinical_rephrasings.items() %}
-          <div class="clinical-card">
-            <h4>Metaphor Type: <em>{{ mtype }}</em></h4>
-            <p><strong>Patient-Friendly:</strong> {{ info.patient_friendly }}</p>
-            <p><strong>Likely Mechanism:</strong> {{ info.likely_mechanism }}</p>
-            <p><strong>Clinical Terms:</strong> {{ info.clinical_terms | join(', ') }}</p>
-            {% if info.literature_framing %}
-              <p><strong>Literature Framing:</strong> {{ info.literature_framing }}</p>
-            {% endif %}
-          </div>
-        {% endfor %}
-      {% endif %}
+        {% endif %}
+      </div>
 
       {% if results.matches and results.entailments %}
-        <div class="technical-toggle" onclick="toggleTechnical()">Toggle Technical Details</div>
-        <div id="technical-details">
+        <div data-view="technical" style="display: none;">
+          <h2>Technical Details</h2>
           <h3>Matches by Metaphor Type</h3>
           <ul>
             {% for mtype, match_list in results.matches.items() %}
@@ -199,9 +198,24 @@
       link.click();
     }
 
-    function toggleTechnical() {
-      const section = document.getElementById("technical-details");
-      section.style.display = (section.style.display === "none") ? "block" : "none";
+    let currentView = "empathetic";
+
+    function toggleView() {
+      const empathetic = document.querySelector('[data-view="empathetic"]');
+      const technical = document.querySelector('[data-view="technical"]');
+      const button = document.querySelector('.technical-toggle');
+
+      if (currentView === "empathetic") {
+        empathetic.style.display = "none";
+        if (technical) technical.style.display = "block";
+        button.textContent = "Switch to Empathetic View";
+        currentView = "technical";
+      } else {
+        empathetic.style.display = "block";
+        if (technical) technical.style.display = "none";
+        button.textContent = "Switch to Technical View";
+        currentView = "empathetic";
+      }
     }
 
     if (document.getElementById("output")) {

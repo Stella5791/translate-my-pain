@@ -13,10 +13,11 @@ def index():
         duration = request.form.get("duration")
 
         results = tag_pain_description(
-            description=description,
+            description,  # no keyword here
             name=name if name else None,
             duration=duration if duration else None
         )
+
         results["input"] = description  # add original input for display
     return render_template("index.html", results=results)
 

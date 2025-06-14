@@ -1,8 +1,14 @@
 {
-  "violent_action": "This metaphor suggests intentional harm or aggression, often used when pain is described as stabbing, ripping, or being attacked.",
-  "constriction_pressure": "Indicates tight, compressive pain. Common in metaphors about being squeezed, crushed, or suffocated.",
-  "mechanical_metal": "Used when pain is described as cold, hard, and metallic — often reflects impersonal or invasive sensations.",
-  "birth_labour": "Draws from the experience of childbirth to describe cyclical, intense, internal pain.",
-  "monster": "Personifies pain as something lurking or threatening, representing fear and unpredictability.",
-  "electric_force": "Describes sharp, shooting, or zapping pain — often associated with nerve activity."
+  "constriction_pressure": "This category captures metaphors of tightness, wrapping, or pressure. It is conceptually linked to the idea of bodily containment and internal restriction. Frequently co-occurs with pelvic floor issues.",
+  "violent_action": "Includes metaphors of direct assault and external trauma. Often emotionally charged and associated with moments of flare or rupture.",
+  "internal_machinery": "Refers to industrial or mechanical metaphors, often indicating dehumanized pain or friction from within. Linked to chronic strain or perceived dysfunction.",
+  "cutting_tools": "Captures precise, sharp, and often invasive metaphors. Common in descriptions of acute, localized endometrial or nerve pain.",
+  "electric_force": "This type reflects sudden, erratic sensory spikes tied to nerve responses. Common in descriptions of neuropathic or hormonally triggered pain.",
+  "heat": "Associated with internal fire, burning, or scalding. Often tied to inflammation, irritation, and hormonal heat dysregulation.",
+  "weight_burden": "These metaphors reflect heaviness, burden, and exhaustion. Frequently associated with fatigue, bloating, and emotional overload.",
+  "birth_labour": "Taps into reproductive metaphors of childbirth and contractions. Often used by patients with uterine or hormonal patterns of pain.",
+  "background_pain": "Metaphors in this category point to a dull, ever-present discomfort. The language tends to be subdued but communicates chronicity.",
+  "predator": "This merged category (formerly monster, lurking_threat, animal_attack) highlights metaphors that personify pain as an external, looming force. Reflects trauma narratives, vigilance, and psychological intrusion.",
+  "entrapment": "Captures the logic of the body as a prison or cage. Strong spatial and affective dimensions, particularly among patients with chronic looping pain.",
+  "transformation_distortion": "Focuses on metaphors where pain disrupts identity, reality, or bodily integrity. Frequently overlaps with dissociation, trauma, or neurological overwhelm."
 }

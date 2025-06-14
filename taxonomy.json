@@ -1,358 +1,127 @@
 {
-  "violent_action": {
-    "expressions": [
-      "stab",
-      "stabbing",
-      "punched",
-      "beaten",
-      "cut",
-      "punch",
-      "slashed",
-      "knife",
-      "sword",
-      "razor",
-      "gutted",
-      "shoved",
-      "jammed",
-      "hammered",
-      "scraped",
-      "smashed",
-      "chainsaw"
-    ],
-    "entailments": [
-      "attack",
-      "sharp",
-      "violence",
-      "brutality",
-      "shock",
-      "terror"
-    ],
-    "dimensions": [
-      "physical",
-      "aggressive"
-    ]
-  },
-  "mechanical_metal": {
-    "expressions": [
-      "gear",
-      "machine",
-      "metal",
-      "grinding",
-      "cogs",
-      "screws",
-      "vice grips",
-      "mechanical",
-      "rod",
-      "skewer",
-      "sharp metal",
-      "iron bar",
-      "chainsaw"
-    ],
-    "entailments": [
-      "metallic",
-      "friction",
-      "mechanical"
-    ],
-    "dimensions": [
-      "invasive",
-      "industrial"
-    ]
-  },
-  "tearing_ripping": {
-    "expressions": [
-      "rip",
-      "ripping",
-      "torn",
-      "tear",
-      "burst",
-      "split",
-      "shredded",
-      "flayed",
-      "rupture",
-      "breaking",
-      "exploding",
-      "unravelling",
-      "twisting"
-    ],
-    "entailments": [
-      "break",
-      "separate",
-      "destroy"
-    ],
-    "dimensions": [
-      "disruption",
-      "acute"
-    ]
-  },
-  "constriction_pressure": {
-    "expressions": [
-      "squeezed",
-      "tight",
-      "crushed",
-      "pressure",
-      "vice",
-      "panini press",
-      "coiled",
-      "wrapped",
-      "strangled",
-      "bound",
-      "binding",
-      "weighed down",
-      "compressed",
-      "twisting",
-      "vice grip"
-    ],
-    "entailments": [
-      "constriction",
-      "tightness"
-    ],
-    "dimensions": [
-      "mechanical",
-      "internal"
-    ]
-  },
-  "disintegration": {
-    "expressions": [
-      "dumped",
-      "like rubbish",
-      "falling apart",
-      "shattered",
-      "scattered pieces",
-      "broken",
-      "waste",
-      "ruined",
-      "emptied out"
-    ],
-    "dimensions": [
-      "affective",
-      "identity",
-      "emotional"
-    ],
-    "entailments": [
-      "sense of emotional fragmentation",
-      "loss of personal integrity or control"
-    ]
-  },
-  "birth_labour": {
-    "expressions": [
-      "giving birth",
-      "labour pain",
-      "like contractions",
-      "like childbirth",
-      "pushing something out",
-      "birthing pain",
-      "labor-like pain"
-    ],
-    "dimensions": [
-      "acute",
-      "internal",
-      "mechanical"
-    ],
-    "entailments": [
-      "severe lower abdominal pain",
-      "bearing down or pressure sensations",
-      "intensifies during straining or toilet use"
-    ]
-  },
-  "monster": {
-    "expressions": [
-      "monster",
-      "snoring",
-      "lurking",
-      "sleeping monster",
-      "could wake up"
-    ],
-    "entailments": [
-      "invasion",
-      "presence",
-      "agency",
-      "fear",
-      "helplessness",
-      "violation",
-      "hypervigilance",
-      "anticipation",
-      "relapse anxiety",
-      "loss of autonomy",
-      "threat of return"
-    ],
-    "dimensions": [
-      "imagery",
-      "threat"
-    ]
-  },
-  "background_pain": {
-    "expressions": [
-      "dull ache",
-      "simmering pain",
-      "constant ache",
-      "background pain",
-      "low-grade pain",
-      "a whisper of pain",
-      "persistent discomfort"
-    ],
-    "dimensions": [
-      "chronic",
-      "nerve",
-      "internal"
-    ],
-    "entailments": [
-      "constant background pain not tied to specific events",
-      "may reflect central sensitization or nerve irritation"
-    ]
-  },
-  "lurking_threat": {
-    "expressions": [
-      "snore of a monster",
-      "something lurking",
-      "waiting to strike",
-      "anxiety it will return",
-      "something under the surface",
-      "trap snapping shut"
-    ],
-    "dimensions": [
-      "affective",
-      "anticipation",
-      "threat"
-    ],
-    "entailments": [
-      "chronic alertness or fear of recurrence",
-      "affective burden from anticipated flare-ups"
-    ]
-  },
-  "mechanical_damage": {
-    "expressions": [
-      "chainsaw",
-      "cutting machine",
-      "buzzing blade"
-    ],
-    "dimensions": [
-      "mechanical",
-      "acute"
-    ],
-    "entailments": [
-      "sharp invasive pain resembling tools or machinery",
-      "disruption or tearing of internal structures"
-    ]
-  },
-  "sharp_objects": {
-    "expressions": [
-      "shards of glass",
-      "glass",
-      "needles",
-      "splinters",
-      "razor sharp"
-    ],
-    "dimensions": [
-      "acute",
-      "invasive"
-    ],
-    "entailments": [
-      "lacerating or sharp localized pain",
-      "often linked to internal bleeding or nerve flare"
-    ]
-  },
-  "animal_attack": {
-    "expressions": [
-      "clawing",
-      "beast",
-      "trying to escape",
-      "creature inside",
-      "clawing its way out"
-    ],
-    "dimensions": [
-      "violent",
-      "visceral",
-      "imagery"
-    ],
-    "entailments": [
-      "pain experienced as wild, uncontrollable",
-      "evokes fear, primal struggle"
-    ]
-  },
-  "background_noise": {
-    "expressions": [
-      "humming pain",
-      "static in my bones",
-      "buzzing under the skin",
-      "background hum"
-    ],
-    "dimensions": [
-      "chronic",
-      "nerve",
-      "internal"
-    ],
-    "entailments": [
-      "background discomfort linked to nerve activity",
-      "can indicate neuropathic undercurrent"
-    ]
-  },
-  "entrapment": {
-    "expressions": [
-      "trap snapping shut",
-      "cage",
-      "prison of pain",
-      "caught in a loop"
-    ],
-    "dimensions": [
-      "anticipation",
-      "affective",
-      "internal"
-    ],
-    "entailments": [
-      "sense of captivity by pain",
-      "fear of cycles or recurrence"
-    ]
+  "metaphor_types": {
+    "violent_action": {
+      "expressions": [
+        "run over", "punched", "kicked", "stabbed", "stabbed repeatedly", "smashed", "hammered", 
+        "hit", "beaten", "bruised", "assaulted", "attacked", "shot", "pounded", "slammed", 
+        "knocked", "clubbed", "cut up", "gutted", "grated", "slashed"
+      ],
+      "entailments": [
+        "external physical trauma", "bodily assault", "repeated damage", "lack of control", "powerlessness"
+      ],
+      "dimensions": ["external force", "trauma", "acute", "disruptive"]
+    },
+    "cutting_tools": {
+      "expressions": [
+        "knife", "sword", "scissors", "razor", "scalpel", "blade", "slicing", "cutting", "paper cuts", "safety scissors", "knitting needle", "coathanger", "ice pick"
+      ],
+      "entailments": [
+        "piercing pain", "localized sharp injury", "invasive action", "bodily threat"
+      ],
+      "dimensions": ["sharp", "localized", "penetrative"]
+    },
+    "internal_machinery": {
+      "expressions": [
+        "gears", "cogs", "machine", "metal", "mechanical", "vice", "grinding", "crushing", "clamp", "metal wool", "tightening screw", "sparks", "rod", "skewer"
+      ],
+      "entailments": [
+        "internal friction", "repetitive force", "imposed constraint"
+      ],
+      "dimensions": ["mechanical", "internal", "industrial"]
+    },
+    "constriction_pressure": {
+      "expressions": [
+        "tight", "crushed", "wrapped", "compressed", "trapped", "squeezed", "constricted", 
+        "weighed down", "strangled", "snake grip", "panini press", "dragging", "vice grip"
+      ],
+      "entailments": [
+        "pressure from inside or outside", "restriction of movement", "internal suffocation"
+      ],
+      "dimensions": ["internal", "chronic", "restrictive"]
+    },
+    "electric_force": {
+      "expressions": [
+        "electric shock", "tingling", "pulsing", "buzzing", "zapping", "shooting pain", "lightning bolt", "current", "charged", "sparks"
+      ],
+      "entailments": [
+        "nerve activity", "unpredictable spikes", "flashes of sensation"
+      ],
+      "dimensions": ["neural", "uncontrolled", "episodic"]
+    },
+    "weight_burden": {
+      "expressions": [
+        "elephant on chest", "bowling ball", "concrete block", "heavy pressure", "burden", "dragging weight", "carrying something heavy", "crushing"
+      ],
+      "entailments": [
+        "sense of heaviness", "effortful movement", "depletion of energy"
+      ],
+      "dimensions": ["physical", "depressive", "slowing"]
+    },
+    "heat": {
+      "expressions": [
+      "fire", "hot", "hot poker", "blister", "burning", "scalding", "internal fire", "coals", "molten", "boiling", "furnace", "hot cross bun", "searing"
+],
+      "entailments": [
+        "inflammation", "intense irritation", "internal temperature dysregulation"
+      ],
+      "dimensions": ["thermal", "intense", "internal"]
+    },
+    "birth_labour": {
+      "expressions": [
+        "giving birth", "labour pain", "contractions", "birthing", "crowning", "pushing something out", "baby feet under ribs", "like childbirth"
+      ],
+      "entailments": [
+        "pelvic pressure", "wave-like pain", "endurance-based agony"
+      ],
+      "dimensions": ["cyclical", "pelvic", "deep"]
+    },
+    "background_pain": {
+      "expressions": [
+        "dull ache", "simmering", "low-grade pain", "whisper of pain", "background noise", "constant discomfort"
+      ],
+      "entailments": [
+        "ongoing discomfort", "wearing down", "unnoticed but present"
+      ],
+      "dimensions": ["chronic", "diffuse", "persistent"]
+    },
+    "predator": {
+      "expressions": [
+        "monster", "creature", "beast", "snoring monster", "lurking animal", "something clawing", "predatory presence", "demon inside", "T-Rex", "molten spiders"
+      ],
+      "entailments": [
+        "threat of resurgence", "violation", "bodily invasion", "loss of control", "fear", "external sentience"
+      ],
+      "dimensions": ["imagery", "anticipation", "violation", "sentient threat"]
+    },
+    "entrapment": {
+      "expressions": [
+        "cage", "trap", "prison of pain", "contained", "loop", "claw around womb", "flesh prison", "trapped"
+      ],
+      "entailments": [
+        "sense of captivity", "chronic looping", "inability to escape"
+      ],
+      "dimensions": ["affective", "spatial", "persistent"]
+    },
+    "transformation_distortion": {
+      "expressions": [
+        "I become someone else", "loss of self", "outside my body", "identity is unknown", "my body is not mine", "possessed by pain", "I am changed", "this isn't me", "parallel world"
+      ],
+      "entailments": [
+        "dissociation", "identity disturbance", "pain-induced detachment", "loss of coherence"
+      ],
+      "dimensions": ["cognitive", "existential", "psychosocial"]
+    }
   },
   "life_impact_clues": [
-    "dominates my life",
-    "affects everything",
-    "can't function",
-    "miss work",
-    "miss school",
-    "can’t do anything",
-    "takes over everything",
-    "can't cope",
-    "ruins everything",
-    "everything hurts",
-    "makes daily life impossible",
-    "makes me want to disappear",
-    "I can’t plan anything",
-    "I have no control",
-    "everything stops",
-    "I lose entire days",
-    "I’m not myself",
-    "life stops during a flare",
-    "I disappear from my life",
-    "I can’t be a mum/partner/worker"
+    "dominates my life", "affects everything", "can't function", "miss work", "miss school", "can’t do anything"
   ],
   "graduation_modifiers": [
-    "crippling",
-    "overwhelming",
-    "unbearable",
-    "severe",
-    "agonising",
-    "intense",
-    "constant",
-    "repeated",
-    "permanent",
-    "sporadic",
-    "persistent",
-    "sharp",
-    "extreme",
-    "all-consuming",
-    "never-ending",
-    "endless",
-    "unrelenting",
-    "brutal",
-    "soul-destroying",
-    "relentless",
-    "grinding",
-    "raging",
-    "everywhere",
-    "inescapable",
-    "nonstop",
-    "it never lets go",
-    "it never stops",
-    "never goes away"
+    "crippling", "overwhelming", "unbearable", "severe", "agonising", "intense", "constant", "repeated", 
+    "permanent", "sporadic", "persistent", "sharp", "extreme"
+  ],
+  "triggers": [
+    "intercourse", "sex", "penetration", "menstruation", "period", "ovulate", "ovulation",
+    "going to the toilet", "urinate", "bowel movement", "defecate", "poop", "wee", "pee",
+    "daily life", "getting up", "moving", "walking", "stand", "sit", "sleep", "breathe", "eat"
   ]
 }

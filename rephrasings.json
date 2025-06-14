@@ -11,11 +11,35 @@
     "clinical_terms": "acute trauma, neuropathic flare, adhesion rupture",
     "literature_framing": "Violent metaphors reflect the sensory intensity and emotional shock of pain flare-ups."
   },
-  "mechanical_metal": {
-    "patient_friendly": "Pain that feels mechanical, metallic, or like being gripped by cold, hard instruments.",
-    "likely_mechanism": "Pelvic structural pressure, adhesions, or deep tissue strain.",
-    "clinical_terms": "deep pelvic pain, visceral hypersensitivity, adhesion-related tension",
-    "literature_framing": "Patients often describe pain with cold, industrial metaphors when it feels impersonal or invasive."
+  "internal_machinery": {
+    "patient_friendly": "Pain that feels mechanical, grinding, or like something is malfunctioning inside.",
+    "likely_mechanism": "Pelvic structural pressure, internal friction from adhesions or muscular tension.",
+    "clinical_terms": "myofascial dysfunction, internal organ strain, mechanical irritation",
+    "literature_framing": "Machinery metaphors suggest industrial, dehumanized pain often tied to loss of control or deep internal strain."
+  },
+  "cutting_tools": {
+    "patient_friendly": "Pain that feels like sharp objects cutting or piercing the body.",
+    "likely_mechanism": "Localized inflammation, nerve hypersensitivity, lesion tension.",
+    "clinical_terms": "neuropathic pain, stabbing dysesthesia, localized lesion irritation",
+    "literature_framing": "Cutting metaphors capture acute, localized, and penetrating pain often described with surgical or everyday sharp tools."
+  },
+  "electric_force": {
+    "patient_friendly": "Pain that feels like electric shocks, buzzing, or lightning inside the body.",
+    "likely_mechanism": "Nerve irritation, electrical misfiring, or sudden spasms.",
+    "clinical_terms": "neuropathic spikes, paresthesia, nerve root irritation",
+    "literature_framing": "Electric metaphors are linked to nerve pain and unpredictable, high-intensity sensory experiences."
+  },
+  "heat": {
+    "patient_friendly": "Pain that feels like burning, heat, or internal fire.",
+    "likely_mechanism": "Inflammation, hormonal sensitivity, tissue irritation.",
+    "clinical_terms": "inflammatory response, dysmenorrhea, pelvic hyperemia",
+    "literature_framing": "Heat metaphors reflect inflammation and internal agitation common in endometriosis."
+  },
+  "weight_burden": {
+    "patient_friendly": "Pain that feels heavy, like carrying a weight or pressure bearing down.",
+    "likely_mechanism": "Pelvic congestion, fatigue, muscular compensation.",
+    "clinical_terms": "pelvic heaviness, fatigue-associated pain, musculoskeletal load",
+    "literature_framing": "Weight metaphors convey emotional and physical exhaustion, burden, and depletion."
   },
   "birth_labour": {
     "patient_friendly": "Pain that feels like intense reproductive strain, labour-like contractions, or pushing sensations.",
@@ -23,22 +47,28 @@
     "clinical_terms": "dysmenorrhea, pelvic organ strain, visceral referred pain",
     "literature_framing": "Labour metaphors are often used to convey the intensity and cyclical nature of reproductive pain."
   },
-  "monster": {
-    "patient_friendly": "Pain that feels like a monstrous force, unpredictable and threatening, sometimes dormant but always looming.",
-    "likely_mechanism": "Chronic pain sensitization, central nervous system hypervigilance.",
-    "clinical_terms": "central sensitization, anticipatory anxiety, neuropathic pain",
-    "literature_framing": "Personifying metaphors like 'monster' often reflect emotional coping, fear of relapse, and trauma history."
+  "background_pain": {
+    "patient_friendly": "Pain that feels like a constant dull ache or simmering discomfort.",
+    "likely_mechanism": "Chronic low-level inflammation, hormonal imbalance, central sensitization.",
+    "clinical_terms": "low-grade chronic pain, visceral dull ache, persistent pelvic pain",
+    "literature_framing": "Background pain metaphors capture chronic, persistent discomfort that underlies daily life."
   },
-  "lurking_threat": {
-    "patient_friendly": "Pain that feels like a looming danger, quiet but always present and capable of sudden escalation.",
-    "likely_mechanism": "Central nervous system sensitization, chronic stress response, emotional hypervigilance.",
-    "clinical_terms": "anticipatory anxiety, somatic vigilance, chronic pain threat perception",
-    "literature_framing": "Lurking or dormant threat metaphors reflect trauma-informed fear and perceived loss of control."
+  "predator": {
+    "patient_friendly": "Pain that feels like being hunted or attacked by a threatening presence.",
+    "likely_mechanism": "Central sensitization, anticipatory anxiety, trauma-triggered flare-ups.",
+    "clinical_terms": "hypervigilance, pain anticipation, psychosomatic distress",
+    "literature_framing": "Predator metaphors capture pain as an external, sentient threat, often tied to fear, trauma, and identity."
   },
-  "natural_disaster": {
-    "patient_friendly": "Pain that feels like storms, waves, earthquakes, or tsunamis moving inside the body.",
-    "likely_mechanism": "Systemic dysregulation of pain pathways, hormonal surges, and muscle contractions.",
-    "clinical_terms": "visceral pain, hormonal dysregulation, cyclical pain",
-    "literature_framing": "Natural disaster metaphors are linked to patients' perceptions of unpredictability and uncontrollability of symptoms."
+  "entrapment": {
+    "patient_friendly": "Pain that feels like being trapped, caged, or locked inside the body.",
+    "likely_mechanism": "Adhesions, chronic looping pain, emotional suppression.",
+    "clinical_terms": "chronic pain loop, somatic restriction, internal fixation",
+    "literature_framing": "Entrapment metaphors reflect themes of confinement, helplessness, and inescapability in chronic pain."
+  },
+  "transformation_distortion": {
+    "patient_friendly": "Pain that feels like losing control of your body or identity, becoming someone else.",
+    "likely_mechanism": "Dissociation, trauma response, neurological overwhelm.",
+    "clinical_terms": "derealization, somatic dissociation, identity fragmentation",
+    "literature_framing": "Transformation metaphors reflect cognitive disruption, detachment, and existential distress in chronic conditions."
   }
 }

@@ -1,98 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Translated Pain Report</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Translate My Pain</title>
   <style>
+    :root {
+      --primary: #A18ABD;
+      --secondary: #D3D3D3;
+      --accent: #F29CA3;
+      --text: #2D2D2D;
+      --background: #F7F5FA;
+      --box1: #EFE9F4;
+      --box2: #E4E4EC;
+      --box3: #F4F4F4;
+    }
+
     body {
-      font-family: sans-serif;
-      font-size: 14px;
-      padding: 2rem;
-      color: #222;
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      background-color: var(--background);
+      color: var(--text);
     }
 
     h1 {
-      color: #333366;
+      color: var(--primary);
     }
 
     h2, h3 {
-      margin-top: 1.5rem;
-      color: #444;
+      color: var(--text);
+      border-bottom: 2px solid var(--secondary);
+      padding-bottom: 0.3em;
+      margin-top: 2em;
     }
 
-    .meta-block {
-      border: 1px solid #aaa;
-      padding: 1rem;
+    form {
+      margin-bottom: 2rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
       margin-bottom: 1rem;
-      border-radius: 6px;
-      background-color: #f9f9f9;
+      border: 1px solid var(--secondary);
+    }
+
+    textarea {
+      height: 100px;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      box-shadow: 0 0 5px var(--primary);
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    button:hover {
+      background-color: var(--accent);
+    }
+
+    .results {
+      background-color: #ffffff;
+      padding: 1rem;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .box {
+      padding: 1em;
+      border-radius: 8px;
+      margin-bottom: 1.5em;
+    }
+
+    .box1 { background-color: var(--box1); }
+    .box2 { background-color: var(--box2); }
+    .box3 { background-color: var(--box3); }
+
+    .clinical-card h4 {
+      margin-bottom: 0.5em;
+    }
+
+    .action-buttons {
+      margin-top: 1rem;
     }
   </style>
 </head>
 <body>
 
-  <h1>Translate My Pain – Clinical Report</h1>
+  <h1>Translate My Pain</h1>
 
-  <p><strong>Input:</strong> {{ results.input }}</p>
+  <p>
+    Pain is a deeply subjective experience. Many people describe it using figurative language to make sense of sensations that are otherwise hard to put into words.<br>
+    A <strong>metaphor</strong> is when we describe something abstract in terms of something else we know well.<br>
+    For example: <em>"It feels like a hot poker is pressing into my abdomen"</em> or <em>"It's as if tiny blades are slicing my insides"</em>.<br><br>
+    You may wish to begin your description with <strong>"It feels like..."</strong> or <strong>"It feels as if..."</strong>.
+  </p>
 
-  {% if results.dimensions %}
-    <p><strong>Dimensions:</strong> {{ results.dimensions | join(', ') }}</p>
-  {% endif %}
+  <form method="post">
+    <label for="name">Your name (optional):</label>
+    <input type="text" id="name" name="name" placeholder="e.g. Sam">
 
-  {% if results.metaphor_types %}
-    <p><strong>Metaphor Types:</strong> {{ results.metaphor_types | join(', ') }}</p>
-  {% endif %}
+    <label for="duration">How long have you had this pain? (optional):</label>
+    <input type="text" id="duration" name="duration" placeholder="e.g. 2 years, since my teens">
 
-  {% if results.impact_context %}
-    <h2>Pain Triggers & Life Impact Context</h2>
-    <ul>
-      {% for item in results.impact_context %}
-        <li>{{ item }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+    <label for="description">Describe your pain:</label>
+    <textarea id="description" name="description" required placeholder="e.g. It feels like something is tearing me apart when I walk or sit..."></textarea>
 
-  {% if results.graduation_only %}
-    <h2>Intensity / Impact Clues</h2>
-    <ul>
-      {% for word in results.graduation_only %}
-        <li>{{ word }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+    <button type="submit">Translate</button>
+  </form>
 
-  {% if results.matches %}
-    <h2>Matched Metaphors</h2>
-    <ul>
-      {% for mtype, match_list in results.matches.items() %}
-        <li><strong>{{ mtype }}:</strong> {{ match_list | join(', ') }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+  {% if results %}
+    <div class="results" id="output">
+      <div class="box box1">
+        <h2>🫂 Untangling {% if results.user_info.name %}{{ results.user_info.name }}'s{% else %}your{% endif %} pain</h2>
+        <p><strong>Input:</strong> {{ results.input }}</p>
+        {% if results.user_info.duration %}<p>This pain has been present for {{ results.user_info.duration }}.</p>{% endif %}
+        <p>{{ results.plain_summary }}</p>
+      </div>
 
-  {% if results.entailments %}
-    <h2>Entailments</h2>
-    <ul>
-      {% for mtype, entailment_list in results.entailments.items() %}
-        <li><strong>{{ mtype }}:</strong> {{ entailment_list | join(', ') }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+      <div class="box box2">
+        <h2>🩺 Notes for your doctor</h2>
+        {% for metaphor, data in results.clinical_rephrasings.items() %}
+          <div>
+            <p><strong>{{ metaphor.replace('_', ' ').title() }}</strong>: {{ data.likely_mechanism }} | <em>{{ data.clinical_terms }}</em><br>
+            <small>{{ data.literature_framing }}</small></p>
+          </div>
+        {% endfor %}
+      </div>
 
-  {% if results.clinical_rephrasings %}
-    <h2>Clinical Interpretations</h2>
-    {% for mtype, info in results.clinical_rephrasings.items() %}
-      <div class="meta-block">
-        <h3>{{ mtype }}</h3>
-        <p><strong>Patient-Friendly:</strong> {{ info.patient_friendly }}</p>
-        <p><strong>Likely Mechanism:</strong> {{ info.likely_mechanism }}</p>
-        <p><strong>Clinical Terms:</strong> {{ info.clinical_terms | join(', ') }}</p>
-        {% if info.literature_framing %}
-          <p><strong>Literature Framing:</strong> {{ info.literature_framing }}</p>
+      <div class="box box3">
+        <h2>📚 How this analysis works: notes for researchers</h2>
+        {% for metaphor, info in results.research.items() %}
+          <p><strong>{{ metaphor.replace('_', ' ').title() }}</strong>: {{ info }}</p>
+        {% endfor %}
+
+        {% if results.entailments %}
+          <h3>🧠 Entailments by metaphor type</h3>
+          {% for metaphor, entail in results.entailments.items() %}
+            <p><strong>{{ metaphor.replace('_', ' ').title() }}</strong>: {{ entail | join(', ') }}</p>
+          {% endfor %}
         {% endif %}
       </div>
-    {% endfor %}
+
+      <div class="action-buttons">
+        <button onclick="window.print()">🖨️ Print</button>
+        <button type="button" onclick="downloadText()">⬇️ Export as .txt</button>
+      </div>
+    </div>
   {% endif %}
+
+  <script>
+    function downloadText() {
+      const output = document.getElementById("output").innerText;
+      const blob = new Blob([output], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "translated_pain_report.txt";
+      link.click();
+    }
+
+    if (document.getElementById("output")) {
+      document.getElementById("output").scrollIntoView({ behavior: "smooth" });
+    }
+  </script>
 
 </body>
 </html>

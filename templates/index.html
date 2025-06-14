@@ -11,6 +11,9 @@
       --accent: #F29CA3;
       --text: #2D2D2D;
       --background: #F7F5FA;
+      --box1: #EFE9F4;
+      --box2: #E4E4EC;
+      --box3: #F4F4F4;
     }
 
     body {
@@ -74,12 +77,15 @@
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
 
-    .clinical-card {
-      border: 1px solid var(--secondary);
+    .box {
       padding: 1em;
-      margin-bottom: 1em;
       border-radius: 8px;
+      margin-bottom: 1.5em;
     }
+
+    .box1 { background-color: var(--box1); }
+    .box2 { background-color: var(--box2); }
+    .box3 { background-color: var(--box3); }
 
     .clinical-card h4 {
       margin-bottom: 0.5em;
@@ -88,15 +94,6 @@
     .action-buttons {
       margin-top: 1rem;
     }
-
-    .technical-toggle {
-      background-color: #eaeaea;
-      padding: 0.5em;
-      cursor: pointer;
-      margin-top: 2em;
-      text-align: center;
-      border-radius: 5px;
-    }
   </style>
 </head>
 <body>
@@ -104,8 +101,8 @@
   <h1>Translate My Pain</h1>
 
   <p>
-    Pain is a deeply subjective experience. Many people describe it using figurative language to make sense of sensations that are otherwise hard to put into words. <br>
-    A <strong>metaphor</strong> is when we describe something abstract in terms of something else we know well. <br>
+    Pain is a deeply subjective experience. Many people describe it using figurative language to make sense of sensations that are otherwise hard to put into words.<br>
+    A <strong>metaphor</strong> is when we describe something abstract in terms of something else we know well.<br>
     For example: <em>"It feels like a hot poker is pressing into my abdomen"</em> or <em>"It's as if tiny blades are slicing my insides"</em>.<br><br>
     You may wish to begin your description with <strong>"It feels like..."</strong> or <strong>"It feels as if..."</strong>.
   </p>
@@ -125,42 +122,35 @@
 
   {% if results %}
     <div class="results" id="output">
-      <h2>Translation</h2>
-      <p><strong>Input:</strong> {{ results.input }}</p>
+      <div class="box box1">
+        <h2>🫂 Untangling {% if results.user_info.name %}{{ results.user_info.name }}'s{% else %}your{% endif %} pain</h2>
+        <p><strong>Input:</strong> {{ results.input }}</p>
+        {% if results.user_info.duration %}<p>This pain has been present for {{ results.user_info.duration }}.</p>{% endif %}
+        <p>{{ results.plain_summary }}</p>
+      </div>
 
-      <h3>🫂 How this might feel to you</h3>
-      <p>
-        This summary is based on the language you used. It tries to express your experience in clear, direct terms.
-        {% if results.user_info.name %}<br><strong>{{ results.user_info.name }}</strong>{% endif %}
-        {% if results.user_info.duration %}, you've been experiencing this for <strong>{{ results.user_info.duration }}</strong>{% endif %}.
-        <br><strong>Is this how your pain feels?</strong>
-      </p>
-      <ul>
-        {% for metaphor in results.clinical %}
-          <li>{{ results.clinical[metaphor].patient_friendly }}</li>
-        {% endfor %}
-      </ul>
-
-      <div class="technical-toggle" onclick="toggleDetails()">🔁 Show more details for doctors and researchers</div>
-
-      <div id="technical-details" style="display: none;">
-        <h3>🩺 For your doctor</h3>
-        {% for metaphor, data in results.clinical.items() %}
-          <div class="clinical-card">
-            <h4>Metaphor Type: <em>{{ metaphor }}</em></h4>
-            <p><strong>Likely Mechanism:</strong> {{ data.likely_mechanism }}</p>
-            <p><strong>Clinical Terms:</strong> {{ data.clinical_terms | join(', ') }}</p>
-            <p><strong>Literature Framing:</strong> {{ data.literature_framing }}</p>
+      <div class="box box2">
+        <h2>🩺 Notes for your doctor</h2>
+        {% for metaphor, data in results.clinical_rephrasings.items() %}
+          <div>
+            <p><strong>{{ metaphor.replace('_', ' ').title() }}</strong>: {{ data.likely_mechanism }} | <em>{{ data.clinical_terms }}</em><br>
+            <small>{{ data.literature_framing }}</small></p>
           </div>
         {% endfor %}
+      </div>
 
-        <h3>📚 For researchers</h3>
+      <div class="box box3">
+        <h2>📚 How this analysis works: notes for researchers</h2>
         {% for metaphor, info in results.research.items() %}
-          <div class="clinical-card">
-            <h4>Metaphor Type: <em>{{ metaphor }}</em></h4>
-            <p>{{ info }}</p>
-          </div>
+          <p><strong>{{ metaphor.replace('_', ' ').title() }}</strong>: {{ info }}</p>
         {% endfor %}
+
+        {% if results.entailments %}
+          <h3>🧠 Entailments by metaphor type</h3>
+          {% for metaphor, entail in results.entailments.items() %}
+            <p><strong>{{ metaphor.replace('_', ' ').title() }}</strong>: {{ entail | join(', ') }}</p>
+          {% endfor %}
+        {% endif %}
       </div>
 
       <div class="action-buttons">
@@ -178,14 +168,6 @@
       link.href = URL.createObjectURL(blob);
       link.download = "translated_pain_report.txt";
       link.click();
-    }
-
-    function toggleDetails() {
-      const section = document.getElementById("technical-details");
-      const toggle = document.querySelector(".technical-toggle");
-      const isHidden = section.style.display === "none";
-      section.style.display = isHidden ? "block" : "none";
-      toggle.textContent = isHidden ? "🔁 Hide doctor and researcher details" : "🔁 Show more details for doctors and researchers";
     }
 
     if (document.getElementById("output")) {

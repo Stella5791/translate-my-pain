@@ -61,16 +61,19 @@ def normalize(text):
 
 
 def tag_pain_description(description, name=None, duration=None):
-    text = normalize(description)
+    text = description.lower()
     matched = {}
     entailments = {}
 
+
     for metaphor_type, data in METAPHOR_TYPES.items():
         for expression in data.get("expressions", []):
-            if expression in text:
+            # Use regex to match whole word or exact phrase
+            pattern = r'\b' + re.escape(expression.lower()) + r'\b'
+            if re.search(pattern, text):
                 matched.setdefault(metaphor_type, []).append(expression)
                 entailments[metaphor_type] = get_entailments(metaphor_type)
-                break
+                break  # Optional: match only one expression per type
 
     return {
         "matched_metaphors": matched,
@@ -80,6 +83,7 @@ def tag_pain_description(description, name=None, duration=None):
             "duration": duration.strip() if duration else None
         }
     }
+
 
 # --- Summary Builders --- #
 

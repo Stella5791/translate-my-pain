@@ -21,25 +21,28 @@ def index():
         name = request.form.get("name", "").strip()
         duration = request.form.get("duration", "").strip()
 
-        if description:
-            try:
-                results = tag_pain_description(
-                    description,
-                    name=name if name else None,
-                    duration=duration if duration else None
-                )
-                results["input"] = description
-                results["patient_narrative"] = generate_patient_summary(
-                    results)
-                results["doctor_narrative"] = generate_doctor_summary(results)
-                results["research_narrative"] = generate_research_summary(
-                    results)
-                results["entailment_summary"] = generate_entailment_summary(
-                    results.get("entailments", {}))
-            except Exception as e:
-                print(f"[Error] Failed to process description: {e}")
-                results = {
-                    "error": "There was an error processing your input."}
+    if description:
+        try:
+            results = tag_pain_description(
+                description,
+                name=name if name else None,
+                duration=duration if duration else None
+            )
+
+            print("🧪 DEBUG: Results from tag_pain_description():")
+            print(results)  # See what's matched
+
+            results["input"] = description
+            results["patient_narrative"] = generate_patient_summary(results)
+            results["doctor_narrative"] = generate_doctor_summary(results)
+            results["research_narrative"] = generate_research_summary(results)
+            results["entailment_summary"] = generate_entailment_summary(
+                results.get("entailments", {}))
+
+        except Exception as e:
+            print(f"[Error] Failed to process description: {e}")
+            results = {
+                "error": "There was an error processing your input."}
 
     return render_template("index.html", results=results)
 

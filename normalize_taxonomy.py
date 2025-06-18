@@ -3,8 +3,8 @@ import re
 
 
 def normalize(text):
-    """Lowercase, remove punctuation (except apostrophes), and trim whitespace."""
-    return re.sub(r"[^\w\s']", "", text.lower()).strip()
+    """Lowercase and preserve meaningful punctuation like hyphens and apostrophes."""
+    return re.sub(r"[^\w\s'\-]", "", text.lower()).strip()
 
 
 # Load original taxonomy

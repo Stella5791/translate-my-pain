@@ -2,126 +2,373 @@
   "metaphor_types": {
     "violent_action": {
       "expressions": [
-        "run over", "punched", "kicked", "stabbed", "stabbed repeatedly", "smashed", "hammered", 
-        "hit", "beaten", "bruised", "assaulted", "attacked", "shot", "pounded", "slammed", 
-        "knocked", "clubbed", "cut up", "gutted", "grated", "slashed"
+        "assaulted",
+        "attacked",
+        "beaten",
+        "bruised",
+        "clubbed",
+        "cut up",
+        "grated",
+        "gutted",
+        "hammered",
+        "hit",
+        "kicked",
+        "knocked",
+        "pounded",
+        "punched",
+        "run over",
+        "shot",
+        "slammed",
+        "slashed",
+        "smashed",
+        "stabbed",
+        "stabbed repeatedly"
       ],
       "entailments": [
-        "external physical trauma", "bodily assault", "repeated damage", "lack of control", "powerlessness"
+        "external physical trauma",
+        "bodily assault",
+        "repeated damage",
+        "lack of control",
+        "powerlessness"
       ],
-      "dimensions": ["external force", "trauma", "acute", "disruptive"]
+      "dimensions": [
+        "external force",
+        "trauma",
+        "acute",
+        "disruptive"
+      ]
     },
     "cutting_tools": {
       "expressions": [
-        "knife", "sword", "scissors", "razor", "scalpel", "blade", "slicing", "cutting", "paper cuts", "safety scissors", "knitting needle", "coathanger", "ice pick"
+        "blade",
+        "coathanger",
+        "cutting",
+        "ice pick",
+        "knife",
+        "knitting needle",
+        "paper cuts",
+        "razor",
+        "safety scissors",
+        "scalpel",
+        "scissors",
+        "slicing",
+        "sword"
       ],
       "entailments": [
-        "piercing pain", "localized sharp injury", "invasive action", "bodily threat"
+        "piercing pain",
+        "localized sharp injury",
+        "invasive action",
+        "bodily threat"
       ],
-      "dimensions": ["sharp", "localized", "penetrative"]
+      "dimensions": [
+        "sharp",
+        "localized",
+        "penetrative"
+      ]
     },
     "internal_machinery": {
       "expressions": [
-        "gears", "cogs", "machine", "metal", "mechanical", "vice", "grinding", "crushing", "clamp", "metal wool", "tightening screw", "sparks", "rod", "skewer"
+        "clamp",
+        "cogs",
+        "crushing",
+        "gears",
+        "grinding",
+        "machine",
+        "mechanical",
+        "metal",
+        "metal wool",
+        "rod",
+        "skewer",
+        "sparks",
+        "tightening screw",
+        "vice"
       ],
       "entailments": [
-        "internal friction", "repetitive force", "imposed constraint"
+        "internal friction",
+        "repetitive force",
+        "imposed constraint"
       ],
-      "dimensions": ["mechanical", "internal", "industrial"]
+      "dimensions": [
+        "mechanical",
+        "internal",
+        "industrial"
+      ]
     },
     "constriction_pressure": {
       "expressions": [
-        "tight", "crushed", "wrapped", "compressed", "trapped", "squeezed", "constricted", 
-        "weighed down", "strangled", "snake grip", "panini press", "dragging", "vice grip"
+        "bursting",
+        "compressed",
+        "constricted",
+        "crushed",
+        "dragging",
+        "eruption",
+        "explodes",
+        "exploding",
+        "panini press",
+        "snake grip",
+        "squeezed",
+        "strangled",
+        "tearing",
+        "tight",
+        "vice grip",
+        "weighed down",
+        "wrapped"
       ],
       "entailments": [
-        "pressure from inside or outside", "restriction of movement", "internal suffocation"
+        "pressure from inside or outside",
+        "restriction of movement",
+        "internal suffocation"
       ],
-      "dimensions": ["internal", "chronic", "restrictive"]
+      "dimensions": [
+        "internal",
+        "chronic",
+        "restrictive"
+      ]
     },
     "electric_force": {
       "expressions": [
-        "electric shock", "tingling", "pulsing", "buzzing", "zapping", "shooting pain", "lightning bolt", "current", "charged", "sparks"
+        "buzzing",
+        "charged",
+        "current",
+        "electric shock",
+        "lightning bolt",
+        "pulsing",
+        "shooting pain",
+        "sparks",
+        "tingling",
+        "zapping"
       ],
       "entailments": [
-        "nerve activity", "unpredictable spikes", "flashes of sensation"
+        "nerve activity",
+        "unpredictable spikes",
+        "flashes of sensation"
       ],
-      "dimensions": ["neural", "uncontrolled", "episodic"]
+      "dimensions": [
+        "neural",
+        "uncontrolled",
+        "episodic"
+      ]
     },
     "weight_burden": {
       "expressions": [
-        "elephant on chest", "bowling ball", "concrete block", "heavy pressure", "burden", "dragging weight", "carrying something heavy", "crushing"
+        "bowling ball",
+        "burden",
+        "carrying something heavy",
+        "concrete block",
+        "crushing",
+        "dragging weight",
+        "elephant on chest",
+        "heavy pressure"
       ],
       "entailments": [
-        "sense of heaviness", "effortful movement", "depletion of energy"
+        "sense of heaviness",
+        "effortful movement",
+        "depletion of energy"
       ],
-      "dimensions": ["physical", "depressive", "slowing"]
+      "dimensions": [
+        "physical",
+        "depressive",
+        "slowing"
+      ]
     },
     "heat": {
       "expressions": [
-      "fire", "hot", "hot poker", "blister", "burning", "scalding", "internal fire", "coals", "molten", "boiling", "furnace", "hot cross bun", "searing"
-],
-      "entailments": [
-        "inflammation", "intense irritation", "internal temperature dysregulation"
+        "blister",
+        "boiling",
+        "burning",
+        "coals",
+        "fire",
+        "fireball",
+        "furnace",
+        "glow",
+        "hot",
+        "hot cross bun",
+        "hot poker",
+        "internal fire",
+        "low fire",
+        "molten",
+        "scalding",
+        "searing"
       ],
-      "dimensions": ["thermal", "intense", "internal"]
+      "entailments": [
+        "inflammation",
+        "intense irritation",
+        "internal temperature dysregulation"
+      ],
+      "dimensions": [
+        "thermal",
+        "intense",
+        "internal"
+      ]
     },
     "birth_labour": {
       "expressions": [
-        "giving birth", "labour pain", "contractions", "birthing", "crowning", "pushing something out", "baby feet under ribs", "like childbirth"
+        "baby feet under ribs",
+        "birthing",
+        "contractions",
+        "crowning",
+        "giving birth",
+        "labour pain",
+        "like childbirth",
+        "pushing something out"
       ],
       "entailments": [
-        "pelvic pressure", "wave-like pain", "endurance-based agony"
+        "pelvic pressure",
+        "wave-like pain",
+        "endurance-based agony"
       ],
-      "dimensions": ["cyclical", "pelvic", "deep"]
+      "dimensions": [
+        "cyclical",
+        "pelvic",
+        "deep"
+      ]
     },
-    "background_pain": {
+    "lingering_force": {
       "expressions": [
-        "dull ache", "simmering", "low-grade pain", "whisper of pain", "background noise", "constant discomfort"
+        "background noise",
+        "constant discomfort",
+        "dull ache",
+        "lowgrade pain",
+        "simmering",
+        "whisper of pain"
       ],
       "entailments": [
-        "ongoing discomfort", "wearing down", "unnoticed but present"
+        "subsurface threat",
+        "quiet persistence",
+        "emotional erosion",
+        "ongoing discomfort",
+        "wearing down",
+        "unnoticed but present"
       ],
-      "dimensions": ["chronic", "diffuse", "persistent"]
+      "dimensions": [
+        "chronic",
+        "diffuse",
+        "persistent",
+        "low-intensity",
+        "latent"
+      ]
     },
     "predator": {
       "expressions": [
-        "monster", "creature", "beast", "snoring monster", "lurking animal", "something clawing", "predatory presence", "demon inside", "T-Rex", "molten spiders"
+        "beast",
+        "creature",
+        "demon inside",
+        "lurking animal",
+        "molten spiders",
+        "monster",
+        "predatory presence",
+        "snoring monster",
+        "something clawing",
+        "trex"
       ],
       "entailments": [
-        "threat of resurgence", "violation", "bodily invasion", "loss of control", "fear", "external sentience"
+        "threat of resurgence",
+        "violation",
+        "bodily invasion",
+        "loss of control",
+        "fear",
+        "external sentience"
       ],
-      "dimensions": ["imagery", "anticipation", "violation", "sentient threat"]
+      "dimensions": [
+        "imagery",
+        "anticipation",
+        "violation",
+        "sentient threat"
+      ]
     },
     "entrapment": {
       "expressions": [
-        "cage", "trap", "prison of pain", "contained", "loop", "claw around womb", "flesh prison", "trapped"
+        "cage",
+        "claw around womb",
+        "contained",
+        "flesh prison",
+        "loop",
+        "prison of pain",
+        "trap",
+        "trapped"
       ],
       "entailments": [
-        "sense of captivity", "chronic looping", "inability to escape"
+        "sense of captivity",
+        "chronic looping",
+        "inability to escape"
       ],
-      "dimensions": ["affective", "spatial", "persistent"]
+      "dimensions": [
+        "affective",
+        "spatial",
+        "persistent"
+      ]
     },
     "transformation_distortion": {
       "expressions": [
-        "I become someone else", "loss of self", "outside my body", "identity is unknown", "my body is not mine", "possessed by pain", "I am changed", "this isn't me", "parallel world"
+        "i am changed",
+        "i become someone else",
+        "identity is unknown",
+        "loss of self",
+        "my body is not mine",
+        "outside my body",
+        "parallel world",
+        "possessed by pain",
+        "this isn't me"
       ],
       "entailments": [
-        "dissociation", "identity disturbance", "pain-induced detachment", "loss of coherence"
+        "dissociation",
+        "identity disturbance",
+        "pain-induced detachment",
+        "loss of coherence"
       ],
-      "dimensions": ["cognitive", "existential", "psychosocial"]
+      "dimensions": [
+        "cognitive",
+        "existential",
+        "psychosocial"
+      ]
     }
   },
   "life_impact_clues": [
-    "dominates my life", "affects everything", "can't function", "miss work", "miss school", "can’t do anything"
+    "dominates my life",
+    "affects everything",
+    "can't function",
+    "miss work",
+    "miss school",
+    "can’t do anything"
   ],
   "graduation_modifiers": [
-    "crippling", "overwhelming", "unbearable", "severe", "agonising", "intense", "constant", "repeated", 
-    "permanent", "sporadic", "persistent", "sharp", "extreme"
+    "crippling",
+    "overwhelming",
+    "unbearable",
+    "severe",
+    "agonising",
+    "intense",
+    "constant",
+    "repeated",
+    "permanent",
+    "sporadic",
+    "persistent",
+    "sharp",
+    "extreme"
   ],
   "triggers": [
-    "intercourse", "sex", "penetration", "menstruation", "period", "ovulate", "ovulation",
-    "going to the toilet", "urinate", "bowel movement", "defecate", "poop", "wee", "pee",
-    "daily life", "getting up", "moving", "walking", "stand", "sit", "sleep", "breathe", "eat"
+    "intercourse",
+    "sex",
+    "penetration",
+    "menstruation",
+    "period",
+    "ovulate",
+    "ovulation",
+    "going to the toilet",
+    "urinate",
+    "bowel movement",
+    "defecate",
+    "poop",
+    "wee",
+    "pee",
+    "daily life",
+    "getting up",
+    "moving",
+    "walking",
+    "stand",
+    "sit",
+    "sleep",
+    "breathe",
+    "eat"
   ]
 }

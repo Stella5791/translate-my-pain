@@ -1,53 +1,53 @@
 ENTAILMENTS_MAP = {
-    "Violent Action": [
+    "violent_action": [
         "external physical trauma",
         "bodily assault",
         "repeated damage",
         "lack of control",
         "powerlessness"
     ],
-    "Cutting Tools": [
+    "cutting_tools": [
         "piercing pain",
         "localized sharp injury",
         "invasive action",
         "bodily threat"
     ],
-    "Internal Machinery": [
+    "internal_machinery": [
         "internal friction",
         "repetitive force",
         "imposed constraint"
     ],
-    "Constriction Pressure": [
+    "constriction_pressure": [
         "pressure from inside or outside",
         "restriction of movement",
         "internal suffocation"
     ],
-    "Electric Force": [
+    "electric_force": [
         "nerve activity",
         "unpredictable spikes",
         "flashes of sensation"
     ],
-    "Heat": [
+    "heat": [
         "inflammation",
         "intense irritation",
         "internal temperature dysregulation"
     ],
-    "Weight Burden": [
+    "weight_burden": [
         "sense of heaviness",
         "effortful movement",
         "depletion of energy"
     ],
-    "Birth Labour": [
+    "birth_labour": [
         "pelvic pressure",
         "wave-like pain",
         "endurance-based agony"
     ],
-    "Background Pain": [
+    "lingering_force": [
         "ongoing discomfort",
         "wearing down",
         "unnoticed but present"
     ],
-    "Predator": [
+    "predator": [
         "threat of resurgence",
         "violation",
         "bodily invasion",
@@ -55,12 +55,12 @@ ENTAILMENTS_MAP = {
         "fear",
         "external sentience"
     ],
-    "Entrapment": [
+    "entrapment": [
         "sense of captivity",
         "chronic looping",
         "inability to escape"
     ],
-    "Transformation Distortion": [
+    "transformation_distortion": [
         "dissociation",
         "identity disturbance",
         "pain-induced detachment",
@@ -70,4 +70,5 @@ ENTAILMENTS_MAP = {
 
 
 def get_entailments(metaphor_name):
-    return ENTAILMENTS_MAP.get(metaphor_name, [])
+    """Returns the entailments for a given metaphor type name (in any case format)."""
+    return ENTAILMENTS_MAP.get(metaphor_name.lower(), [])

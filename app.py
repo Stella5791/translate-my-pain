@@ -3,7 +3,8 @@ from tagger_logic import (
     tag_pain_description,
     generate_patient_summary,
     generate_doctor_summary,
-    generate_research_summary
+    generate_research_summary,
+    generate_entailment_summary  # ← Ensure this is present in tagger_logic.py
 )
 
 app = Flask(__name__)
@@ -28,13 +29,17 @@ def index():
             )
             results["input"] = description
 
-            # Add plain-language, clinical, and research summaries
+            # Existing summaries
             results["patient_narrative"] = generate_patient_summary(results)
             results["doctor_narrative"] = generate_doctor_summary(results)
             results["research_narrative"] = generate_research_summary(results)
+
+            results["entailment_summary"] = generate_entailment_summary(
+                results["entailments"])
+
 
     return render_template("index.html", results=results)
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="127.0.0.1", port=5000)

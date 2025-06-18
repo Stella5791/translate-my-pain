@@ -127,6 +127,10 @@
         <p><strong>Input:</strong> {{ results.input }}</p>
         {% if results.user_info.duration %}<p>This pain has been present for {{ results.user_info.duration }}.</p>{% endif %}
         <p>{{ results.plain_summary }}</p>
+
+        {% if results.entailment_summary %}
+          <p><strong>How this might feel, in clearer terms:</strong><br>{{ results.entailment_summary }}</p>
+        {% endif %}
       </div>
 
       <div class="box box2">

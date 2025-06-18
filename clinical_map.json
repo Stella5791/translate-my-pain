@@ -3,89 +3,199 @@
     "patient_friendly": "Pain that feels like being attacked or assaulted, often sharp, violent, and abrupt.",
     "likely_mechanism": "Sudden flare-up, lesion rupture, nerve activation due to strain or inflammation.",
     "clinical_terms": [
-      "acute trauma", "neuropathic flare", "adhesion rupture"
+      "acute trauma",
+      "neuropathic flare",
+      "adhesion rupture"
     ],
     "literature_framing": "Violent metaphors reflect the sensory intensity and emotional shock of pain flare-ups.",
     "entailments": [
-      "attack", "sharp", "violence", "brutality", "shock", "terror"
+      "attack",
+      "sharp",
+      "violence",
+      "brutality",
+      "shock",
+      "terror"
     ]
   },
-  "mechanical_metal": {
-    "patient_friendly": "Pain that feels mechanical, metallic, or like being gripped by cold, hard instruments.",
-    "likely_mechanism": "Pelvic structural pressure, adhesions, or deep tissue strain.",
+  "cutting_tools": {
+    "patient_friendly": "Pain that feels like being pierced or sliced with a sharp object — like a knife or blade.",
+    "likely_mechanism": "Localized nerve sensitization or referred visceral pain.",
     "clinical_terms": [
-      "deep pelvic pain", "visceral hypersensitivity", "adhesion-related tension"
+      "neuropathic pain",
+      "visceral hypersensitivity",
+      "sharp pelvic pain"
     ],
-    "literature_framing": "Patients often describe pain with cold, industrial metaphors when it feels impersonal or invasive.",
+    "literature_framing": "Cutting metaphors reflect acute, localized sharpness and the violation of bodily boundaries.",
     "entailments": [
-      "metallic", "friction", "mechanical"
+      "piercing",
+      "cutting",
+      "sharp",
+      "penetrative",
+      "danger"
     ]
   },
-  "tearing_ripping": {
-    "patient_friendly": "Pain that feels like something is ripping, tearing, or breaking internally.",
-    "likely_mechanism": "Stretching of lesions, tissue rupture, or myofascial strain.",
+  "internal_machinery": {
+    "patient_friendly": "Pain that feels mechanical — like grinding gears, crushing metal, or pressure from inside.",
+    "likely_mechanism": "Pelvic structural stress, internal adhesions, or fascial friction.",
     "clinical_terms": [
-      "acute lesion tension", "muscle tearing", "adhesion disruption"
+      "visceral hypersensitivity",
+      "adhesion tension",
+      "myofascial restriction"
     ],
-    "literature_framing": "Ripping metaphors are often used to describe endometriotic flare-ups and lesion-related trauma.",
+    "literature_framing": "Mechanical metaphors reflect impersonal, intrusive sensations tied to industrial imagery.",
     "entailments": [
-      "break", "separate", "destroy"
+      "grinding",
+      "friction",
+      "internal pressure",
+      "metallic",
+      "industrial"
     ]
   },
   "constriction_pressure": {
-    "patient_friendly": "Pain that feels like being squeezed, compressed, or bound tightly from within.",
-    "likely_mechanism": "Pelvic floor dysfunction, visceral pressure, or compressive adhesions.",
+    "patient_friendly": "Pain that feels like being squeezed, compressed, or crushed from inside.",
+    "likely_mechanism": "Pelvic floor tension, swelling, or gastrointestinal pressure.",
     "clinical_terms": [
-      "pelvic floor tension", "visceral compression", "myofascial pain"
+      "myofascial pain",
+      "visceral compression",
+      "pelvic floor dysfunction"
     ],
-    "literature_framing": "Constrictive metaphors reflect somatic tightening and pressure sensations commonly reported in pelvic conditions.",
+    "literature_framing": "Constriction metaphors indicate physical tightness, swelling, or loss of mobility.",
     "entailments": [
-      "constriction", "tightness"
+      "tightness",
+      "compression",
+      "internal pressure",
+      "restriction"
     ]
   },
-  "disintegration": {
-    "patient_friendly": "Pain that makes you feel like you're falling apart, breaking, or dissolving.",
-    "likely_mechanism": "Cognitive and emotional overload, combined with chronic pain-related fatigue.",
+  "electric_force": {
+    "patient_friendly": "Pain that comes in jolts, zaps, or electric shocks — sudden and unpredictable.",
+    "likely_mechanism": "Peripheral nerve irritation or hyperactive signaling.",
     "clinical_terms": [
-      "emotional exhaustion", "pain catastrophizing", "chronic stress response"
+      "neuropathic pain",
+      "nerve irritation",
+      "shooting pain"
     ],
-    "literature_framing": "Disintegration metaphors are strongly linked to patient narratives of identity loss and invisibility in chronic illness.",
+    "literature_framing": "Electric metaphors are often used for nerve-related pain with high variability and intensity.",
     "entailments": [
-      "collapse", "loss", "decay", "shame", "dehumanization", "loss of identity"
+      "zapping",
+      "shooting",
+      "jolting",
+      "buzzing",
+      "nerve spikes"
+    ]
+  },
+  "weight_burden": {
+    "patient_friendly": "Pain that feels heavy — like dragging a weight, carrying a burden, or being pressed down.",
+    "likely_mechanism": "Muscle fatigue, tension, or psychosomatic exhaustion.",
+    "clinical_terms": [
+      "somatic depression",
+      "chronic pelvic heaviness",
+      "fatigue-related pain"
+    ],
+    "literature_framing": "Burden metaphors express the emotional and physical weight of persistent pain.",
+    "entailments": [
+      "heaviness",
+      "dragging",
+      "depression",
+      "burden"
+    ]
+  },
+  "heat": {
+    "patient_friendly": "Pain that burns — like fire, boiling, or internal scalding.",
+    "likely_mechanism": "Inflammation, hormonal sensitivity, or tissue irritation.",
+    "clinical_terms": [
+      "dysmenorrhea",
+      "pelvic hyperemia",
+      "endometrial inflammation"
+    ],
+    "literature_framing": "Heat metaphors reflect inflammation and internal agitation common in endometriosis.",
+    "entailments": [
+      "burning",
+      "scalding",
+      "boiling",
+      "inflammation",
+      "heat"
     ]
   },
   "birth_labour": {
-    "patient_friendly": "Pain that feels like intense reproductive strain, labour-like contractions, or pushing sensations.",
-    "likely_mechanism": "Uterine contractions, visceral referred pain, endometrial inflammation.",
+    "patient_friendly": "Pain that mimics labour — intense, wave-like contractions or pushing sensations.",
+    "likely_mechanism": "Uterine contractions or bowel-associated cramping.",
     "clinical_terms": [
-      "dysmenorrhea", "pelvic organ strain", "visceral referred pain"
+      "dysmenorrhea",
+      "visceral cramping",
+      "tenesmus"
     ],
-    "literature_framing": "Labour metaphors are often used to convey the intensity and cyclical nature of reproductive pain.",
+    "literature_framing": "Labour metaphors reflect cyclical pain with reproductive and visceral triggers.",
     "entailments": [
-      "repetition", "strain", "cycle"
+      "contractions",
+      "reproductive strain",
+      "pelvic waves",
+      "pushing"
     ]
   },
-  "monster": {
-    "patient_friendly": "Pain that feels like a monstrous force, unpredictable and threatening, sometimes dormant but always looming.",
-    "likely_mechanism": "Chronic pain sensitization, central nervous system hypervigilance.",
+  "lingering_force": {
+    "patient_friendly": "Pain that simmers in the background — not acute, but always there, quietly wearing you down.",
+    "likely_mechanism": "Low-grade inflammation or chronic neural input.",
     "clinical_terms": [
-      "central sensitization", "anticipatory anxiety", "neuropathic pain"
+      "chronic pelvic pain",
+      "background nerve activity",
+      "ongoing discomfort"
     ],
-    "literature_framing": "Personifying metaphors like 'monster' often reflect emotional coping, fear of relapse, and trauma history.",
+    "literature_framing": "Lingering force metaphors reflect latent, constant, low-intensity pain with emotional impact.",
     "entailments": [
-      "invasion", "presence", "agency", "fear", "helplessness", "violation",
-      "hypervigilance", "anticipation", "relapse anxiety", "loss of autonomy", "threat of return"
+      "persistence",
+      "erosion",
+      "dullness",
+      "quiet suffering"
     ]
   },
-  "background_pain": {
-    "patient_friendly": "A dull, constant ache that persists in the background and wears you down over time.",
-    "likely_mechanism": "Ongoing low-level nerve activity or chronic inflammatory signaling.",
+  "predator": {
+    "patient_friendly": "Pain that feels like something is alive and attacking from the inside — clawing or lurking.",
+    "likely_mechanism": "Central sensitization with affective overload or somatic trauma memory.",
     "clinical_terms": [
-      "persistent pain", "chronic discomfort", "neuropathic background activity"
+      "central sensitization",
+      "pain catastrophizing",
+      "trauma imprint"
     ],
-    "literature_framing": "Chronic, background pain is often reported by patients with endometriosis or other conditions involving central sensitization.",
+    "literature_framing": "Predator metaphors personify pain, reflecting fear, invasion, and emotional dread.",
     "entailments": [
-      "persistent discomfort", "chronic burden", "nerve irritation"
+      "sentience",
+      "fear",
+      "violation",
+      "anticipation",
+      "loss of control"
+    ]
+  },
+  "entrapment": {
+    "patient_friendly": "Pain that makes you feel trapped in your body — caged, contained, or unable to escape.",
+    "likely_mechanism": "Psychological distress tied to chronic physical restriction.",
+    "clinical_terms": [
+      "body image distress",
+      "chronic looping",
+      "psychosomatic entrapment"
+    ],
+    "literature_framing": "Entrapment metaphors suggest physical and existential confinement.",
+    "entailments": [
+      "prison",
+      "cage",
+      "trapped",
+      "no way out"
+    ]
+  },
+  "transformation_distortion": {
+    "patient_friendly": "Pain that changes how you see yourself — like you're not you anymore, or outside your body.",
+    "likely_mechanism": "Dissociation, identity disruption, or depersonalization due to chronic pain.",
+    "clinical_terms": [
+      "dissociative symptoms",
+      "pain-induced depersonalization",
+      "identity erosion"
+    ],
+    "literature_framing": "Transformation metaphors show how chronic pain reshapes selfhood and perception.",
+    "entailments": [
+      "loss of self",
+      "estrangement",
+      "not myself",
+      "altered identity"
     ]
   }
 }

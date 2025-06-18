@@ -1,5 +1,4 @@
 import re
-import json
 from entailments import get_entailments
 from taxonomy import taxonomy
 
@@ -16,12 +15,10 @@ from taxonomy import taxonomy
 # loading if you later modularize the app or introduce CMS-based editing.
 # --------------------------------------------------------------------------------
 
-
-
-
-
 METAPHOR_TYPES = taxonomy.get("metaphor_types", {})
 GRADUATION = taxonomy.get("graduation_modifiers", [])
+TRIGGERS = taxonomy.get("triggers", [])
+LIFE_IMPACT = taxonomy.get("life_impact_clues", [])
 
 # Clinical rephrasings for each metaphor type
 CLINICAL_REPHRASINGS = {
@@ -56,8 +53,9 @@ RESEARCHER_FRAMINGS = {
     "transformation_distortion": "Focuses on metaphors where pain disrupts identity, reality, or bodily integrity. Frequently overlaps with dissociation, trauma, or neurological overwhelm."
 }
 
-
 # --- Tagging Logic --- #
+
+
 def normalize(text):
     return re.sub(r"[^\w\s']", "", text.lower())
 
@@ -77,7 +75,10 @@ def tag_pain_description(description, name=None, duration=None):
     return {
         "matched_metaphors": matched,
         "entailments": entailments,
-        "user_info": {"name": name, "duration": duration}
+        "user_info": {
+            "name": name.strip() if name else None,
+            "duration": duration.strip() if duration else None
+        }
     }
 
 # --- Summary Builders --- #
@@ -95,44 +96,36 @@ def generate_patient_summary(results):
     if not metaphor_types:
         return intro + " However, no specific metaphor patterns were identified this time."
 
-    impressions = []
-    for mtype in metaphor_types:
-        phrase = CLINICAL_REPHRASINGS.get(mtype)
-        if phrase:
-            impressions.append(phrase)
-
+    impressions = [CLINICAL_REPHRASINGS[mtype]
+                   for mtype in metaphor_types if mtype in CLINICAL_REPHRASINGS]
     return intro + " " + " ".join(impressions)
 
 
 def generate_doctor_summary(results):
     matched = results.get("matched_metaphors", {})
     if not matched:
-        return ("Based on your description, your pain may involve symptoms that suggest underlying inflammation, "
-                "nerve sensitivity, or muscular tension. These expressions point to functional disruption and emotional distress, "
-                "and should be discussed with a healthcare provider to explore appropriate evaluation and support.")
+        return (
+            "Based on your description, your pain may involve symptoms that suggest underlying inflammation, "
+            "nerve sensitivity, or muscular tension. These expressions point to functional disruption and emotional distress, "
+            "and should be discussed with a healthcare provider to explore appropriate evaluation and support."
+        )
 
-    output = []
-    for metaphor_type in matched:
-        phrase = CLINICAL_REPHRASINGS.get(metaphor_type)
-        if phrase:
-            output.append(f"• {phrase}")
-
+    output = [
+        f"• {CLINICAL_REPHRASINGS[mtype]}" for mtype in matched if mtype in CLINICAL_REPHRASINGS]
     return "Here is a clinical summary based on the metaphor types in your description:\n\n" + "\n\n".join(output)
 
 
 def generate_research_summary(results):
     matched = results.get("matched_metaphors", {})
     if not matched:
-        return ("The metaphors you've used reflect a rich semantic field of embodied suffering. "
-                "This type of language provides valuable insights into how patients conceptualize chronic pain beyond clinical terminology, "
-                "supporting a person-centered approach to qualitative health research.")
+        return (
+            "The metaphors you've used reflect a rich semantic field of embodied suffering. "
+            "This type of language provides valuable insights into how patients conceptualize chronic pain beyond clinical terminology, "
+            "supporting a person-centered approach to qualitative health research."
+        )
 
-    output = []
-    for metaphor_type in matched:
-        notes = RESEARCHER_FRAMINGS.get(metaphor_type)
-        if notes:
-            output.append(f"• {notes}")
-
+    output = [
+        f"• {RESEARCHER_FRAMINGS[mtype]}" for mtype in matched if mtype in RESEARCHER_FRAMINGS]
     return "These metaphors contribute to a qualitative understanding of pain communication in context:\n\n" + "\n\n".join(output)
 
 

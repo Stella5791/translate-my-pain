@@ -1,13 +1,10 @@
-# taxonomy.py
-
-# Master taxonomy dictionary used in Explain My Pain NLP app
-
 taxonomy = {
     "metaphor_types": {
         "violent_action": {
             "expressions": [
                 "assaulted", "attacked", "beaten", "bruised", "clubbed", "cut up", "grated", "gutted", "hammered", "hit",
-                "kicked", "knocked", "pounded", "punched", "run over", "shot", "slammed", "slashed", "smashed", "stabbed", "stabbed repeatedly"
+                "kicked", "knocked", "pounded", "punched", "run over", "shot", "slammed", "slashed", "smashed", "stabbed",
+                "stabbed repeatedly", "tearing"
             ],
             "entailments": [
                 "external physical trauma", "bodily assault", "repeated damage", "lack of control", "powerlessness"
@@ -43,7 +40,7 @@ taxonomy = {
         "constriction_pressure": {
             "expressions": [
                 "bursting", "compressed", "constricted", "crushed", "dragging", "eruption", "explodes", "exploding",
-                "panini press", "snake grip", "squeezed", "strangled", "tearing", "tight", "vice grip", "weighed down", "wrapped"
+                "panini press", "snake grip", "squeezed", "strangled", "tight", "vice grip", "weighed down", "wrapped"
             ],
             "entailments": [
                 "pressure from inside or outside", "restriction of movement", "internal suffocation"
@@ -54,7 +51,7 @@ taxonomy = {
         },
         "electric_force": {
             "expressions": [
-                "buzzing", "electric", "electricity", "shock", "buzzing", "jolting", "charged", "current", "electric shock",
+                "buzzing", "electric", "electricity", "shock", "jolting", "charged", "current", "electric shock",
                 "lightning bolt", "pulsing", "shooting pain", "sparks", "tingling", "zapping"
             ],
             "entailments": [
@@ -66,7 +63,8 @@ taxonomy = {
         },
         "weight_burden": {
             "expressions": [
-                "bowling ball", "burden", "carrying something heavy", "concrete block", "crushing", "dragging weight", "elephant on chest", "heavy pressure"
+                "bowling ball", "burden", "carrying something heavy", "concrete block", "crushing", "dragging weight",
+                "elephant on chest", "heavy pressure"
             ],
             "entailments": [
                 "sense of heaviness", "effortful movement", "depletion of energy"
@@ -89,7 +87,8 @@ taxonomy = {
         },
         "birth_labour": {
             "expressions": [
-                "baby feet under ribs", "birthing", "contractions", "crowning", "giving birth", "labour pain", "like childbirth", "pushing something out"
+                "baby feet under ribs", "birthing", "contractions", "crowning", "giving birth", "labour pain",
+                "like childbirth", "pushing something out"
             ],
             "entailments": [
                 "pelvic pressure", "wave-like pain", "endurance-based agony"
@@ -103,7 +102,8 @@ taxonomy = {
                 "background noise", "constant discomfort", "dull ache", "lowgrade pain", "simmering", "whisper of pain"
             ],
             "entailments": [
-                "subsurface threat", "quiet persistence", "emotional erosion", "ongoing discomfort", "wearing down", "unnoticed but present"
+                "subsurface threat", "quiet persistence", "emotional erosion", "ongoing discomfort",
+                "wearing down", "unnoticed but present"
             ],
             "dimensions": [
                 "chronic", "diffuse", "persistent", "low-intensity", "latent"
@@ -111,8 +111,8 @@ taxonomy = {
         },
         "predator": {
             "expressions": [
-                "beast", "creature", "demon inside", "lurking animal", "molten spiders", "monster", "predatory presence", "snoring monster",
-                "something clawing", "trex"
+                "beast", "creature", "demon inside", "lurking animal", "molten spiders", "monster", "predatory presence",
+                "snoring monster", "something clawing", "trex"
             ],
             "entailments": [
                 "threat of resurgence", "violation", "bodily invasion", "loss of control", "fear", "external sentience"
@@ -145,7 +145,9 @@ taxonomy = {
             ]
         },
         "literal": {
-            "expressions": [],
+            "expressions": [
+                "pelvic pain", "lower abdominal pain", "period pain", "chronic pain", "deep pain", "sharp pain"
+            ],
             "entailments": [
                 "descriptive pain vocabulary", "straightforward communication", "absence of metaphor"
             ],

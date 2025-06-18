@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sample Expressions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f5fa;
+      color: #2d2d2d;
+      margin: 2rem;
+    }
+
+    h1 {
+      color: #a18abd;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+
+    .category {
+      margin-bottom: 2rem;
+      background: #ffffff;
+      padding: 1rem;
+      border-left: 5px solid #a18abd;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #4c4c4c;
+    }
+
+    ul {
+      padding-left: 1.2rem;
+      margin-top: 0.5rem;
+    }
+
+    li {
+      margin-bottom: 0.3rem;
+    }
+
+    .footer {
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Research-Based Sample Expressions</h1>
+
+  <p>
+    If you're not sure how to express your pain, here are some real examples from people living with chronic pelvic pain or endometriosis.
+    These expressions were collected through research led by Dr. Stella Bullo. Try starting your description with <strong>“It feels like...”</strong> or <strong>“As if...”</strong>.
+  </p>
+
+  {% for category, expressions in sample_categories.items() %}
+    <div class="category">
+      <h2>{{ category.replace('_', ' ').title() }}</h2>
+      <ul>
+        {% for expr in expressions %}
+          <li>{{ expr }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+
+  <div class="footer">
+    Based on: “I feel like I’m being stabbed…” (Bullo, 2023) and “Parallel Words” (BJHP, 2024).
+  </div>
+
+</body>
+</html>

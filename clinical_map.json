@@ -8,6 +8,7 @@
       "adhesion rupture"
     ],
     "literature_framing": "Violent metaphors reflect the sensory intensity and emotional shock of pain flare-ups.",
+    "literature_source": "Bullo (2023); Bullo & O'Grady (2024)",
     "entailments": [
       "attack",
       "sharp",
@@ -26,6 +27,7 @@
       "sharp pelvic pain"
     ],
     "literature_framing": "Cutting metaphors reflect acute, localized sharpness and the violation of bodily boundaries.",
+    "literature_source": "Bullo (2023)",
     "entailments": [
       "piercing",
       "cutting",
@@ -43,6 +45,7 @@
       "myofascial restriction"
     ],
     "literature_framing": "Mechanical metaphors reflect impersonal, intrusive sensations tied to industrial imagery.",
+    "literature_source": "Bullo & O'Grady (2024)",
     "entailments": [
       "grinding",
       "friction",
@@ -60,6 +63,7 @@
       "pelvic floor dysfunction"
     ],
     "literature_framing": "Constriction metaphors indicate physical tightness, swelling, or loss of mobility.",
+    "literature_source": "Bullo (2023)",
     "entailments": [
       "tightness",
       "compression",
@@ -76,6 +80,7 @@
       "shooting pain"
     ],
     "literature_framing": "Electric metaphors are often used for nerve-related pain with high variability and intensity.",
+    "literature_source": "Bullo & O'Grady (2024)",
     "entailments": [
       "zapping",
       "shooting",
@@ -93,6 +98,7 @@
       "fatigue-related pain"
     ],
     "literature_framing": "Burden metaphors express the emotional and physical weight of persistent pain.",
+    "literature_source": "Bullo (2023)",
     "entailments": [
       "heaviness",
       "dragging",
@@ -109,6 +115,7 @@
       "endometrial inflammation"
     ],
     "literature_framing": "Heat metaphors reflect inflammation and internal agitation common in endometriosis.",
+    "literature_source": "Bullo & O'Grady (2024)",
     "entailments": [
       "burning",
       "scalding",
@@ -126,6 +133,7 @@
       "tenesmus"
     ],
     "literature_framing": "Labour metaphors reflect cyclical pain with reproductive and visceral triggers.",
+    "literature_source": "Bullo (2023)",
     "entailments": [
       "contractions",
       "reproductive strain",
@@ -142,6 +150,7 @@
       "ongoing discomfort"
     ],
     "literature_framing": "Lingering force metaphors reflect latent, constant, low-intensity pain with emotional impact.",
+    "literature_source": "Bullo & O'Grady (2024)",
     "entailments": [
       "persistence",
       "erosion",
@@ -158,6 +167,7 @@
       "trauma imprint"
     ],
     "literature_framing": "Predator metaphors personify pain, reflecting fear, invasion, and emotional dread.",
+    "literature_source": "Bullo & O'Grady (2024)",
     "entailments": [
       "sentience",
       "fear",
@@ -175,6 +185,7 @@
       "psychosomatic entrapment"
     ],
     "literature_framing": "Entrapment metaphors suggest physical and existential confinement.",
+    "literature_source": "Bullo (2023)",
     "entailments": [
       "prison",
       "cage",
@@ -191,6 +202,7 @@
       "identity erosion"
     ],
     "literature_framing": "Transformation metaphors show how chronic pain reshapes selfhood and perception.",
+    "literature_source": "Bullo & O'Grady (2024)",
     "entailments": [
       "loss of self",
       "estrangement",

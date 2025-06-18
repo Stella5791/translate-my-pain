@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Translate My Pain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Explain My Pain</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,74 +11,161 @@
       color: #2d2d2d;
       margin: 2rem;
     }
-    h1, h2 {
+
+    h1, h2, h3 {
       color: #a18abd;
     }
-    .section {
-      background: #ffffff;
-      border-left: 5px solid #a18abd;
-      margin-bottom: 2rem;
-      padding: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-    label, input, textarea, button {
-      display: block;
-      width: 100%;
+
+    label {
       margin-top: 1rem;
+      font-weight: bold;
+      display: block;
     }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      margin-top: 0.25rem;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
     textarea {
       height: 150px;
     }
+
     button {
       background-color: #a18abd;
       color: white;
-      border: none;
-      padding: 0.75rem;
-      cursor: pointer;
-      border-radius: 5px;
       font-weight: bold;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      margin-top: 1rem;
+      cursor: pointer;
     }
+
     button:hover {
-      background-color: #8e78aa;
+      background-color: #8c6eb0;
+    }
+
+    .note {
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+      color: #555;
+    }
+
+    .section {
+      background-color: white;
+      padding: 1rem;
+      border-left: 5px solid #a18abd;
+      margin-top: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    pre {
+      font-family: inherit;
+      background-color: #f9f9f9;
+      padding: 1rem;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      border-left: 4px solid #a18abd;
+    }
+
+    .footer {
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    .link-button {
+      font-size: 0.9rem;
+      color: #a18abd;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      display: inline-block;
+    }
+
+    .print-button {
+      background: none;
+      border: none;
+      color: #a18abd;
+      text-decoration: underline;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 1rem;
+      display: inline-block;
+    }
+
+    @media print {
+      .print-button, .note, .link-button, button, form {
+        display: none !important;
+      }
+      body {
+        margin: 1rem;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Translate My Pain</h1>
+
+  <h1>Explain My Pain</h1>
 
   <form method="POST">
     <label for="name">Your name (optional):</label>
-    <input type="text" id="name" name="name">
+    <input type="text" id="name" name="name" placeholder="e.g. Sam">
 
-    <label for="duration">How long have you been in pain? (optional)</label>
-    <input type="text" id="duration" name="duration">
+    <label for="duration">How long have you had this pain? (optional):</label>
+    <input type="text" id="duration" name="duration" placeholder="e.g. 2 years, since my teens">
 
     <label for="description">Describe your pain:</label>
-    <textarea id="description" name="description" required></textarea>
+    <textarea id="description" name="description" required placeholder="e.g. During ovulation, it feels like something is gripping and twisting my womb..."></textarea>
 
-    <button type="submit">Translate</button>
+    <p class="note">You can start your description with <strong>“It feels like...”</strong> or <strong>“As if...”</strong> and mention what triggers your pain, like <em>ovulation</em>, <em>menstruation</em>, <em>sex</em>, or <em>going to the toilet</em>.</p>
+    <p><a href="/samples" class="link-button">Need help finding the words? See research-based sample expressions</a></p>
+
+    <button type="submit">Explain</button>
   </form>
 
-  {% if results is defined and results %}
+  {% if results %}
     <div class="section">
       <h2>🫂 How this might feel to you</h2>
-      <p><strong>Metaphor-based interpretation:</strong><br>{{ results.entailment_summary }}</p>
-
-      {% if results.patient_narrative %}
-        <p><strong>Plain summary:</strong><br>{{ results.patient_narrative }}</p>
+      <p><strong>Input:</strong> {{ results.input }}</p>
+      {% if results.user_info.duration %}
+        <p><strong>Duration:</strong> {{ results.user_info.duration }}</p>
       {% endif %}
-    </div>
 
-    <div class="section">
-      <h2>🩺 Notes for your doctor</h2>
-      <p>{{ results.doctor_narrative }}</p>
-    </div>
+      <div>
+        <h3>Plain Summary</h3>
+        <pre>{{ results.plain_summary }}</pre>
+      </div>
 
-    <div class="section">
-      <h2>📚 How this analysis works: notes for researchers</h2>
-      <p>{{ results.research_narrative }}</p>
+      <div>
+        <h3>🩺 Notes for your doctor</h3>
+        <pre>{{ results.clinical_rephrasings }}</pre>
+      </div>
+
+      <div>
+        <h3>📚 How this analysis works: notes for researchers</h3>
+        <pre>{{ results.research }}</pre>
+      </div>
+
+      <button class="print-button" onclick="window.print()">🖨️ Print this page</button>
     </div>
   {% endif %}
+
+  <p style="font-size: 0.85rem; color: #888; margin-top: 2rem;">
+    <em>This is a research and communication support tool. It does not provide medical diagnosis or replace clinical evaluation.</em>
+  </p>
+
+  <div class="footer">
+    Developed by Dr Stella Bullo — Linguist, Developer, and Founder of the Language of Endometriosis Project.
+  </div>
+
 </body>
 </html>

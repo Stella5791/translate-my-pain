@@ -135,28 +135,18 @@
   {% if results %}
     <div class="section">
       <h2>🫂 How this might feel to you</h2>
-      <p><strong>Input:</strong> {{ results.input }}</p>
-      {% if results.user_info.duration %}
-        <p><strong>Duration:</strong> {{ results.user_info.duration }}</p>
-      {% endif %}
+      <pre>{{ results.plain_summary }}</pre>
 
-      <div>
-        <h3>Plain Summary</h3>
-        <pre>{{ results.plain_summary }}</pre>
-      </div>
+      <h3>🩺 Notes for your doctor</h3>
+      <pre>{{ results.doctor_narrative }}</pre>
+      <p class="note">
+        <a href="/evidence" class="link-button">View supporting evidence and research sources</a>
+      </p>
 
-      <div>
-        <h3>🩺 Notes for your doctor</h3>
-        <pre>{{ results.doctor_narrative }}</pre>
-        <p class="note">
-          <a href="/evidence" class="link-button">View supporting evidence and research sources</a>
-        </p>
-      </div>
-
-      <div>
-        <h3>📚 How this analysis works: notes for researchers</h3>
-        <pre>{{ results.research }}</pre>
-      </div>
+      <p class="note">
+        <a href="/evidence" class="link-button">How this tool works (research sources)</a>
+      </p>
+      
 
       <button class="print-button" onclick="window.print()">🖨️ Print this page</button>
     </div>

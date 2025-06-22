@@ -106,5 +106,9 @@ ENTAILMENTS_MAP = {
 
 
 def get_entailments(metaphor_name):
-    """Returns the list of entailments for a given metaphor type."""
-    return ENTAILMENTS_MAP.get(metaphor_name.lower(), {}).get("entailments", [])
+    """Returns entailments structured into experiential and affective keys."""
+    raw = ENTAILMENTS_MAP.get(metaphor_name.lower(), {}).get("entailments", [])
+    return {
+        "experiential": raw,
+        "affective": []  # Placeholder – add affective entailments later if needed
+    }

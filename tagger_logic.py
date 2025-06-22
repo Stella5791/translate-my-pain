@@ -2,6 +2,7 @@ import re
 from entailments import get_entailments
 from taxonomy import taxonomy
 
+# Load taxonomy components
 METAPHOR_TYPES = taxonomy.get("metaphor_types", {})
 GRADUATION = taxonomy.get("graduation_modifiers", [])
 TRIGGERS = taxonomy.get("triggers", [])
@@ -22,21 +23,6 @@ CLINICAL_REPHRASINGS = {
     "entrapment": "You may feel trapped inside your body, caught in a loop of pain that limits your freedom.",
     "transformation_distortion": "The pain affects how you see yourself — altering your sense of identity or making you feel detached from your body.",
     "literal": "You’re using direct physical terms to describe your pain. This language is clear and still very meaningful."
-}
-
-RESEARCHER_FRAMINGS = {
-    "constriction_pressure": "This category captures metaphors of tightness, wrapping, or pressure. It is conceptually linked to the idea of bodily containment and internal restriction. Frequently co-occurs with pelvic floor issues.",
-    "violent_action": "Includes metaphors of direct assault and external trauma. Often emotionally charged and associated with moments of flare or rupture.",
-    "internal_machinery": "Refers to industrial or mechanical metaphors, often indicating dehumanized pain or friction from within. Linked to chronic strain or perceived dysfunction.",
-    "cutting_tools": "Captures precise, sharp, and often invasive metaphors. Common in descriptions of acute, localized endometrial or nerve pain.",
-    "electric_force": "This type reflects sudden, erratic sensory spikes tied to nerve responses. Common in descriptions of neuropathic or hormonally triggered pain.",
-    "heat": "Associated with internal fire, burning, or scalding. Often tied to inflammation, irritation, and hormonal heat dysregulation.",
-    "weight_burden": "These metaphors reflect heaviness, burden, and exhaustion. Frequently associated with fatigue, bloating, and emotional overload.",
-    "birth_labour": "Taps into reproductive metaphors of childbirth and contractions. Often used by patients with uterine or hormonal patterns of pain.",
-    "lingering_force": "Metaphors in this category point to a dull, ever-present discomfort. The language tends to be subdued but communicates chronicity.",
-    "predator": "This merged category (formerly monster, lurking_threat, animal_attack) highlights metaphors that personify pain as an external, looming force. Reflects trauma narratives, vigilance, and psychological intrusion.",
-    "entrapment": "Captures the logic of the body as a prison or cage. Strong spatial and affective dimensions, particularly among patients with chronic looping pain.",
-    "transformation_distortion": "Focuses on metaphors where pain disrupts identity, reality, or bodily integrity. Frequently overlaps with dissociation, trauma, or neurological overwhelm."
 }
 
 
@@ -63,82 +49,132 @@ def tag_pain_description(description, name=None, duration=None):
         "user_info": {
             "name": name.strip() if name else None,
             "duration": duration.strip() if duration else None
-        }
+        },
+        "input": description.strip()
     }
-
-
-def generate_patient_summary(results):
-    name = results.get("user_info", {}).get("name")
-    duration = results.get("user_info", {}).get("duration")
-
-    intro = f"{name}, you're living with pain that holds deep meaning." if name else "You're living with pain that holds deep meaning."
-    if duration:
-        intro += f" You've experienced this for {duration}."
-
-    metaphor_types = results.get("matched_metaphors", {}).keys()
-    if not metaphor_types:
-        return intro + " However, no specific metaphor patterns were identified this time."
-
-    impressions = [CLINICAL_REPHRASINGS[mtype]
-                   for mtype in metaphor_types if mtype in CLINICAL_REPHRASINGS]
-    return intro + " " + " ".join(impressions)
 
 
 def generate_doctor_summary(results):
     matched = results.get("matched_metaphors", {})
+    input_text = results.get("input", "").lower()
+
     if not matched:
         return (
             "Your description contains no specific metaphorical patterns that align with known symptom clusters. "
             "However, the language used reflects a complex experience of pain that should be discussed with a healthcare provider for further evaluation."
         )
 
-    output = []
+    summary = ["Here is a clinical summary based on your description:\n"]
 
-    if "constriction_pressure" in matched:
-        output.append(
-            "• **During ovulation**: Language involving internal tightness or constriction may indicate uterine spasms, "
-            "pelvic floor tension, or visceral hypersensitivity."
-        )
+    if "constriction_pressure" in matched or "cutting_tools" in matched:
+        ovulation_quote = re.search(r"(twisting.*?knife.*?womb)", input_text)
+        summary.append("**Ovulation-related pain**")
+        if ovulation_quote:
+            summary.append(
+                f'“{ovulation_quote.group(1)}” — suggests sharp, localized pelvic pain potentially involving ovarian cyst activity, uterine spasms, or visceral hypersensitivity.\n')
+        else:
+            summary.append(
+                "Language involving constriction or stabbing during ovulation may indicate uterine or ovarian origin pain and visceral nerve sensitivity.\n")
+
     if "heat" in matched:
-        output.append(
-            "• **During menstruation**: Burning or explosive metaphors suggest inflammation, neuroimmune flare-ups, "
-            "and possible hormonal dysregulation."
-        )
-    if "cutting_tools" in matched or "violent_action" in matched:
-        output.append(
-            "• **During intercourse**: Sharp, stabbing metaphors may reflect internal trauma, nerve sensitivity, or "
-            "pelvic floor dysfunction."
-        )
-    if "birth_labour" in matched:
-        output.append(
-            "• **During defecation**: Descriptions evoking labour or pushing may suggest deep infiltrating lesions near the bowel "
-            "or rectovaginal septum, or referred pain from pelvic nerve entrapment."
-        )
-    if "lingering_force" in matched or "heat" in matched:
-        output.append(
-            "• **At baseline**: Constant simmering or dull metaphors often indicate low-grade inflammation and chronic pelvic pain, "
-            "compounded by emotional fatigue and anticipatory anxiety."
-        )
+        period_quote = re.search(r"(fireball.*?(me|inside))", input_text)
+        summary.append("**Menstrual pain**")
+        if period_quote:
+            summary.append(
+                f'“{period_quote.group(1)}” — consistent with intense inflammatory flare-ups. Could suggest central sensitization, immune activation, or dysregulated prostaglandin response.\n')
+        else:
+            summary.append(
+                "Burning or explosive language may relate to inflammation, hormonal flares, or neuroimmune disruption during menstruation.\n")
 
-    return "\n".join(output)
+    if "violent_action" in matched or "cutting_tools" in matched:
+        sex_quote = re.search(r"(being stabbed)", input_text)
+        summary.append("**Dyspareunia (pain with intercourse)**")
+        if sex_quote:
+            summary.append(
+                f'“{sex_quote.group(1)}” — may reflect deep pelvic floor dysfunction, myofascial trigger points, or neuropathic sensitivity.\n')
+        else:
+            summary.append(
+                "Stabbing metaphors during intercourse may reflect trauma, nerve irritation, or muscle dysfunction.\n")
+
+    if "birth_labour" in matched or "cutting_tools" in matched:
+        loo_quote = re.search(r"(pushing out.*?sharp)", input_text)
+        summary.append("**Defecation-related pain**")
+        if loo_quote:
+            summary.append(
+                f'“{loo_quote.group(1)}” — may indicate endometrial lesions affecting the bowel, rectovaginal septum, or associated nerve pathways.\n')
+        else:
+            summary.append(
+                "Labour-like or cutting metaphors during bowel movements may suggest bowel-involved endometriosis or nerve entrapment.\n")
+
+    if "lingering_force" in matched:
+        baseline_quote = re.search(
+            r"(dull simmering ache.*?)($|\.|\n)", input_text)
+        summary.append("**Chronic baseline pain**")
+        if baseline_quote:
+            summary.append(
+                f'“{baseline_quote.group(1)}” — consistent with low-grade inflammation and emotional fatigue. May be linked to chronic pelvic pain syndrome or persistent somatic distress.\n')
+        else:
+            summary.append(
+                "Dull, ongoing metaphors often signal chronic inflammation, emotional strain, and anticipatory distress.\n")
+
+    summary.append(
+        "🩺 *Note*: These metaphor-based interpretations are not diagnostic. They are intended to support communication between patient and provider.\n")
+    summary.append("For more information, see the evidence page: /evidence")
+
+    return "\n".join(summary)
 
 
-def generate_research_summary(results):
+def generate_patient_summary(results):
     matched = results.get("matched_metaphors", {})
-    if not matched:
-        return (
-            "The metaphors you've used reflect a rich semantic field of embodied suffering. "
-            "This type of language provides valuable insights into how patients conceptualize chronic pain beyond clinical terminology, "
-            "supporting a person-centered approach to qualitative health research."
-        )
+    input_text = results.get("input", "").lower()
+    name = results.get("user_info", {}).get("name", "You")
+    duration = results.get("user_info", {}).get("duration")
 
-    output = [
-        f"• {RESEARCHER_FRAMINGS[mtype]}" for mtype in matched if mtype in RESEARCHER_FRAMINGS]
-    return "These metaphors contribute to a qualitative understanding of pain communication in context:\n\n" + "\n\n".join(output)
+    if not matched:
+        return f"{name}, your pain holds deep meaning, but no specific metaphor patterns were identified this time."
+
+    intro = f"{name}, you're living with pain that holds deep meaning."
+    if duration:
+        intro += f" You've been experiencing this for {duration.strip()}."
+    lines = [intro, ""]
+
+    if "constriction_pressure" in matched or "cutting_tools" in matched:
+        lines.append("**During ovulation**: You may feel deep internal pressure or sharp sensations. This could reflect spasms in the uterus, tension in the pelvic floor, or sensitive nerves.")
+
+    if "heat" in matched:
+        lines.append("**During menstruation**: Your pain may feel like burning or intense flares. This is often linked to inflammation, hormonal changes, or immune response.")
+
+    if "violent_action" in matched or "cutting_tools" in matched:
+        lines.append(
+            "**During intercourse**: The pain may be sharp and distressing, possibly due to internal sensitivity, nerve pain, or muscle tension.")
+
+    if "birth_labour" in matched or "cutting_tools" in matched:
+        lines.append("**When going to the toilet**: It may feel like pushing something sharp or painful, which might relate to lesions or pressure near the bowel or rectovaginal area.")
+
+    if "lingering_force" in matched:
+        lines.append("**At baseline**: Even outside flares, you may live with a dull, simmering ache. This constant background pain can wear you down emotionally and physically.")
+
+    return "\n".join(lines)
 
 
 def generate_entailment_summary(entailments):
     if not entailments:
-        return "No entailments were found."
-    flat_list = [item for sublist in entailments.values() for item in sublist]
-    return "These expressions suggest themes like: " + ", ".join(sorted(set(flat_list))) + "."
+        return "No experiential or affective entailments were found."
+
+    summary_lines = [
+        "🧠 Clinical interpretations based on metaphor entailments:\n"]
+
+    for metaphor_type, values in entailments.items():
+        experiential = values.get("experiential", [])
+        affective = values.get("affective", [])
+
+        if experiential:
+            summary_lines.append(
+                f"• **{metaphor_type}** – Experiential entailments: {', '.join(experiential)}")
+        if affective:
+            summary_lines.append(
+                f"  – Affective entailments: {', '.join(affective)}")
+
+    summary_lines.append(
+        "\nThese interpretations can support shared understanding between patients and clinicians.")
+    return "\n".join(summary_lines)

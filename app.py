@@ -3,10 +3,10 @@ from tagger_logic import (
     tag_pain_description,
     generate_patient_summary,
     generate_doctor_summary,
-    generate_research_summary,
     generate_entailment_summary
 )
-from taxonomy import taxonomy  # Using Python-based taxonomy
+
+from taxonomy import taxonomy
 import os
 
 app = Flask(__name__)
@@ -33,13 +33,9 @@ def index():
                     duration=duration if duration else None
                 )
 
-                print("🧪 DEBUG: Results from tag_pain_description():")
-                print(results)
-
                 results["input"] = description
                 results["plain_summary"] = generate_patient_summary(results)
                 results["doctor_narrative"] = generate_doctor_summary(results)
-                results["research"] = generate_research_summary(results)
                 results["entailment_summary"] = generate_entailment_summary(
                     results.get("entailments", {})
                 )
@@ -47,6 +43,14 @@ def index():
             except Exception as e:
                 print(f"[Error] Failed to process description: {e}")
                 results = {
+                    "input": description,
+                    "plain_summary": "Could not generate patient summary.",
+                    "doctor_narrative": "Could not generate doctor notes.",
+                    "entailment_summary": "Could not generate entailment summary.",
+                    "user_info": {
+                        "name": name if name else None,
+                        "duration": duration if duration else None
+                    },
                     "error": "There was an error processing your input."
                 }
 

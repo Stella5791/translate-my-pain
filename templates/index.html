@@ -66,6 +66,15 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
+    .guidance-box {
+      background-color: white;
+      border-left: 5px solid #a18abd;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+
     pre {
       font-family: inherit;
       background-color: #f9f9f9;
@@ -110,6 +119,15 @@
         margin: 1rem;
       }
     }
+
+    @media (max-width: 600px) {
+      body {
+        margin: 1rem;
+      }
+      .section, .guidance-box {
+        padding: 0.75rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -123,10 +141,26 @@
     <label for="duration">How long have you had this pain? (optional):</label>
     <input type="text" id="duration" name="duration" placeholder="e.g. 2 years, since my teens">
 
+    <div class="guidance-box">
+      <p style="margin-top: 0;">
+        Pain often varies depending on what triggers it. Please describe how your pain feels during different moments such as:
+      </p>
+      <ul style="margin: 0.5rem 0 0 1.5rem;">
+        <li><strong>Ovulation</strong></li>
+        <li><strong>Menstruation</strong></li>
+        <li><strong>Sex or intercourse</strong></li>
+        <li><strong>Going to the toilet</strong></li>
+        <li><strong>Everyday or background pain</strong></li>
+        
+      </ul>
+      <p>
+        You can start your description with <strong>“It feels like...”</strong> or <strong>“As if...”</strong> and include how it makes you feel emotionally.
+      </p>
+    </div>
+
     <label for="description">Describe your pain:</label>
     <textarea id="description" name="description" required placeholder="e.g. During ovulation, it feels like something is gripping and twisting my womb..."></textarea>
 
-    <p class="note">You can start your description with <strong>“It feels like...”</strong> or <strong>“As if...”</strong> and mention what triggers your pain, like <em>ovulation</em>, <em>menstruation</em>, <em>sex</em>, or <em>going to the toilet</em>.</p>
     <p><a href="/samples" class="link-button">Need help finding the words? See research-based sample expressions</a></p>
 
     <button type="submit">Explain</button>
@@ -143,9 +177,6 @@
         <a href="/evidence" class="link-button">View supporting evidence and research sources</a>
       </p>
 
-      <p class="note">
-        <a href="/evidence" class="link-button">How this tool works (research sources)</a>
-      </p>
       
 
       <button class="print-button" onclick="window.print()">🖨️ Print this page</button>
@@ -162,3 +193,4 @@
 
 </body>
 </html>
+https://occ-0-6348-1123.1.nflxso.net/dnm/api/v6/6AYY37jfdO6hpXcMjf9Yu5cnmO0/AAAABT1cSmxx0Svq9HP2YAXOTEaT0AJ6CTp7xXMsjFIL2RLi-3amn2JolUXWZKkEymyFkvGzJ920z5y1Z1DXxPqsT19hHgAqwvSraNio.webp?r=4fa

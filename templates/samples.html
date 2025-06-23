@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sample Expressions</title>
+  <title>Research-Based Sample Expressions</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -20,8 +20,8 @@
 
     p {
       font-size: 1rem;
-      line-height: 1.5;
-      margin-bottom: 1.5rem;
+      line-height: 1.6;
+      margin-bottom: 1.2rem;
     }
 
     .category {
@@ -39,6 +39,12 @@
       color: #4c4c4c;
     }
 
+    .category-intro {
+      font-style: italic;
+      margin-bottom: 0.5rem;
+      color: #555;
+    }
+
     ul {
       padding-left: 1.2rem;
       margin-top: 0.5rem;
@@ -53,20 +59,56 @@
       font-size: 0.9rem;
       color: #888;
     }
+
+    .back-button {
+      display: inline-block;
+      background-color: #a18abd;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      text-decoration: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .back-button:hover {
+      background-color: #8c6eb0;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        margin: 1rem;
+      }
+
+      .category {
+        padding: 0.75rem;
+      }
+    }
   </style>
 </head>
 <body>
 
+  <a href="/" class="back-button">← Back to Main Page</a>
+
   <h1>Research-Based Sample Expressions</h1>
 
   <p>
-    If you're not sure how to express your pain, here are some real examples from people living with chronic pelvic pain or endometriosis.
-    These expressions were collected through research led by Dr. Stella Bullo. Try starting your description with <strong>“It feels like...”</strong> or <strong>“As if...”</strong>.
+    Pain is a subjective and complex experience. Many people find that it's easier to explain their pain by comparing it to something else — a metaphor. Research shows that people often use vivid comparisons to describe menstrual and pelvic pain, especially in conditions like endometriosis.
+  </p>
+
+  <p>
+    Think about how your pain feels during different moments — like <strong>ovulation</strong>, <strong>menstruation</strong>, <strong>intercourse</strong>, <strong>bowel movements</strong>, or even when <strong>nothing seems to be triggering it</strong>. Does your pain feel overwhelming, violent, suffocating, or something else entirely? And how does it make you feel emotionally?
+  </p>
+
+  <p>
+    The following categories contain real expressions used by people describing their pain. Use them as inspiration — or as a mirror.
   </p>
 
   {% for category, expressions in sample_categories.items() %}
     <div class="category">
       <h2>{{ category.replace('_', ' ').title() }}</h2>
+      <p class="category-intro">
+        Does your pain feel like <strong>{{ category.replace('_', ' ').lower() }}</strong>? Here are some expressions people have used:
+      </p>
       <ul>
         {% for expr in expressions %}
           <li>{{ expr }}</li>

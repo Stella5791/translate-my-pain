@@ -16,7 +16,7 @@ taxonomy = {
         "cutting_tools": {
             "expressions": [
                 "blade", "coathanger", "cutting", "ice pick", "knife", "knitting needle", "paper cuts", "razor",
-                "safety scissors", "scalpel", "scissors", "slicing", "sword"
+                "safety scissors", "scalpel", "scissors", "slicing", "sword", "barbed wire", "barbed-wire"
             ],
             "entailments": [
                 "piercing pain", "localized sharp injury", "invasive action", "bodily threat"

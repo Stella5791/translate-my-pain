@@ -37,11 +37,10 @@ def tag_pain_description(description, name=None, duration=None):
 
     for metaphor_type, data in METAPHOR_TYPES.items():
         for expression in data.get("expressions", []):
-            pattern = r'\b' + re.escape(expression.lower()) + r'\b'
+            pattern = re.escape(expression.lower())
             if re.search(pattern, text):
                 matched.setdefault(metaphor_type, []).append(expression)
                 entailments[metaphor_type] = get_entailments(metaphor_type)
-                break
 
     return {
         "matched_metaphors": matched,
@@ -67,55 +66,29 @@ def generate_doctor_summary(results):
     summary = ["Here is a clinical summary based on your description:\n"]
 
     if "constriction_pressure" in matched or "cutting_tools" in matched:
-        ovulation_quote = re.search(r"(twisting.*?knife.*?womb)", input_text)
         summary.append("**Ovulation-related pain**")
-        if ovulation_quote:
-            summary.append(
-                f'“{ovulation_quote.group(1)}” — suggests sharp, localized pelvic pain potentially involving ovarian cyst activity, uterine spasms, or visceral hypersensitivity.\n')
-        else:
-            summary.append(
-                "Language involving constriction or stabbing during ovulation may indicate uterine or ovarian origin pain and visceral nerve sensitivity.\n")
+        summary.append(
+            "Language involving constriction or stabbing during ovulation may indicate uterine or ovarian origin pain and visceral nerve sensitivity.\n")
 
     if "heat" in matched:
-        period_quote = re.search(r"(fireball.*?(me|inside))", input_text)
         summary.append("**Menstrual pain**")
-        if period_quote:
-            summary.append(
-                f'“{period_quote.group(1)}” — consistent with intense inflammatory flare-ups. Could suggest central sensitization, immune activation, or dysregulated prostaglandin response.\n')
-        else:
-            summary.append(
-                "Burning or explosive language may relate to inflammation, hormonal flares, or neuroimmune disruption during menstruation.\n")
+        summary.append(
+            "Burning or explosive language may relate to inflammation, hormonal flares, or neuroimmune disruption during menstruation.\n")
 
     if "violent_action" in matched or "cutting_tools" in matched:
-        sex_quote = re.search(r"(being stabbed)", input_text)
         summary.append("**Dyspareunia (pain with intercourse)**")
-        if sex_quote:
-            summary.append(
-                f'“{sex_quote.group(1)}” — may reflect deep pelvic floor dysfunction, myofascial trigger points, or neuropathic sensitivity.\n')
-        else:
-            summary.append(
-                "Stabbing metaphors during intercourse may reflect trauma, nerve irritation, or muscle dysfunction.\n")
+        summary.append(
+            "Stabbing metaphors during intercourse may reflect trauma, nerve irritation, or muscle dysfunction.\n")
 
     if "birth_labour" in matched or "cutting_tools" in matched:
-        loo_quote = re.search(r"(pushing out.*?sharp)", input_text)
         summary.append("**Defecation-related pain**")
-        if loo_quote:
-            summary.append(
-                f'“{loo_quote.group(1)}” — may indicate endometrial lesions affecting the bowel, rectovaginal septum, or associated nerve pathways.\n')
-        else:
-            summary.append(
-                "Labour-like or cutting metaphors during bowel movements may suggest bowel-involved endometriosis or nerve entrapment.\n")
+        summary.append(
+            "Labour-like or cutting metaphors during bowel movements may suggest bowel-involved endometriosis or nerve entrapment.\n")
 
     if "lingering_force" in matched:
-        baseline_quote = re.search(
-            r"(dull simmering ache.*?)($|\.|\n)", input_text)
         summary.append("**Chronic baseline pain**")
-        if baseline_quote:
-            summary.append(
-                f'“{baseline_quote.group(1)}” — consistent with low-grade inflammation and emotional fatigue. May be linked to chronic pelvic pain syndrome or persistent somatic distress.\n')
-        else:
-            summary.append(
-                "Dull, ongoing metaphors often signal chronic inflammation, emotional strain, and anticipatory distress.\n")
+        summary.append(
+            "Dull, ongoing metaphors often signal chronic inflammation, emotional strain, and anticipatory distress.\n")
 
     summary.append(
         "🩺 *Note*: These metaphor-based interpretations are not diagnostic. They are intended to support communication between patient and provider.\n")
@@ -162,7 +135,7 @@ def generate_entailment_summary(entailments):
         return "No experiential or affective entailments were found."
 
     summary_lines = [
-        "🧠 Clinical interpretations based on metaphor entailments:\n"]
+        " Clinical interpretations based on metaphor entailments:\n"]
 
     for metaphor_type, values in entailments.items():
         experiential = values.get("experiential", [])

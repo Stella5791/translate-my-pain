@@ -6,14 +6,25 @@
   <title>Explain My Pain</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f7f5fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f6fc;
       color: #2d2d2d;
-      margin: 2rem;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 750px;
+      width: 100%;
+      padding: 2rem;
+      box-sizing: border-box;
     }
 
     h1, h2, h3 {
-      color: #a18abd;
+      color: #8c6eb0;
+      margin-top: 0;
     }
 
     label {
@@ -24,31 +35,31 @@
 
     input, textarea {
       width: 100%;
-      padding: 0.75rem;
+      padding: 0.6rem;
       font-size: 1rem;
       border: 1px solid #ccc;
       margin-top: 0.25rem;
-      border-radius: 5px;
+      border-radius: 8px;
       box-sizing: border-box;
     }
 
     textarea {
-      height: 150px;
+      height: 130px;
     }
 
     button {
-      background-color: #a18abd;
+      background-color: #8c6eb0;
       color: white;
       font-weight: bold;
-      padding: 0.75rem 1.5rem;
+      padding: 0.6rem 1.2rem;
       border: none;
       border-radius: 5px;
-      margin-top: 1rem;
+      margin-top: 1.5rem;
       cursor: pointer;
     }
 
     button:hover {
-      background-color: #8c6eb0;
+      background-color: #77589f;
     }
 
     .note {
@@ -59,20 +70,11 @@
 
     .section {
       background-color: white;
-      padding: 1rem;
+      padding: 1rem 1.5rem;
       border-left: 5px solid #a18abd;
       margin-top: 2rem;
       border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .guidance-box {
-      background-color: white;
-      border-left: 5px solid #a18abd;
-      border-radius: 10px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      padding: 1rem;
-      margin: 1.5rem 0;
     }
 
     pre {
@@ -89,11 +91,12 @@
       margin-top: 3rem;
       font-size: 0.9rem;
       color: #888;
+      line-height: 1.5;
     }
 
     .link-button {
       font-size: 0.9rem;
-      color: #a18abd;
+      color: #8c6eb0;
       text-decoration: underline;
       cursor: pointer;
       margin-top: 0.5rem;
@@ -103,12 +106,22 @@
     .print-button {
       background: none;
       border: none;
-      color: #a18abd;
+      color: #8c6eb0;
       text-decoration: underline;
       font-size: 0.9rem;
       cursor: pointer;
       margin-top: 1rem;
       display: inline-block;
+    }
+
+    .explanation-box {
+      font-size: 0.9rem;
+      color: #444;
+      padding: 1.2rem;
+      margin-top: 2rem;
+      border-left: 4px solid #ddd;
+      border-radius: 8px;
+      background: none;
     }
 
     @media print {
@@ -119,78 +132,80 @@
         margin: 1rem;
       }
     }
-
-    @media (max-width: 600px) {
-      body {
-        margin: 1rem;
-      }
-      .section, .guidance-box {
-        padding: 0.75rem;
-      }
-    }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Explain My Pain</h1>
 
-  <h1>Explain My Pain</h1>
+    <p class="note">
+      This tool helps you describe pain in your own words using a database of pain descriptors drawn from real patient experiences with endometriosis. The tool analyzes your input and offers summaries to support clinical conversations.
+    </p>
 
-  <form method="POST">
-    <label for="name">Your name (optional):</label>
-    <input type="text" id="name" name="name" placeholder="e.g. Sam">
+    <form method="POST">
+      <label for="name">Your name (optional):</label>
+      <input type="text" id="name" name="name" placeholder="e.g. Sam">
 
-    <label for="duration">How long have you had this pain? (optional):</label>
-    <input type="text" id="duration" name="duration" placeholder="e.g. 2 years, since my teens">
+      <label for="duration">How long have you had this pain? (optional):</label>
+      <input type="text" id="duration" name="duration" placeholder="e.g. 2 years, since my teens">
 
-    <div class="guidance-box">
-      <p style="margin-top: 0;">
-        Pain often varies depending on what triggers it. Please describe how your pain feels during different moments such as:
-      </p>
-      <ul style="margin: 0.5rem 0 0 1.5rem;">
-        <li><strong>Ovulation</strong></li>
-        <li><strong>Menstruation</strong></li>
-        <li><strong>Sex or intercourse</strong></li>
-        <li><strong>Going to the toilet</strong></li>
-        <li><strong>Everyday or background pain</strong></li>
-        
-      </ul>
-      <p>
-        You can start your description with <strong>“It feels like...”</strong> or <strong>“As if...”</strong> and include how it makes you feel emotionally.
-      </p>
-    </div>
-
-    <label for="description">Describe your pain:</label>
-    <textarea id="description" name="description" required placeholder="e.g. During ovulation, it feels like something is gripping and twisting my womb..."></textarea>
-
-    <p><a href="/samples" class="link-button">Need help finding the words? See research-based sample expressions</a></p>
-
-    <button type="submit">Explain</button>
-  </form>
-
-  {% if results %}
-    <div class="section">
-      <h2>🫂 How this might feel to you</h2>
-      <pre>{{ results.plain_summary }}</pre>
-
-      <h3>🩺 Notes for your doctor</h3>
-      <pre>{{ results.doctor_narrative }}</pre>
       <p class="note">
-        <a href="/evidence" class="link-button">View supporting evidence and research sources</a>
+        Pain often varies depending on what triggers it. Please describe how it feels during different situations, such as:
       </p>
-
       
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.95rem; color: #444; margin-top: 0.5rem; margin-bottom: 1rem;">
+        <div style="background: #eee; padding: 0.3rem 0.6rem; border-radius: 5px;">Ovulation</div>
+        <div style="background: #eee; padding: 0.3rem 0.6rem; border-radius: 5px;">Menstruation</div>
+        <div style="background: #eee; padding: 0.3rem 0.6rem; border-radius: 5px;">Sex or Intercourse</div>
+        <div style="background: #eee; padding: 0.3rem 0.6rem; border-radius: 5px;">Going to the toilet</div>
+        <div style="background: #eee; padding: 0.3rem 0.6rem; border-radius: 5px;">Everyday or background pain</div>
+        <div style="background: #eee; padding: 0.3rem 0.6rem; border-radius: 5px;">Other activities</div>
+      </div>
+      
+      
+      
+      
+      <p class="note">You can start your description with <strong>“It feels like...”</strong> or <strong>“As if...”</strong></p>
 
-      <button class="print-button" onclick="window.print()">🖨️ Print this page</button>
+      <label for="description">Describe your pain:</label>
+      <textarea id="description" name="description" required placeholder="e.g. During ovulation, it feels like something is gripping and twisting my womb..."></textarea>
+
+      <p><a href="/samples" class="link-button">Need help finding the words? See research-based sample expressions</a></p>
+
+      <button type="submit">Explain</button>
+    </form>
+
+    {% if results %}
+      <div class="section">
+        <h2>🫂 How this might feel to you</h2>
+        <pre>{{ results.plain_summary }}</pre>
+
+        <h3>🩺 Notes for your doctor</h3>
+        <pre>{{ results.doctor_narrative }}</pre>
+        <p class="note"><em>This section is written in medical language to support communication with healthcare providers.</em></p>
+
+        <p class="note">
+          <a href="/evidence" class="link-button">View supporting evidence and research sources</a>
+        </p>
+
+        <button class="print-button" onclick="window.print()">🖨️ Print this page</button>
+      </div>
+    {% endif %}
+
+    <div class="explanation-box">
+      <strong>About this tool:</strong><br>
+      This app is part of the <em>Language of Endometriosis</em> project, a research-based initiative that collected and analyzed hundreds of real pain descriptions from people with endometriosis. The most frequently used metaphors and descriptors were categorized and form the basis of how this page works. This is a tool to help you find your words — and be heard.
     </div>
-  {% endif %}
 
-  <p style="font-size: 0.85rem; color: #888; margin-top: 2rem;">
-    <em>This is a research and communication support tool. It does not provide medical diagnosis or replace clinical evaluation.</em>
-  </p>
+    <div class="footer">
+      Developed by <strong>Dr Stella Bullo</strong> — Linguist, Developer, and Founder of the <em>Language of Endometriosis</em> Project.  
+      <br>
+      <a href="https://www.linkedin.com/in/stellabullo/" target="_blank" style="color:#8c6eb0; text-decoration: underline;">Connect on LinkedIn</a>
+    </div>
 
-  <div class="footer">
-    Developed by Dr Stella Bullo — Linguist, Developer, and Founder of the Language of Endometriosis Project.
+    <div class="footer">
+      <p>© 2024 Language of Endometriosis Project. All rights reserved.</p>
+    </div>
   </div>
-
 </body>
 </html>
-https://occ-0-6348-1123.1.nflxso.net/dnm/api/v6/6AYY37jfdO6hpXcMjf9Yu5cnmO0/AAAABT1cSmxx0Svq9HP2YAXOTEaT0AJ6CTp7xXMsjFIL2RLi-3amn2JolUXWZKkEymyFkvGzJ920z5y1Z1DXxPqsT19hHgAqwvSraNio.webp?r=4fa

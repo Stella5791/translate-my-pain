@@ -5,133 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Explain My Pain</title>
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f8f6fc;
-      color: #2d2d2d;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-    }
-
-    .container {
-      max-width: 750px;
-      width: 100%;
-      padding: 2rem;
-      box-sizing: border-box;
-    }
-
-    h1, h2, h3 {
-      color: #8c6eb0;
-      margin-top: 0;
-    }
-
-    label {
-      margin-top: 1rem;
-      font-weight: bold;
-      display: block;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 0.6rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      margin-top: 0.25rem;
-      border-radius: 8px;
-      box-sizing: border-box;
-    }
-
-    textarea {
-      height: 130px;
-    }
-
-    button {
-      background-color: #8c6eb0;
-      color: white;
-      font-weight: bold;
-      padding: 0.6rem 1.2rem;
-      border: none;
-      border-radius: 5px;
-      margin-top: 1.5rem;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #77589f;
-    }
-
-    .note {
-      font-size: 0.95rem;
-      margin-top: 0.5rem;
-      color: #555;
-    }
-
-    .section {
-      background-color: white;
-      padding: 1rem 1.5rem;
-      border-left: 5px solid #a18abd;
-      margin-top: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-
-    pre {
-      font-family: inherit;
-      background-color: #f9f9f9;
-      padding: 1rem;
-      border-radius: 10px;
-      white-space: pre-wrap;
-      line-height: 1.6;
-      border-left: 4px solid #a18abd;
-    }
-
-    .footer {
-      margin-top: 3rem;
-      font-size: 0.9rem;
-      color: #888;
-      line-height: 1.5;
-    }
-
-    .link-button {
-      font-size: 0.9rem;
-      color: #8c6eb0;
-      text-decoration: underline;
-      cursor: pointer;
-      margin-top: 0.5rem;
-      display: inline-block;
-    }
-
-    .print-button {
-      background: none;
-      border: none;
-      color: #8c6eb0;
-      text-decoration: underline;
-      font-size: 0.9rem;
-      cursor: pointer;
-      margin-top: 1rem;
-      display: inline-block;
-    }
-
-    .explanation-box {
-      font-size: 0.9rem;
-      color: #444;
-      padding: 1.2rem;
-      margin-top: 2rem;
-      border-left: 4px solid #ddd;
-      border-radius: 8px;
-      background: none;
-    }
-
-    @media print {
-      .print-button, .note, .link-button, button, form {
-        display: none !important;
-      }
-      body {
-        margin: 1rem;
-      }
-    }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f6fc; color: #2d2d2d; margin: 0; padding: 0; display: flex; justify-content: center; }
+    .container { max-width: 750px; width: 100%; padding: 2rem; box-sizing: border-box; }
+    h1, h2, h3 { color: #8c6eb0; margin-top: 0; }
+    label { margin-top: 1rem; font-weight: bold; display: block; }
+    input, textarea { width: 100%; padding: 0.6rem; font-size: 1rem; border: 1px solid #ccc; margin-top: 0.25rem; border-radius: 8px; box-sizing: border-box; }
+    textarea { height: 130px; }
+    button { background-color: #8c6eb0; color: white; font-weight: bold; padding: 0.6rem 1.2rem; border: none; border-radius: 5px; margin-top: 1.5rem; cursor: pointer; }
+    button:hover { background-color: #77589f; }
+    .note { font-size: 0.95rem; margin-top: 0.5rem; color: #555; }
+    .section { background-color: white; padding: 1rem 1.5rem; border-left: 5px solid #a18abd; margin-top: 2rem; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    pre { font-family: inherit; background-color: #f9f9f9; padding: 1rem; border-radius: 10px; white-space: pre-wrap; line-height: 1.6; border-left: 4px solid #a18abd; }
+    .footer { margin-top: 3rem; font-size: 0.9rem; color: #888; line-height: 1.5; }
+    .link-button { font-size: 0.9rem; color: #8c6eb0; text-decoration: underline; cursor: pointer; margin-top: 0.5rem; display: inline-block; }
+    .print-button { background: none; border: none; color: #8c6eb0; text-decoration: underline; font-size: 0.9rem; cursor: pointer; margin-top: 1rem; display: inline-block; }
+    .explanation-box { font-size: 0.9rem; color: #444; padding: 1.2rem; margin-top: 2rem; border-left: 4px solid #ddd; border-radius: 8px; background: none; }
+    @media print { .print-button, .note, .link-button, button, .input-wrap { display: none !important; } body { margin: 1rem; } }
   </style>
 </head>
 <body>
@@ -142,7 +31,8 @@
       This tool helps you describe pain in your own words using a database of pain descriptors drawn from real patient experiences with endometriosis. The tool analyzes your input and offers summaries of how your pain feels so you can have a better understanding of its mechanisms when you speak to your doctors.
     </p>
 
-    <form method="POST">
+    <!-- No <form> element here -->
+    <div id="empForm" class="input-wrap">
       <label for="name">Your name (optional):</label>
       <input type="text" id="name" name="name" placeholder="e.g. Sam">
 
@@ -152,7 +42,7 @@
       <p class="note">
         Pain often varies depending on what triggers it. Please describe how it feels during different situations, such as:
       </p>
-      
+
       <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.95rem; color: #444; margin-top: 0.5rem; margin-bottom: 1rem;">
         <div style="background: #eee; padding: 0.3rem 0.6rem; border-radius: 5px;">Ovulation</div>
         <div style="background: #eee; padding: 0.3rem 0.6rem; border-radius: 5px;">Menstruation</div>
@@ -161,36 +51,32 @@
         <div style="background: #eee; padding: 0.3rem 0.6rem; border-radius: 5px;">Everyday or background pain</div>
         <div style="background: #eee; padding: 0.3rem 0.6rem; border-radius: 5px;">Other activities</div>
       </div>
-      
-      
-      
-      
+
       <p class="note">You can start your description with <strong>“It feels like...”</strong> or <strong>“As if...”</strong></p>
 
       <label for="description">Describe your pain:</label>
       <textarea id="description" name="description" required placeholder="e.g. During ovulation, it feels like something is gripping and twisting my womb..."></textarea>
 
-      <p><a href="/samples" class="link-button">Need help finding the words? See research-based sample expressions</a></p>
+      <!-- For local testing, open /samples on Flask -->
+      <p><a href="http://localhost:5000/samples" target="_blank" class="link-button">Need help finding the words? See research-based sample expressions</a></p>
 
-      <button type="submit">Explain</button>
-    </form>
+      <button id="analyzeBtn" type="button">Explain</button>
+    </div>
 
-    {% if results %}
-      <div class="section">
-        <h2>🫂 How this might feel to you</h2>
-        <pre>{{ results.plain_summary }}</pre>
+    <div id="results" class="section" style="display:none">
+      <h2>🫂 How this might feel to you</h2>
+      <pre id="plainSummary"></pre>
 
-        <h3>🩺 Notes for your doctor</h3>
-        <pre>{{ results.doctor_narrative }}</pre>
-        <p class="note"><em>This section is written in medical language to support communication with healthcare providers.</em></p>
+      <h3>🩺 Notes for your doctor</h3>
+      <pre id="doctorNarrative"></pre>
+      <p class="note"><em>This section is written in medical language to support communication with healthcare providers.</em></p>
 
-        <p class="note">
-          <a href="/evidence" class="link-button">View supporting evidence and research sources</a>
-        </p>
+      <p class="note">
+        <a href="/language-of-endometriosis/evidence.html" class="link-button">View supporting evidence and research sources</a>
+      </p>
 
-        <button class="print-button" onclick="window.print()">🖨️ Print this page</button>
-      </div>
-    {% endif %}
+      <button class="print-button" onclick="window.print()">🖨️ Print this page</button>
+    </div>
 
     <div class="explanation-box">
       <strong>About this tool:</strong><br>
@@ -207,5 +93,63 @@
       <p>© 2024 Language of Endometriosis Project. All rights reserved.</p>
     </div>
   </div>
+
+  <script>
+    // Local backend during development
+    const BACKEND_URL = "http://localhost:5000";
+    const ENDPOINT = "/analyze";
+
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const desc = document.getElementById("description");
+    const nameEl = document.getElementById("name");
+    const durEl  = document.getElementById("duration");
+
+    const resultsBox = document.getElementById("results");
+    const plainOut   = document.getElementById("plainSummary");
+    const doctorOut  = document.getElementById("doctorNarrative");
+
+    console.log("EMP static loaded");
+
+    analyzeBtn.addEventListener("click", async () => {
+      const text = (desc.value || "").trim();
+      if (!text) { alert("Please write a description."); return; }
+
+      analyzeBtn.disabled = true;
+      const old = analyzeBtn.textContent;
+      analyzeBtn.textContent = "Analyzing…";
+
+      try {
+        const res = await fetch(`${BACKEND_URL}${ENDPOINT}`, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            name: (nameEl.value||"").trim(),
+            duration: (durEl.value||"").trim(),
+            text,
+            description: text
+          })
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const r = data.results || data;
+
+        const plain  = r.plain_summary || r.patient_summary_html || r.patient_summary || r.plain || "";
+        const doctor = r.doctor_narrative || r.doctor_summary_html   || r.doctor_summary   || "";
+
+        if (/<[a-z][\s\S]*>/i.test(plain))  plainOut.innerHTML  = plain;  else plainOut.textContent  = plain || "(No summary returned.)";
+        if (/<[a-z][\s\S]*>/i.test(doctor)) doctorOut.innerHTML = doctor; else doctorOut.textContent = doctor || "(No doctor notes returned.)";
+
+        resultsBox.style.display = "block";
+        window.scrollTo({ top: resultsBox.offsetTop - 20, behavior: "smooth" });
+      } catch (err) {
+        console.error(err);
+        alert("Something went wrong. Check the Console for details.");
+      } finally {
+        analyzeBtn.disabled = false;
+        analyzeBtn.textContent = old;
+      }
+    });
+  </script>
 </body>
 </html>

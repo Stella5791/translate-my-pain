@@ -1,4 +1,8 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
+
+
+
 from tagger_logic import (
     tag_pain_description,
     generate_patient_summary,
@@ -11,6 +15,15 @@ import os
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "your_default_secret")
+CORS(app, resources={r"/*": {"origins": [
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "http://localhost:5501",      # added
+    "http://127.0.0.1:5501",      # added
+    "https://stellabullo.com",
+    "https://www.stellabullo.com"
+]}})
+
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -71,10 +84,45 @@ def samples():
     return render_template("samples.html", sample_categories=sample_categories)
 
 
+
 @app.route("/evidence")
 def evidence():
     return render_template("evidence.html")
 
 
+@app.post("/analyze")
+def analyze():
+    data = request.get_json(silent=True) or {}
+    description = (data.get("text") or data.get("description") or "").strip()
+    name = (data.get("name") or "").strip()
+    duration = (data.get("duration") or "").strip()
+
+    if not description:
+        return jsonify({"error": "No description provided."}), 400
+
+    try:
+        results = tag_pain_description(
+            description,
+            name=name if name else None,
+            duration=duration if duration else None
+        )
+
+        results["input"] = description
+        plain = generate_patient_summary(results)
+        doctor = generate_doctor_summary(results)
+        entail = generate_entailment_summary(results.get("entailments", {}))
+
+        return jsonify({
+            "plain_summary": plain,
+            "doctor_narrative": doctor,
+            "entailment_summary": entail,
+            "user_info": {"name": name or None, "duration": duration or None}
+        }), 200
+
+    except Exception as e:
+        print(f"[Error] analyze: {e}")
+        return jsonify({"error": "There was an error processing your input."}), 500
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

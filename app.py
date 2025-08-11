@@ -103,8 +103,8 @@ def analyze():
     try:
         results = tag_pain_description(
             description,
-            name=name if name else None,
-            duration=duration if duration else None
+            name=name or None,
+            duration=duration or None
         )
 
         results["input"] = description
@@ -112,12 +112,14 @@ def analyze():
         doctor = generate_doctor_summary(results)
         entail = generate_entailment_summary(results.get("entailments", {}))
 
-        return jsonify({
+        payload = {
             "plain_summary": plain,
             "doctor_narrative": doctor,
             "entailment_summary": entail,
-            "user_info": {"name": name or None, "duration": duration or None}
-        }), 200
+            "user_info": {"name": name or None, "duration": duration or None},
+            "input": description
+        }
+        return jsonify(payload), 200
 
     except Exception as e:
         print(f"[Error] analyze: {e}")

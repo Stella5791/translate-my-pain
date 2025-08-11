@@ -18,3 +18,4 @@ python-dotenv>=1.0.1   # For managing secrets and config vars
 # --- Development and logging (optional) ---
 Werkzeug>=2.3.0        # Comes with Flask, but make sure it's recent
 requests>=2.31.0       # Useful for future API features
+gunicorn

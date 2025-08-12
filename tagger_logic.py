@@ -1,3 +1,5 @@
+import re as _re_internal  # avoid shadowing
+import unicodedata
 import re
 from entailments import get_entailments
 from taxonomy import taxonomy
@@ -26,20 +28,84 @@ CLINICAL_REPHRASINGS = {
 }
 
 
-def normalize(text):
-    return re.sub(r"[^\w\s']", "", text.lower())
+# --- New Robust Normalisation ---
+
+def normalize_text(text: str, lower: bool = True):
+    _SUBS = {
+        "\u2018": "'", "\u2019": "'", "\u201C": '"', "\u201D": '"',
+        "\u2013": "-", "\u2014": "-",
+        "\u2026": "...",
+        "\u00A0": " ",
+        "\u200B": "", "\u200C": "", "\u200D": "", "\uFEFF": "",
+    }
+    t = unicodedata.normalize("NFKC", text)
+    if any(ch in t for ch in _SUBS):
+        t = "".join(_SUBS.get(ch, ch) for ch in t)
+    t = t.replace("\r\n", "\n").replace("\r", "\n")
+    t = re.sub(r"[ \t]+", " ", t)
+    t = re.sub(r"\n{3,}", "\n\n", t)
+    if lower:
+        t = t.lower()
+    return t.strip()
+
+
+def compile_stem(expr: str):
+    root = re.sub(r'[^a-z]+', '', expr.lower())
+    if len(root) > 4:
+        root = root[:-2]
+    return re.compile(rf"\b{re.escape(root)}(?:ed|ing|s|er|ers|y)?\b")
+
+
+COMPILED_METAPHORS = {
+    cat: [compile_stem(e) for e in data.get("expressions", [])]
+    for cat, data in METAPHOR_TYPES.items()
+}
+
+
+# --- New Robust Normalisation ---
+
+def normalize_text(text: str, lower: bool = True):
+    _SUBS = {
+        "\u2018": "'", "\u2019": "'", "\u201C": '"', "\u201D": '"',
+        "\u2013": "-", "\u2014": "-",
+        "\u2026": "...",
+        "\u00A0": " ",
+        "\u200B": "", "\u200C": "", "\u200D": "", "\uFEFF": "",
+    }
+    t = unicodedata.normalize("NFKC", text)
+    if any(ch in t for ch in _SUBS):
+        t = "".join(_SUBS.get(ch, ch) for ch in t)
+    t = t.replace("\r\n", "\n").replace("\r", "\n")
+    t = _re_internal.sub(r"[ \t]+", " ", t)
+    t = _re_internal.sub(r"\n{3,}", "\n\n", t)
+    if lower:
+        t = t.lower()
+    return t.strip()
+
+
+def compile_stem(expr: str):
+    root = _re_internal.sub(r'[^a-z]+', '', expr.lower())
+    if len(root) > 4:
+        root = root[:-2]
+    return _re_internal.compile(rf"\b{_re_internal.escape(root)}(?:ed|ing|s|er|ers|y)?\b")
+
+
+# Precompile metaphor expression patterns once
+COMPILED_METAPHORS = {
+    cat: [compile_stem(e) for e in data.get("expressions", [])]
+    for cat, data in METAPHOR_TYPES.items()
+}
 
 
 def tag_pain_description(description, name=None, duration=None):
-    text = normalize(description)
+    text_norm = normalize_text(description)
     matched = {}
     entailments = {}
 
-    for metaphor_type, data in METAPHOR_TYPES.items():
-        for expression in data.get("expressions", []):
-            pattern = re.escape(expression.lower())
-            if re.search(pattern, text):
-                matched.setdefault(metaphor_type, []).append(expression)
+    for metaphor_type, patterns in COMPILED_METAPHORS.items():
+        for pat in patterns:
+            if pat.search(text_norm):
+                matched.setdefault(metaphor_type, []).append(pat.pattern)
                 entailments[metaphor_type] = get_entailments(metaphor_type)
 
     return {

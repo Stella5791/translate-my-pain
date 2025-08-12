@@ -1,5 +1,3 @@
-import re as _re_internal  # avoid shadowing
-import unicodedata
 import re
 from entailments import get_entailments
 from taxonomy import taxonomy
@@ -28,172 +26,194 @@ CLINICAL_REPHRASINGS = {
 }
 
 
-# --- New Robust Normalisation ---
-
-def normalize_text(text: str, lower: bool = True):
-    _SUBS = {
-        "\u2018": "'", "\u2019": "'", "\u201C": '"', "\u201D": '"',
-        "\u2013": "-", "\u2014": "-",
-        "\u2026": "...",
-        "\u00A0": " ",
-        "\u200B": "", "\u200C": "", "\u200D": "", "\uFEFF": "",
-    }
-    t = unicodedata.normalize("NFKC", text)
-    if any(ch in t for ch in _SUBS):
-        t = "".join(_SUBS.get(ch, ch) for ch in t)
-    t = t.replace("\r\n", "\n").replace("\r", "\n")
-    t = re.sub(r"[ \t]+", " ", t)
-    t = re.sub(r"\n{3,}", "\n\n", t)
-    if lower:
-        t = t.lower()
-    return t.strip()
+def normalize(text):
+    return re.sub(r"[^\w\s']", "", text.lower())
 
 
-def compile_stem(expr: str):
-    root = re.sub(r'[^a-z]+', '', expr.lower())
-    if len(root) > 4:
-        root = root[:-2]
-    return re.compile(rf"\b{re.escape(root)}(?:ed|ing|s|er|ers|y)?\b")
-
-
-COMPILED_METAPHORS = {
-    cat: [compile_stem(e) for e in data.get("expressions", [])]
-    for cat, data in METAPHOR_TYPES.items()
+# --- Context detection helpers ---
+_CONTEXTS = {
+    "menstruation": [
+        r"\b(during|on|with)\s+(my\s+)?period\b",
+        r"\bmenstruat(?:e|ion|ing|ory)\b",
+        r"\b(menses|bleeding|time of the month)\b",
+    ],
+    "ovulation": [
+        r"\bovulat(?:e|ion|ing|ory)\b",
+        r"\bmid\s*cycle\b",
+        r"\b(fertile|egg release)\b",
+    ],
+    "intercourse": [
+        r"\b(during|with)\s+(sex|intercourse|penetration)\b",
+        r"\bpenetration\b",
+    ],
+    "defecation": [
+        r"\b(during|when|while)\s+(poo|poop|defecat(?:e|ion)|bowel (?:movement|movements)|going to the toilet)\b",
+        r"\bpassing (?:stool|bowel movements?)\b",
+    ],
+    "baseline": [
+        r"\b(rest of the month|outside (?:of )?(?:flares|periods?)|most days|all the time|baseline)\b",
+        r"\bbetween (?:periods|flares)\b",
+    ],
 }
 
 
-# --- New Robust Normalisation ---
+def _find_spans(text):
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    spans = {k: [] for k in _CONTEXTS.keys()}
 
-def normalize_text(text: str, lower: bool = True):
-    _SUBS = {
-        "\u2018": "'", "\u2019": "'", "\u201C": '"', "\u201D": '"',
-        "\u2013": "-", "\u2014": "-",
-        "\u2026": "...",
-        "\u00A0": " ",
-        "\u200B": "", "\u200C": "", "\u200D": "", "\uFEFF": "",
-    }
-    t = unicodedata.normalize("NFKC", text)
-    if any(ch in t for ch in _SUBS):
-        t = "".join(_SUBS.get(ch, ch) for ch in t)
-    t = t.replace("\r\n", "\n").replace("\r", "\n")
-    t = _re_internal.sub(r"[ \t]+", " ", t)
-    t = _re_internal.sub(r"\n{3,}", "\n\n", t)
-    if lower:
-        t = t.lower()
-    return t.strip()
+    for sent in sentences:
+        low = sent.lower()
+        for ctx, pats in _CONTEXTS.items():
+            if any(re.search(p, low) for p in pats):
+                spans[ctx].append(sent.strip())
+
+    if not any(spans.values()):
+        spans["baseline"] = [text.strip()]
+
+    return spans
 
 
-def compile_stem(expr: str):
-    root = _re_internal.sub(r'[^a-z]+', '', expr.lower())
-    if len(root) > 4:
-        root = root[:-2]
-    return _re_internal.compile(rf"\b{_re_internal.escape(root)}(?:ed|ing|s|er|ers|y)?\b")
-
-
-# Precompile metaphor expression patterns once
-COMPILED_METAPHORS = {
-    cat: [compile_stem(e) for e in data.get("expressions", [])]
-    for cat, data in METAPHOR_TYPES.items()
-}
+def _match_metaphors_in(text_norm):
+    found = set()
+    for metaphor_type, data in METAPHOR_TYPES.items():
+        for expression in data.get("expressions", []):
+            pattern = re.escape(expression.lower())
+            if re.search(pattern, text_norm):
+                found.add(metaphor_type)
+                break
+    return found
 
 
 def tag_pain_description(description, name=None, duration=None):
-    text_norm = normalize_text(description)
-    matched = {}
+    raw = description.strip()
+    spans = _find_spans(raw)
+    matched_by_context = {}
+    global_matched = set()
     entailments = {}
 
-    for metaphor_type, patterns in COMPILED_METAPHORS.items():
-        for pat in patterns:
-            if pat.search(text_norm):
-                matched.setdefault(metaphor_type, []).append(pat.pattern)
-                entailments[metaphor_type] = get_entailments(metaphor_type)
+    for ctx, chunks in spans.items():
+        ctx_found = set()
+        for chunk in chunks:
+            ctx_found |= _match_metaphors_in(normalize(chunk))
+        if ctx_found:
+            matched_by_context[ctx] = sorted(ctx_found)
+            global_matched |= ctx_found
+
+    for mtype in sorted(global_matched):
+        entailments[mtype] = get_entailments(mtype)
 
     return {
-        "matched_metaphors": matched,
+        "matched_metaphors": {m: True for m in sorted(global_matched)},
+        "matched_by_context": matched_by_context,
         "entailments": entailments,
         "user_info": {
-            "name": name.strip() if name else None,
-            "duration": duration.strip() if duration else None
+            "name": name.strip() if isinstance(name, str) and name.strip() else None,
+            "duration": duration.strip() if isinstance(duration, str) and duration.strip() else None
         },
-        "input": description.strip()
+        "input": raw,
     }
 
 
-def generate_doctor_summary(results):
-    matched = results.get("matched_metaphors", {})
-    input_text = results.get("input", "").lower()
-
-    if not matched:
-        return (
-            "Your description contains no specific metaphorical patterns that align with known symptom clusters. "
-            "However, the language used reflects a complex experience of pain that should be discussed with a healthcare provider for further evaluation."
-        )
-
-    summary = ["Here is a clinical summary based on your description:\n"]
-
-    if "constriction_pressure" in matched or "cutting_tools" in matched:
-        summary.append("**Ovulation-related pain**")
-        summary.append(
-            "Language involving constriction or stabbing during ovulation may indicate uterine or ovarian origin pain and visceral nerve sensitivity.\n")
-
-    if "heat" in matched:
-        summary.append("**Menstrual pain**")
-        summary.append(
-            "Burning or explosive language may relate to inflammation, hormonal flares, or neuroimmune disruption during menstruation.\n")
-
-    if "violent_action" in matched or "cutting_tools" in matched:
-        summary.append("**Dyspareunia (pain with intercourse)**")
-        summary.append(
-            "Stabbing metaphors during intercourse may reflect trauma, nerve irritation, or muscle dysfunction.\n")
-
-    if "birth_labour" in matched or "cutting_tools" in matched:
-        summary.append("**Defecation-related pain**")
-        summary.append(
-            "Labour-like or cutting metaphors during bowel movements may suggest bowel-involved endometriosis or nerve entrapment.\n")
-
-    if "lingering_force" in matched:
-        summary.append("**Chronic baseline pain**")
-        summary.append(
-            "Dull, ongoing metaphors often signal chronic inflammation, emotional strain, and anticipatory distress.\n")
-
-    summary.append(
-        "🩺 *Note*: These metaphor-based interpretations are not diagnostic. They are intended to support communication between patient and provider.\n")
-    summary.append("For more information, see the evidence page: /evidence")
-
-    return "\n".join(summary)
-
-
 def generate_patient_summary(results):
-    matched = results.get("matched_metaphors", {})
-    input_text = results.get("input", "").lower()
-    name = results.get("user_info", {}).get("name", "You")
+    matched_global = results.get("matched_metaphors", {})
+    matched_ctx = results.get("matched_by_context", {})
+    input_text = (results.get("input") or "").lower()
+    name = (results.get("user_info", {}).get("name")) or "You"
     duration = results.get("user_info", {}).get("duration")
 
-    if not matched:
-        return f"{name}, your pain holds deep meaning, but no specific metaphor patterns were identified this time."
+    if not matched_global:
+        return f"{name}, you're living with pain that holds deep meaning. No specific metaphor patterns were identified this time."
 
     intro = f"{name}, you're living with pain that holds deep meaning."
     if duration:
         intro += f" You've been experiencing this for {duration.strip()}."
     lines = [intro, ""]
 
-    if "constriction_pressure" in matched or "cutting_tools" in matched:
-        lines.append("**During ovulation**: You may feel deep internal pressure or sharp sensations. This could reflect spasms in the uterus, tension in the pelvic floor, or sensitive nerves.")
+    if "ovulation" in matched_ctx:
+        if any(m in matched_ctx["ovulation"] for m in ("constriction_pressure", "cutting_tools", "violent_action", "electric_force")):
+            lines.append(
+                "**During ovulation**: You may feel deep pressure or sharp, stabbing sensations—often tied to uterine/ovarian spasms or nerve sensitivity.")
 
-    if "heat" in matched:
-        lines.append("**During menstruation**: Your pain may feel like burning or intense flares. This is often linked to inflammation, hormonal changes, or immune response.")
+    if "menstruation" in matched_ctx:
+        if "heat" in matched_ctx["menstruation"] or "birth_labour" in matched_ctx["menstruation"]:
+            lines.append(
+                "**During menstruation**: The pain can burn or surge like flares, consistent with inflammatory or neuroimmune drivers.")
 
-    if "violent_action" in matched or "cutting_tools" in matched:
-        lines.append(
-            "**During intercourse**: The pain may be sharp and distressing, possibly due to internal sensitivity, nerve pain, or muscle tension.")
+    if "intercourse" in matched_ctx:
+        if any(m in matched_ctx["intercourse"] for m in ("violent_action", "cutting_tools", "constriction_pressure")):
+            lines.append(
+                "**During intercourse**: Sharp or intrusive sensations may reflect pelvic floor tension or localized nerve irritation.")
 
-    if "birth_labour" in matched or "cutting_tools" in matched:
-        lines.append("**When going to the toilet**: It may feel like pushing something sharp or painful, which might relate to lesions or pressure near the bowel or rectovaginal area.")
+    if "defecation" in matched_ctx:
+        if any(m in matched_ctx["defecation"] for m in ("birth_labour", "cutting_tools", "constriction_pressure")):
+            lines.append(
+                "**When going to the toilet**: Labour-like pressure or cutting sensations can signal bowel involvement or nearby nerve entrapment.")
 
-    if "lingering_force" in matched:
-        lines.append("**At baseline**: Even outside flares, you may live with a dull, simmering ache. This constant background pain can wear you down emotionally and physically.")
+    if "baseline" in matched_ctx:
+        if any(m in matched_ctx["baseline"] for m in ("lingering_force", "predator", "weight_burden")):
+            lines.append(
+                "**The rest of the month**: A constant, lurking or heavy ache can drain energy and heighten anticipatory stress.")
 
-    return "\n".join(lines)
+    for ctx_label, human in [
+        ("ovulation", "**During ovulation**"),
+        ("menstruation", "**During menstruation**"),
+        ("intercourse", "**During intercourse**"),
+        ("defecation", "**When going to the toilet**"),
+        ("baseline", "**The rest of the month**"),
+    ]:
+        if ctx_label in results.get("matched_by_context", {}) or re.search("|".join(_CONTEXTS[ctx_label]), input_text):
+            if not any(line.startswith(human) for line in lines):
+                lines.append(
+                    f"{human}: You mentioned this, and it matters—even if no specific patterns were detected here today.")
+
+    return "
+".join(lines)
+
+def generate_doctor_summary(results):
+    matched_global = results.get("matched_metaphors", {})
+    matched_ctx = results.get("matched_by_context", {})
+    if not matched_global:
+        return ("Your description contains no specific metaphorical patterns that align with known symptom clusters. "
+                "However, the language used reflects a complex experience of pain that should be discussed with a healthcare provider for further evaluation.")
+
+    out = ["Here is a clinical summary based on your description:
+"]
+
+    if "ovulation" in matched_ctx:
+        if any(m in matched_ctx["ovulation"] for m in ("constriction_pressure", "cutting_tools", "violent_action", "electric_force")):
+            out.append("**Ovulation-related pain**")
+            out.append("Language indicating constriction/stabbing around ovulation suggests uterine/ovarian origin and visceral nerve sensitivity.
+")
+
+    if "menstruation" in matched_ctx:
+        if "heat" in matched_ctx["menstruation"] or "birth_labour" in matched_ctx["menstruation"]:
+            out.append("**Menstrual pain**")
+            out.append("Burning/flaring language aligns with inflammatory flares or neuroimmune dysregulation during menses.
+")
+
+    if "intercourse" in matched_ctx:
+        if any(m in matched_ctx["intercourse"] for m in ("violent_action", "cutting_tools", "constriction_pressure")):
+            out.append("**Dyspareunia (pain with intercourse)**")
+            out.append("Intrusive/cutting metaphors during intercourse may reflect pelvic floor dysfunction, trauma sequelae, or localized neuropathic irritation.
+")
+
+    if "defecation" in matched_ctx:
+        if any(m in matched_ctx["defecation"] for m in ("birth_labour", "cutting_tools", "constriction_pressure")):
+            out.append("**Defecation-related pain**")
+            out.append("Labour-like/knife-like metaphors with bowel movements may indicate bowel involvement or nerve entrapment.
+")
+
+    if "baseline" in matched_ctx:
+        if any(m in matched_ctx["baseline"] for m in ("lingering_force", "predator", "weight_burden")):
+            out.append("**Chronic baseline pain**")
+            out.append("Persistent, lurking/heavy metaphors point to chronic inflammation with anticipatory distress.
+")
+
+    out.append("🩺 *Note*: These metaphor-based interpretations are not diagnostic. They are intended to support communication between patient and provider.
+")
+    out.append("For more information, see the evidence page: /evidence")
+    return "
+".join(out)
 
 
 def generate_entailment_summary(entailments):

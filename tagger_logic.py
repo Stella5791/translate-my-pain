@@ -47,7 +47,7 @@ def _normalize(text: str) -> str:
 
 
 def _compile_expression(expr: str) -> re.Pattern:
-    """
+    r"""
     Build a forgiving regex from a taxonomy expression:
       - multiword → collapse internal whitespace to \s+
       - single word → match common variants (root + ing/ed/es/s),
@@ -194,18 +194,72 @@ def _detect_list_mentions(text_norm: str, items: List[str]) -> List[str]:
 
 
 def _summarize_signals(entailments: dict) -> str:
-    """Aggregate experiential (sensory) and affective (emotional) signals."""
-    exp, aff = set(), set()
+    """
+    Build a compact 'Sensory vs Emotional' summary from entailments.
+    Ensures affective items (fear, threat, loss of control, violation, invasion, etc.)
+    are shown under Emotional cues, while physical terms (heat, inflammation, sharp, pressure, shock, etc.)
+    go under Sensory cues.
+    """
+    # Flatten whatever shape we get: mapping -> lists
+    items = []
     if isinstance(entailments, dict):
         for vals in entailments.values():
-            exp.update(vals.get("experiential", []))
-            aff.update(vals.get("affective", []))
-    bits = []
-    if exp:
-        bits.append("**Sensory cues**: " + ", ".join(sorted(exp)) + ".")
-    if aff:
-        bits.append("**Emotional cues**: " + ", ".join(sorted(aff)) + ".")
-    return "\n".join(bits)
+            if isinstance(vals, dict):
+                items.extend(vals.get("experiential", []))
+                items.extend(vals.get("affective", []))
+            elif isinstance(vals, list):
+                items.extend(vals)
+
+    # Keyword heuristics to bin phrases
+    AFFECTIVE_HINTS = (
+        "fear", "anxiety", "threat", "loss of control", "powerless", "powerlessness",
+        "hopeless", "worry", "violation", "invasion", "anticipat", "sentience",
+        "identity", "dissociation", "detachment", "stress", "hypervigilance"
+    )
+    SENSORY_HINTS = (
+        "inflammation", "irritation", "temperature", "heat", "hot", "burn", "searing",
+        "piercing", "sharp", "localized", "pressure", "tight", "tightening", "constriction",
+        "crush", "heavy", "heaviness", "shock", "zapping", "tingling", "electr", "spasm",
+        "nerve", "neuropath", "tearing", "pulling", "weight", "drag"
+    )
+
+    sens, emo = set(), set()
+    for p in items:
+        s = str(p).strip()
+        if not s:
+            continue
+        low = s.lower()
+        is_aff = any(k in low for k in AFFECTIVE_HINTS)
+        is_sens = any(k in low for k in SENSORY_HINTS)
+
+        if is_aff and not is_sens:
+            emo.add(s)
+        elif is_sens and not is_aff:
+            sens.add(s)
+        elif is_aff and is_sens:
+            # If ambiguous, prefer Emotional to avoid minimizing affective content
+            emo.add(s)
+        else:
+            # Unclassified -> omit to keep the section tight
+            continue
+
+    def _fmt(seq, label):
+        if not seq:
+            return ""
+        vals = sorted(seq)
+        if len(vals) > 8:
+            vals = vals[:7] + ["…"]
+        return f"**{label}**: " + ", ".join(vals) + "."
+
+    parts = []
+    sc = _fmt(sens, "Sensory cues")
+    ec = _fmt(emo, "Emotional cues")
+    if sc:
+        parts.append(sc)
+    if ec:
+        parts.append(ec)
+    return "\n".join(parts)
+
 
 # -----------------------
 # Public API (consumed by app.py)
@@ -267,7 +321,7 @@ def tag_pain_description(description, name=None, duration=None):
 def generate_patient_summary(results) -> str:
     """
     Patient-facing rephrasing with gentle explanations per context.
-    Uses CLINICAL_REPHRASINGS where available and adds Sensory/Emotional cues.
+    Uses CLINICAL_REPHRASINGS where available. (No Sensory/Emotional block here.)
     """
     if not isinstance(results, dict):
         return "You're living with pain that holds deep meaning."
@@ -307,29 +361,45 @@ def generate_patient_summary(results) -> str:
                     break
             continue
 
-        # Build a concise, readable sentence mixing up to 2 rephrasings
-        snippets = []
-        for cat in cats[:2]:
-            if cat in CLINICAL_REPHRASINGS:
-                snippets.append(CLINICAL_REPHRASINGS[cat])
-        if not snippets:
+        # Build a concise, readable sentence using a gentle priority
+        # Prefer specific/gentle over heavy language if multiple categories match.
+        PRIORITY = [
+            "heat",                 # burning/searing
+            "cutting_tools",        # sharp/piercing
+            "constriction_pressure",
+            "electric_force",
+            "weight_burden",
+            "birth_labour",
+            "internal_machinery",
+            "lingering_force",
+            "predator",
+            "entrapment",
+            "transformation_distortion",
+            "violent_action",       # last (heaviest wording)
+        ]
+
+        chosen = None
+        for key in PRIORITY:
+            if key in cats and key in CLINICAL_REPHRASINGS:
+                chosen = CLINICAL_REPHRASINGS[key]
+                break
+
+        if not chosen:
+            # Fallback if no rephrasing exists
             human = ", ".join(c.replace("_", " ") for c in cats[:3])
-            snippets = [f"You describe {human} sensations."]
+            chosen = f"You describe {human} sensations."
 
-        combined = " ".join(snippets)
-        lines.append(f"{labels[ctx]}: {combined}")
-
-    # Add Sensory/Emotional cues
-    signals = _summarize_signals(results.get("entailments", {}))
-    if signals:
-        lines.extend(["", signals])
+        lines.append(f"{labels[ctx]}: {chosen}")
 
     return "\n".join(lines)
+
+
 
 
 def generate_doctor_summary(results) -> str:
     """
     Clinician-facing narrative based on taxonomy categories and contexts.
+    Includes Sensory/Emotional cues aggregated from entailments.
     """
     if not isinstance(results, dict):
         return "Here is a clinical summary based on your description:\n\n🩺 *Note*: These metaphor-based interpretations are not diagnostic."
@@ -372,6 +442,11 @@ def generate_doctor_summary(results) -> str:
             out.append("**Chronic baseline pain**")
             out.append(
                 "Persistent, lurking/heavy metaphors point to chronic inflammation with anticipatory distress.\n")
+
+    # Add Sensory/Emotional cues summary
+    signals = _summarize_signals(results.get("entailments", {}))
+    if signals:
+        out.extend(["", "**Interpretive signals** (from metaphor entailments):", signals, ""])
 
     out.append("🩺 *Note*: These metaphor-based interpretations are not diagnostic. They are intended to support communication between patient and provider.\n")
     out.append("For more information, see the evidence page: /evidence")

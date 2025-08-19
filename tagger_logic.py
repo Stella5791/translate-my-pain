@@ -1,15 +1,24 @@
+# tagger_logic.py — taxonomy-aligned metaphor tagger with patient/doctor narratives
+# Uses Bullo's research-derived taxonomy.
+
 import re
-from entailments import get_entailments
+from typing import Dict, List, Set
 from taxonomy import taxonomy
+# -> {"experiential":[...], "affective":[...]}
+from entailments import get_entailments
 
-# Load taxonomy components
-METAPHOR_TYPES = taxonomy.get("metaphor_types", {})
-GRADUATION = taxonomy.get("graduation_modifiers", [])
-TRIGGERS = taxonomy.get("triggers", [])
-LIFE_IMPACT = taxonomy.get("life_impact_clues", [])
+# -----------------------
+# Expose taxonomy parts for downstream / future UI
+# -----------------------
+METAPHOR_TYPES: Dict = taxonomy.get("metaphor_types", {})
+GRADUATION: List[str] = taxonomy.get("graduation_modifiers", [])
+TRIGGERS: List[str] = taxonomy.get("triggers", [])
+LIFE_IMPACT: List[str] = taxonomy.get("life_impact_clues", [])
 
-# Clinical rephrasings (kept for compatibility; not used directly here)
-CLINICAL_REPHRASINGS = {
+# -----------------------
+# Patient-facing rephrasings (original set)
+# -----------------------
+CLINICAL_REPHRASINGS: Dict[str, str] = {
     "violent_action": "Your pain may feel like a violent intrusion on your body, consistent with severe, traumatic episodes.",
     "cutting_tools": "The pain resembles being cut or pierced, possibly indicating sharp, localized discomfort.",
     "internal_machinery": "It feels like something mechanical is grinding or compressing your insides — a harsh, internal disruption.",
@@ -26,17 +35,93 @@ CLINICAL_REPHRASINGS = {
 }
 
 # -----------------------
-# Normalization
+# Normalization helpers
 # -----------------------
 
 
-def normalize(text: str) -> str:
-    # Lowercase and strip punctuation except spaces and apostrophes
+def _normalize(text: str) -> str:
+    """Lowercase and strip punctuation except spaces and apostrophes."""
+    if not isinstance(text, str):
+        text = "" if text is None else str(text)
     return re.sub(r"[^\w\s']", " ", text.lower()).strip()
 
 
+def _compile_expression(expr: str) -> re.Pattern:
+    """
+    Build a forgiving regex from a taxonomy expression:
+      - multiword → collapse internal whitespace to \s+
+      - single word → match common variants (root + ing/ed/es/s),
+        handle doubled consonant (e.g., stab/stabbed/stabbing)
+    """
+    expr = (expr or "").strip().lower()
+    if not expr:
+        return re.compile(r"(?!x)x")  # never matches
+
+    # Multiword expression: keep exact words but allow flexible spacing
+    if " " in expr:
+        parts = [re.escape(p) for p in expr.split()]
+        pattern = r"\b" + r"\s+".join(parts) + r"\b"
+        return re.compile(pattern, re.I)
+
+    # Single-word expression: generate root variants
+    word = expr
+    root = re.sub(r"(?:ing|ed|es|s)$", "", word)
+    variants = {word, root}
+    # handle doubled final consonant after stripping (e.g., 'stabbed' -> 'stabb' -> 'stab')
+    if len(root) >= 2 and root[-1] == root[-2]:
+        variants.add(root[:-1])
+
+    alts = []
+    for v in variants:
+        if len(v) >= 3:
+            alts.append(re.escape(v) + r"(?:ing|ed|es|s)?")
+        else:
+            alts.append(re.escape(v))
+    alts.sort(key=len, reverse=True)
+    pattern = r"\b(?:%s)\b" % "|".join(alts)
+    return re.compile(pattern, re.I)
+
+
+# Precompile patterns from taxonomy once
+_COMPILED: Dict[str, List[re.Pattern]] = {
+    mtype: [_compile_expression(e) for e in data.get("expressions", [])]
+    for mtype, data in METAPHOR_TYPES.items()
+}
+
+
+def _match_metaphors_in(text_norm: str) -> Set[str]:
+    """Return a set of taxonomy categories found in normalized text."""
+    found: Set[str] = set()
+    for mtype, pats in _COMPILED.items():
+        for pat in pats:
+            if pat.search(text_norm):
+                found.add(mtype)
+                break
+    return found
+
+# ---------------------------------------
+# Debias: predator anticipation vs assault
+# ---------------------------------------
+
+
+def _debias_predator_vs_violent(chunk_text: str, cats: Set[str]) -> Set[str]:
+    """
+    If language is about *anticipation* of attack alongside predator imagery,
+    treat it as 'predator' (threat/anticipation) rather than 'violent_action'.
+    Example: "waiting for the lurking animal to attack me"
+    """
+    if "violent_action" in cats and "predator" in cats:
+        low = (chunk_text or "").lower()
+        anticip = re.search(r"\b(waiting|about to|ready to|going to)\s+attack\b", low) or \
+            re.search(r"\battack me\b", low)
+        if anticip and any(tok in low for tok in ("lurking", "monster", "beast", "predator")):
+            cats = set(cats)
+            cats.discard("violent_action")
+    return cats
+
+
 # -----------------------
-# Context detection
+# Context detection (matches earlier app)
 # -----------------------
 _CONTEXTS = {
     "menstruation": [
@@ -47,7 +132,7 @@ _CONTEXTS = {
     "ovulation": [
         r"\bovulat(?:e|ion|ing|ory)\b",
         r"\bmid\s*cycle\b",
-        r"\b(fertile|egg release)\b",
+        r"\b(fertile|egg\s*release)\b",
     ],
     "intercourse": [
         r"\b(during|with)\s+(sex|intercourse|penetration)\b",
@@ -55,6 +140,7 @@ _CONTEXTS = {
     ],
     "defecation": [
         r"\b(during|when|while)\s+(poo|poop|defecat(?:e|ion)|bowel (?:movement|movements)|going to the toilet)\b",
+        r"\bgoing to the toilet\b",
         r"\bpassing (?:stool|bowel movements?)\b",
     ],
     "baseline": [
@@ -66,13 +152,12 @@ _CONTEXTS = {
 
 def _find_spans(text: str):
     """
-    Very light sentence segmentation; if multiple contexts appear in one long sentence,
-    that sentence will be attached to each context it mentions.
+    Light sentence segmentation; if multiple contexts appear in one sentence,
+    that sentence is attached to each mentioned context.
     """
-    # Split on . ? ! ONLY; commas should NOT split (we want ovulation/menstruation caught in same sentence)
-    sentences = re.split(r'(?<=[.!?])\s+', text.strip())
+    sentences = re.split(r'(?<=[.!?;])\s+', (text or "").strip())
     if not sentences:
-        sentences = [text.strip()]
+        sentences = [(text or "").strip()]
 
     spans = {k: [] for k in _CONTEXTS.keys()}
 
@@ -84,73 +169,73 @@ def _find_spans(text: str):
 
     # If nothing matched any context, treat whole text as baseline
     if not any(spans.values()):
-        spans["baseline"] = [text.strip()]
+        spans["baseline"] = [(text or "").strip()]
 
     return spans
 
 # -----------------------
-# Metaphor matching (slightly fuzzy)
+# Extra: detect triggers & life-impact mentions (light, non-breaking)
 # -----------------------
 
 
-def _compile_expression(expr: str) -> re.Pattern:
-    """
-    Build a forgiving regex:
-      - single word: allow common suffixes (ing|ed|s)
-      - multiword: collapse internal whitespace to \s+
-    """
-    expr = expr.strip().lower()
-    if not expr:
-        return re.compile(r"(?!x)x")  # never matches
-
-    if " " in expr:
-        parts = [re.escape(p) for p in expr.split()]
-        pattern = r"\b" + r"\s+".join(parts) + r"\b"
-        return re.compile(pattern)
-    else:
-        base = re.escape(expr)
-        # only add suffix flexibility for words with length >= 3
-        pattern = r"\b" + base + \
-            r"(?:ing|ed|s)?\b" if len(expr) >= 3 else r"\b" + base + r"\b"
-        return re.compile(pattern)
-
-
-# Precompile patterns from taxonomy once
-_COMPILED = {
-    mtype: [_compile_expression(e) for e in data.get("expressions", [])]
-    for mtype, data in METAPHOR_TYPES.items()
-}
-
-
-def _match_metaphors_in(text_norm: str):
-    """
-    Returns a set of metaphor categories found in this text snippet.
-    """
-    found = set()
-    for mtype, pats in _COMPILED.items():
-        for pat in pats:
-            if pat.search(text_norm):
-                found.add(mtype)
-                break
-    return found
+def _detect_list_mentions(text_norm: str, items: List[str]) -> List[str]:
+    hits = []
+    for item in items:
+        token = (item or "").strip().lower()
+        if not token:
+            continue
+        if token in text_norm:
+            hits.append(item)
+    return sorted(set(hits))
 
 # -----------------------
-# Public API
+# Sensory vs Emotional cues
+# -----------------------
+
+
+def _summarize_signals(entailments: dict) -> str:
+    """Aggregate experiential (sensory) and affective (emotional) signals."""
+    exp, aff = set(), set()
+    if isinstance(entailments, dict):
+        for vals in entailments.values():
+            exp.update(vals.get("experiential", []))
+            aff.update(vals.get("affective", []))
+    bits = []
+    if exp:
+        bits.append("**Sensory cues**: " + ", ".join(sorted(exp)) + ".")
+    if aff:
+        bits.append("**Emotional cues**: " + ", ".join(sorted(aff)) + ".")
+    return "\n".join(bits)
+
+# -----------------------
+# Public API (consumed by app.py)
 # -----------------------
 
 
 def tag_pain_description(description, name=None, duration=None):
-    raw = description.strip()
+    """
+    Returns:
+      - matched_metaphors: {category: True}
+      - matched_by_context: {context: [categories]}
+      - entailments: {category: {"experiential":[...], "affective":[...]}}
+      - user_info: {name, duration}
+      - input: original text
+      - extras: {triggers_detected: [...], life_impact_detected: [...]}
+    """
+    raw = (description or "").strip()
+    norm = _normalize(raw)
     spans = _find_spans(raw)
 
-    matched_by_context = {}
-    global_matched = set()
-    entailments = {}
+    matched_by_context: Dict[str, List[str]] = {}
+    global_matched: Set[str] = set()
+    entailments: Dict[str, Dict[str, List[str]]] = {}
 
     for ctx, chunks in spans.items():
-        ctx_found = set()
+        ctx_found: Set[str] = set()
         for chunk in chunks:
-            ctx_found |= _match_metaphors_in(normalize(chunk))
+            cats = _match_metaphors_in(_normalize(chunk))
+            cats = _debias_predator_vs_violent(chunk, cats)
+            ctx_found |= cats
         if ctx_found:
             matched_by_context[ctx] = sorted(ctx_found)
             global_matched |= ctx_found
@@ -158,19 +243,97 @@ def tag_pain_description(description, name=None, duration=None):
     for mtype in sorted(global_matched):
         entailments[mtype] = get_entailments(mtype)
 
+    triggers_detected = _detect_list_mentions(
+        norm, TRIGGERS) if TRIGGERS else []
+    life_impact_detected = _detect_list_mentions(
+        norm, LIFE_IMPACT) if LIFE_IMPACT else []
+
     return {
         "matched_metaphors": {m: True for m in sorted(global_matched)},
-        "matched_by_context": matched_by_context,  # NEW
+        "matched_by_context": matched_by_context,
         "entailments": entailments,
         "user_info": {
             "name": name.strip() if isinstance(name, str) and name.strip() else None,
             "duration": duration.strip() if isinstance(duration, str) and duration.strip() else None
         },
         "input": raw,
+        "extras": {
+            "triggers_detected": triggers_detected,
+            "life_impact_detected": life_impact_detected
+        }
     }
 
 
-def generate_doctor_summary(results):
+def generate_patient_summary(results) -> str:
+    """
+    Patient-facing rephrasing with gentle explanations per context.
+    Uses CLINICAL_REPHRASINGS where available and adds Sensory/Emotional cues.
+    """
+    if not isinstance(results, dict):
+        return "You're living with pain that holds deep meaning."
+
+    matched_global = results.get("matched_metaphors", {})
+    matched_ctx = results.get("matched_by_context", {})
+    input_text = (results.get("input") or "").lower()
+    name = (results.get("user_info", {}).get("name")) or "You"
+    duration = results.get("user_info", {}).get("duration")
+
+    if not matched_global:
+        return f"{name}, you're living with pain that holds deep meaning. No specific metaphor patterns were identified this time."
+
+    intro = f"{name}, you're living with pain that holds deep meaning."
+    if duration:
+        intro += f" You've been experiencing this for {duration.strip()}."
+    lines = [intro, ""]
+
+    order = ["menstruation", "ovulation",
+             "intercourse", "defecation", "baseline"]
+    labels = {
+        "menstruation": "**During menstruation**",
+        "ovulation": "**During ovulation**",
+        "intercourse": "**During intercourse**",
+        "defecation": "**When going to the toilet**",
+        "baseline": "**The rest of the month**",
+    }
+
+    for ctx in order:
+        cats = matched_ctx.get(ctx, [])
+        if not cats:
+            # Acknowledge mentioned contexts even if no metaphors detected
+            for pat in _CONTEXTS.get(ctx, []):
+                if re.search(pat, input_text):
+                    lines.append(
+                        f"{labels[ctx]}: You mentioned this, and it matters—even if no specific patterns were detected here today.")
+                    break
+            continue
+
+        # Build a concise, readable sentence mixing up to 2 rephrasings
+        snippets = []
+        for cat in cats[:2]:
+            if cat in CLINICAL_REPHRASINGS:
+                snippets.append(CLINICAL_REPHRASINGS[cat])
+        if not snippets:
+            human = ", ".join(c.replace("_", " ") for c in cats[:3])
+            snippets = [f"You describe {human} sensations."]
+
+        combined = " ".join(snippets)
+        lines.append(f"{labels[ctx]}: {combined}")
+
+    # Add Sensory/Emotional cues
+    signals = _summarize_signals(results.get("entailments", {}))
+    if signals:
+        lines.extend(["", signals])
+
+    return "\n".join(lines)
+
+
+def generate_doctor_summary(results) -> str:
+    """
+    Clinician-facing narrative based on taxonomy categories and contexts.
+    """
+    if not isinstance(results, dict):
+        return "Here is a clinical summary based on your description:\n\n🩺 *Note*: These metaphor-based interpretations are not diagnostic."
+
     matched_global = results.get("matched_metaphors", {})
     matched_ctx = results.get("matched_by_context", {})
 
@@ -200,10 +363,9 @@ def generate_doctor_summary(results):
             out.append("Intrusive/cutting metaphors during intercourse may reflect pelvic floor dysfunction, trauma sequelae, or localized neuropathic irritation.\n")
 
     if "defecation" in matched_ctx:
-        if any(m in matched_ctx["defecation"] for m in ("birth_labour", "cutting_tools", "constriction_pressure")):
+        if any(m in matched_ctx["defecation"] for m in ("birth_labour", "cutting_tools", "constriction_pressure", "heat", "violent_action")):
             out.append("**Defecation-related pain**")
-            out.append(
-                "Labour-like/knife-like metaphors with bowel movements may indicate bowel involvement or nerve entrapment.\n")
+            out.append("Labour-like/knife-like or burning metaphors with bowel movements may indicate bowel involvement, inflammatory irritation, or nearby nerve entrapment.\n")
 
     if "baseline" in matched_ctx:
         if any(m in matched_ctx["baseline"] for m in ("lingering_force", "predator", "weight_burden")):
@@ -217,82 +379,41 @@ def generate_doctor_summary(results):
     return "\n".join(out)
 
 
-def generate_patient_summary(results):
-    matched_global = results.get("matched_metaphors", {})
-    matched_ctx = results.get("matched_by_context", {})
-    input_text = (results.get("input") or "").lower()
-    name = (results.get("user_info", {}).get("name")) or "You"  # SAFE FALLBACK
-    duration = results.get("user_info", {}).get("duration")
+def generate_entailment_summary(obj) -> str:
+    """
+    Accepts either:
+      - an entailments mapping dict: {category: {"experiential":[...], "affective":[...]}}
+      - a full results dict containing 'entailments'
+    Returns a bullet-point summary.
+    """
+    mapping = {}
+    if isinstance(obj, dict):
+        # mapping already
+        if obj and all(isinstance(k, str) for k in obj.keys()) and ("experiential" in next(iter(obj.values()), {}) or "affective" in next(iter(obj.values()), {})):
+            mapping = obj
+        # or whole results
+        elif "entailments" in obj:
+            mapping = obj.get("entailments", {})
 
-    if not matched_global:
-        return f"{name}, you're living with pain that holds deep meaning. No specific metaphor patterns were identified this time."
-
-    intro = f"{name}, you're living with pain that holds deep meaning."
-    if duration:
-        intro += f" You've been experiencing this for {duration.strip()}."
-    lines = [intro, ""]
-
-    if "ovulation" in matched_ctx:
-        if any(m in matched_ctx["ovulation"] for m in ("constriction_pressure", "cutting_tools", "violent_action", "electric_force")):
-            lines.append(
-                "**During ovulation**: You may feel deep pressure or sharp, stabbing sensations—often tied to uterine/ovarian spasms or nerve sensitivity.")
-
-    if "menstruation" in matched_ctx:
-        if "heat" in matched_ctx["menstruation"] or "birth_labour" in matched_ctx["menstruation"]:
-            lines.append(
-                "**During menstruation**: The pain can burn or surge like flares, consistent with inflammatory or neuroimmune drivers.")
-
-    if "intercourse" in matched_ctx:
-        if any(m in matched_ctx["intercourse"] for m in ("violent_action", "cutting_tools", "constriction_pressure")):
-            lines.append(
-                "**During intercourse**: Sharp or intrusive sensations may reflect pelvic floor tension or localized nerve irritation.")
-
-    if "defecation" in matched_ctx:
-        if any(m in matched_ctx["defecation"] for m in ("birth_labour", "cutting_tools", "constriction_pressure")):
-            lines.append(
-                "**When going to the toilet**: Labour-like pressure or cutting sensations can signal bowel involvement or nearby nerve entrapment.")
-
-    if "baseline" in matched_ctx:
-        if any(m in matched_ctx["baseline"] for m in ("lingering_force", "predator", "weight_burden")):
-            lines.append(
-                "**The rest of the month**: A constant, lurking or heavy ache can drain energy and heighten anticipatory stress.")
-
-    # Acknowledge contexts mentioned but with no detected metaphors
-    for ctx_label, human in [
-        ("ovulation", "**During ovulation**"),
-        ("menstruation", "**During menstruation**"),
-        ("intercourse", "**During intercourse**"),
-        ("defecation", "**When going to the toilet**"),
-        ("baseline", "**The rest of the month**"),
-    ]:
-        if ctx_label in matched_ctx:
-            continue
-        # If the raw input mentions the context, acknowledge it
-        if any(re.search(p, input_text) for p in _CONTEXTS.get(ctx_label, [])):
-            lines.append(
-                f"{human}: You mentioned this, and it matters—even if no specific patterns were detected here today.")
-
-    return "\n".join(lines)
-
-
-def generate_entailment_summary(entailments):
-    if not entailments:
+    if not mapping:
         return "No experiential or affective entailments were found."
 
-    summary_lines = [
-        " Clinical interpretations based on metaphor entailments:\n"]
+    lines = [" Clinical interpretations based on metaphor entailments:\n"]
+    for mtype, vals in mapping.items():
+        exp = vals.get("experiential", [])
+        aff = vals.get("affective", [])
+        if exp:
+            lines.append(
+                f"• **{mtype}** – Experiential entailments: {', '.join(exp)}")
+        if aff:
+            lines.append(f"  – Affective entailments: {', '.join(aff)}")
 
-    for metaphor_type, values in entailments.items():
-        experiential = values.get("experiential", [])
-        affective = values.get("affective", [])
-
-        if experiential:
-            summary_lines.append(
-                f"• **{metaphor_type}** – Experiential entailments: {', '.join(experiential)}")
-        if affective:
-            summary_lines.append(
-                f"  – Affective entailments: {', '.join(affective)}")
-
-    summary_lines.append(
+    lines.append(
         "\nThese interpretations can support shared understanding between patients and clinicians.")
-    return "\n".join(summary_lines)
+    return "\n".join(lines)
+
+# Backwards-compatibility alias some callers might use
+
+
+def generate_doctor_narrative(results) -> str:
+    return generate_doctor_summary(results)

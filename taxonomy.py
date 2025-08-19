@@ -4,7 +4,7 @@ taxonomy = {
             "expressions": [
                 "assaulted", "attacked", "beaten", "bruised", "clubbed", "cut up", "grated", "gutted", "hammered", "hit",
                 "kicked", "knocked", "pounded", "punched", "run over", "shot", "slammed", "slashed", "smashed", "stabbed",
-                "stabbed repeatedly", "tearing"
+                "stabbed repeatedly", "tearing", "torture"
             ],
             "entailments": [
                 "external physical trauma", "bodily assault", "repeated damage", "lack of control", "powerlessness"

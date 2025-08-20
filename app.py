@@ -15,13 +15,18 @@ import os
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "your_default_secret")
+
 CORS(app, resources={r"/*": {"origins": [
+    "http://localhost:8080",        # local test server
+    "http://127.0.0.1:8080",
     "http://localhost:5500",
     "http://127.0.0.1:5500",
-    "http://localhost:5501",      # added
-    "http://127.0.0.1:5501",      # added
+    "http://localhost:5501",
+    "http://127.0.0.1:5501",
     "https://stellabullo.com",
-    "https://www.stellabullo.com"
+    "https://www.stellabullo.com",
+    "https://app.stellabullo.com",  #  frontend domain
+    "null"                         
 ]}})
 
 

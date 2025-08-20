@@ -46,12 +46,43 @@ def _normalize(text: str) -> str:
     return re.sub(r"[^\w\s']", " ", text.lower()).strip()
 
 
+def _irregular_word_variants(word: str) -> List[str]:
+    """
+    Return common irregular singular/plural variants for a single word.
+    Covers knife→knives and generic f/fe→ves patterns without overgeneration.
+    """
+    w = (word or "").strip().lower()
+    alts = {w}
+
+    # Specific map for safety; extend as you encounter more irregulars.
+    specific = {
+        "knife": {"knives"},
+        "leaf": {"leaves"},
+        "wolf": {"wolves"},
+        "calf": {"calves"},
+        "shelf": {"shelves"},
+        "loaf": {"loaves"},
+        "life": {"lives"},
+        "wife": {"wives"},
+    }
+    if w in specific:
+        alts |= specific[w]
+
+    # Generic f/fe → ves (only if it looks like a real base form)
+    if w.endswith("fe") and len(w) > 2:
+        alts.add(w[:-2] + "ves")
+    if w.endswith("f") and len(w) > 1:
+        alts.add(w[:-1] + "ves")
+
+    return sorted(alts)
+
+
 def _compile_expression(expr: str) -> re.Pattern:
     r"""
     Build a forgiving regex from a taxonomy expression:
       - multiword → collapse internal whitespace to \s+
-      - single word → match common variants (root + ing/ed/es/s),
-        handle doubled consonant (e.g., stab/stabbed/stabbing)
+      - single word → match root + (ing|ed|es|s) with doubled-consonant safety
+      - include irregular plural/singular alternations (knife|knives, etc.)
     """
     expr = (expr or "").strip().lower()
     if not expr:
@@ -63,21 +94,31 @@ def _compile_expression(expr: str) -> re.Pattern:
         pattern = r"\b" + r"\s+".join(parts) + r"\b"
         return re.compile(pattern, re.I)
 
-    # Single-word expression: generate root variants
+    # Single-word expression: generate variants
     word = expr
+
+    # Irregular alternations like knife|knives
+    irregulars = set(_irregular_word_variants(word))
+
+    # Root variants for regular suffixes
     root = re.sub(r"(?:ing|ed|es|s)$", "", word)
-    variants = {word, root}
+    variants = {word, root} | irregulars
+
     # handle doubled final consonant after stripping (e.g., 'stabbed' -> 'stabb' -> 'stab')
     if len(root) >= 2 and root[-1] == root[-2]:
         variants.add(root[:-1])
 
+    # Build alternation; for forms ending in 'ves' do NOT add extra suffixes
     alts = []
     for v in variants:
-        if len(v) >= 3:
+        if v.endswith("ves"):
+            alts.append(re.escape(v))  # exact plural
+        elif len(v) >= 3:
             alts.append(re.escape(v) + r"(?:ing|ed|es|s)?")
         else:
             alts.append(re.escape(v))
-    alts.sort(key=len, reverse=True)
+    alts = sorted(set(alts), key=len, reverse=True)
+
     pattern = r"\b(?:%s)\b" % "|".join(alts)
     return re.compile(pattern, re.I)
 
@@ -106,8 +147,8 @@ def _match_metaphors_in(text_norm: str) -> Set[str]:
 
 def _debias_predator_vs_violent(chunk_text: str, cats: Set[str]) -> Set[str]:
     """
-    If language is about *anticipation* of attack alongside predator imagery,
-    treat it as 'predator' (threat/anticipation) rather than 'violent_action'.
+    If language is about anticipation of attack alongside predator imagery,
+    treat it as 'predator' rather than 'violent_action'.
     Example: "waiting for the lurking animal to attack me"
     """
     if "violent_action" in cats and "predator" in cats:
@@ -260,7 +301,6 @@ def _summarize_signals(entailments: dict) -> str:
         parts.append(ec)
     return "\n".join(parts)
 
-
 # -----------------------
 # Public API (consumed by app.py)
 # -----------------------
@@ -357,12 +397,12 @@ def generate_patient_summary(results) -> str:
             for pat in _CONTEXTS.get(ctx, []):
                 if re.search(pat, input_text):
                     lines.append(
-                        f"{labels[ctx]}: You mentioned this, and it matters—even if no specific patterns were detected here today.")
+                        f"{labels[ctx]}: You mentioned this, and it matters—even if no specific patterns were detected here today."
+                    )
                     break
             continue
 
         # Build a concise, readable sentence using a gentle priority
-        # Prefer specific/gentle over heavy language if multiple categories match.
         PRIORITY = [
             "heat",                 # burning/searing
             "cutting_tools",        # sharp/piercing
@@ -392,8 +432,6 @@ def generate_patient_summary(results) -> str:
         lines.append(f"{labels[ctx]}: {chosen}")
 
     return "\n".join(lines)
-
-
 
 
 def generate_doctor_summary(results) -> str:
@@ -446,7 +484,8 @@ def generate_doctor_summary(results) -> str:
     # Add Sensory/Emotional cues summary
     signals = _summarize_signals(results.get("entailments", {}))
     if signals:
-        out.extend(["", "**Interpretive signals** (from metaphor entailments):", signals, ""])
+        out.extend(
+            ["", "**Interpretive signals** (from metaphor entailments):", signals, ""])
 
     out.append("🩺 *Note*: These metaphor-based interpretations are not diagnostic. They are intended to support communication between patient and provider.\n")
     out.append("For more information, see the evidence page: /evidence")
